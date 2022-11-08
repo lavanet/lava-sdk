@@ -4,13 +4,17 @@
   "description": "Experiment with simple CosmJS concepts.",
   "main": "index.js",
   "scripts": {
-    "convert": "tsc",
-    "build": "tsc && webpack --config webpack.config.js",
+    "tsc": "tsc",
+    "build": "yarn tsc && yarn chmod && webpack --config webpack.config.js",
+    "chmod": "chmod u+x ./bin/index.js",
     "protoc": "./protoc.sh",
     "server": "http-server dist/",
     "dev": "tsc && npm run build && npm run server",
     "main": "ts-node src/ts/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin":{
+    "lava-sdk" : "./src/js/ts/main.js"
   },
   "author": "Lava Protocol Inc",
   "license": "Apache-2.0",
