@@ -2,7 +2,9 @@ import { DirectSecp256k1HdWallet, AccountData} from "@cosmjs/proto-signing";
 import WalletErrors from "./errors"
 import Logger from "../logger/logger";
 
+// prefix for lava accounts
 const lavaPrefix = "lava@"
+
 class LavaWallet{
     private wallet: DirectSecp256k1HdWallet| Error;
     private mnemonic:string;
@@ -18,8 +20,7 @@ class LavaWallet{
             this.wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.mnemonic,{ prefix: lavaPrefix });
         }catch(err){
             throw WalletErrors.errInvalidMnemonic
-        }
-        
+        } 
     }
 
     // Get consumer account from the wallet
