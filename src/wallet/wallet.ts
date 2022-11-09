@@ -1,5 +1,5 @@
 import { DirectSecp256k1HdWallet, AccountData} from "@cosmjs/proto-signing";
-import ClientErrors from "./errors"
+import WalletErrors from "./errors"
 import Logger from "../logger/logger";
 
 const lavaPrefix = "lava@"
@@ -9,18 +9,25 @@ class LavaWallet{
 
     constructor(mnemonic:string){
         this.mnemonic = mnemonic;
-        this.wallet = ClientErrors.errWalletNotInitialized;
+        this.wallet = WalletErrors.errWalletNotInitialized;
     }
 
     // Initialize client
     async init(){
-        this.wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.mnemonic,{ prefix: lavaPrefix });
+        try{
+            this.wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.mnemonic,{ prefix: lavaPrefix });
+        }catch(err){
+            throw WalletErrors.errInvalidMnemonic
+        }
+        
     }
 
     // Get consumer account from the wallet
-    async getConsumerAccount(): Promise<AccountData | Error> {
+    async getConsumerAccount(): Promise<AccountData> {
         // check if wallet was initialized
-        if (this.wallet instanceof Error) {return this.wallet};
+        if (this.wallet instanceof Error) {
+            throw new Error(this.wallet.message)
+        };
 
         // Return zero account from wallet
         var accountZero = (await this.wallet.getAccounts())[0];

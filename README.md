@@ -32,6 +32,13 @@ Welcome to Lava SDK. An SDK for lava network clients.
     execute Yarn link to create an symlink 
     ```
 
+6. Run unit tests
+
+    Lava SDK is extensively covered with unit tests, to run the tests execute:
+    ```bash
+    yarn test
+    ```
+
 ## Prerequisites
 To be able to use Lava SDK, you must first create an account and stake to Lava Network
 

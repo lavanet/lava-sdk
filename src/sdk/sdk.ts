@@ -27,10 +27,6 @@ class LavaSDK{
 
         // Fetch account
         const account = await this.lavaWallet.getConsumerAccount()
-        if (account instanceof Error) {
-            Logger.error(account.message)
-            return
-        };
 
         // Print Account
         Logger.success("Account successfully added")
