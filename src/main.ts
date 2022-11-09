@@ -36,9 +36,11 @@ async function run() {
         'A used rpc interface'
     )
     .action(async(option, _) => {
+        // Todo add validation for required params
+        
         await getPairing(
             option.endpoint,
-            option.chainID,
+            option.chainId,
             option.mnemonic,
             option.rpcInterface,
         )

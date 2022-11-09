@@ -1,11 +1,10 @@
 import LavaWallet from '../wallet/wallet'
 import Logger from '../logger/logger';
+import LavaConsumer from '../consumer/consumer'
+
 class LavaSDK{
-    private endpoint:string;
-    private chainID:string;
-    private rpcInterface:string;
     private lavaWallet: LavaWallet
-    
+    private lavaConsumer: LavaConsumer
     
     constructor(
         endpoint:string, 
@@ -13,12 +12,11 @@ class LavaSDK{
         mnemonic:string, 
         rpcInterface:string
     ){
-        this.endpoint=endpoint;
-        this.chainID=chainID;
-        this.rpcInterface=rpcInterface;
-
         // Create lava wallet instance
         this.lavaWallet = new LavaWallet(mnemonic)
+
+        // Create lava consumer instance
+        this.lavaConsumer = new LavaConsumer(endpoint, chainID, rpcInterface)
     }
 
     async init(){
@@ -32,6 +30,14 @@ class LavaSDK{
         Logger.success("Account successfully added")
         this.lavaWallet.printAccount(account);
 
+        // Initialize lava consumer
+        await this.lavaConsumer.init(account)
+
+        // Get pairing
+        const pairing = await this.lavaConsumer.getPairing()
+
+        // Log pairing list
+        this.lavaConsumer.printPairingList(pairing)
     }
 }
 

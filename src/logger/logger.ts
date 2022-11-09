@@ -1,8 +1,13 @@
 import chalk from 'chalk';
+import util from 'util';
 
 class Logger {
     static info(s: string) {
         console.log(s);
+    }
+
+    static infoAnyFull(s: any) {
+        console.log(util.inspect(s, false, null, true));
     }
 
     static title(s: string) {
