@@ -1,23 +1,23 @@
 {
-  "name": "cosmjs-sandbox",
+  "name": "lava-sdk",
   "version": "1.0.0",
-  "description": "Experiment with simple CosmJS concepts.",
-  "main": "index.js",
+  "description": "An SDK for interacting with Lava client",
+  "main": "main.ts",
+  "author": "Lava Protocol Inc",
+  "license": "Apache-2.0",
   "scripts": {
     "tsc": "tsc",
     "build": "yarn tsc && yarn chmod && webpack --config webpack.config.js",
-    "chmod": "chmod u+x ./bin/index.js",
-    "protoc": "./protoc.sh",
+    "chmod": "chmod u+x ./bin/main.js",
+    "protoc": "./scripts/protoc.sh",
     "server": "http-server dist/",
     "dev": "tsc && npm run build && npm run server",
     "main": "ts-node src/ts/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin":{
-    "lava-sdk" : "./src/js/ts/main.js"
+  "bin": {
+    "lava-sdk": "./bin/main.js"
   },
-  "author": "Lava Protocol Inc",
-  "license": "Apache-2.0",
   "devDependencies": {
     "@types/lodash": "^4.14.186",
     "@types/node-fetch": "^2.6.2",
@@ -43,7 +43,6 @@
     "ts-loader": "^9.4.1",
     "ts-node": "10.7.0",
     "ts-proto": "^1.126.1",
-    "tsc": "^2.0.4",
     "typescript": "^4.8.4",
     "universal-websocket-client": "^1.0.2",
     "url": "^0.11.0",
@@ -56,6 +55,8 @@
   "dependencies": {
     "@cosmjs/stargate": "0.28.2",
     "@grpc/grpc-js": "^1.7.1",
+    "chalk": "4.1.2",
+    "commander": "^9.4.1",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
     "os": "^0.1.2",

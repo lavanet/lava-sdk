@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = [
     {
-  entry: './src/js/ts/main.js',
+  entry: './bin/main.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
@@ -16,6 +16,9 @@ module.exports = [
       path: false,
       stream: false,
       string_decoder: false,
+      fs:false,
+      process:false,
+      child_process:false
     },
   },   
 

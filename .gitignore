@@ -7,3 +7,6 @@ dist/codec/*
 dist/src/*
 dist/ts/*
 dist/utils/*
+
+# Build files
+bin
