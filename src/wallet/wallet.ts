@@ -3,7 +3,7 @@ import ClientErrors from "./errors"
 import Logger from "../logger/logger";
 
 const lavaPrefix = "lava@"
-class LavaClient{
+class LavaWallet{
     private wallet: DirectSecp256k1HdWallet| Error;
     private mnemonic:string;
 
@@ -31,10 +31,10 @@ class LavaClient{
     // Print account details
     printAccount(AccountData: AccountData) {
         Logger.info("INFO:")
-        Logger.info("Address" + AccountData.address)
-        Logger.info("Public key" + AccountData.pubkey)
+        Logger.info("Address: " + AccountData.address)
+        Logger.info("Public key: " + AccountData.pubkey)
         Logger.emptyLine()
     }
 }
 
-export default LavaClient
+export default LavaWallet

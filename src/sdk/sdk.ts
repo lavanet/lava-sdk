@@ -1,10 +1,10 @@
-import LavaClient from '../client/client'
+import LavaWallet from '../wallet/wallet'
 import Logger from '../logger/logger';
 class LavaSDK{
     private endpoint:string;
     private chainID:string;
     private rpcInterface:string;
-    private lavaCLient: LavaClient
+    private lavaWallet: LavaWallet
     
     
     constructor(
@@ -17,16 +17,16 @@ class LavaSDK{
         this.chainID=chainID;
         this.rpcInterface=rpcInterface;
 
-        // TODO naming lavaClient sounds more as client not as user?
-        this.lavaCLient = new LavaClient(mnemonic)
+        // Create lava wallet instance
+        this.lavaWallet = new LavaWallet(mnemonic)
     }
 
     async init(){
-        // Initialize Lava client
-        await this.lavaCLient.init();
+        // Initialize Lava wallet
+        await this.lavaWallet.init();
 
         // Fetch account
-        const account = await this.lavaCLient.getConsumerAccount()
+        const account = await this.lavaWallet.getConsumerAccount()
         if (account instanceof Error) {
             Logger.error(account.message)
             return
@@ -34,7 +34,7 @@ class LavaSDK{
 
         // Print Account
         Logger.success("Account successfully added")
-        this.lavaCLient.printAccount(account);
+        this.lavaWallet.printAccount(account);
 
     }
 }
