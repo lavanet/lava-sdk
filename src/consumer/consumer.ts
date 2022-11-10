@@ -83,7 +83,7 @@ class LavaConsumer {
             }
 
             // TODO fetch max compute units
-
+            
 
             // TODO fetch current epoch
 

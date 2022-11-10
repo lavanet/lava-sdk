@@ -73,5 +73,41 @@ Download the latest Lava binary from https://github.com/lavanet/lava/releases
     lavad q pairing clients <network> --node <lava_node_address>
     ```
     
-    
-![gif-maker-imgflip-10-november-2022_58WOWHr5_AdobeExpress (1)](https://user-images.githubusercontent.com/42786413/201049338-918c1112-ab74-4258-bdfe-61cea82b80dc.gif)
+## How to use it 
+Current lava-sdk implementation can be used only with the terminal. 
+
+    ```md
+    !!! Caution
+    Before continuing to follow the guide, please make sure you finished all the steps in the Prerequisites section
+    ```
+
+1. List all supported commands
+
+    ```bash
+    lava-sdk --help
+    ```
+
+1. Get paring
+
+    ```bash
+    lava-sdk get-paring --help
+    ```
+    ```bash
+    Usage: Lava SDK get-paring [options]
+
+    Gets the pairing list for current epoch
+
+    Options:
+    -e, --endpoint <endpoint>           An lava node Endpoint
+    -c, --chainId <chain-id>            An lava network chain ID
+    -m, --mnemonic <mnemonic>           The client mnemonic
+    -r, --rpcInterface <rpc-interface>  A used rpc interface
+    -h, --help                          display help for command
+    ```
+
+    ```bash
+    Example:
+    lava-sdk get-paring -e <node_address> -c <chain_id> -m <mnemonic_with_staked_account> -r <rpc_interface>
+    ```
+
+    ![gif-maker-imgflip-10-november-2022_58WOWHr5_AdobeExpress (1)](https://user-images.githubusercontent.com/42786413/201049338-918c1112-ab74-4258-bdfe-61cea82b80dc.gif)
