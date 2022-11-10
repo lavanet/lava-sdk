@@ -1,5 +1,9 @@
 # Lava-SDK
-Welcome to Lava SDK. An SDK for lava network clients. 
+
+<h2 align="center">Welcome to Lava SDK!</h2>
+
+A Lava SDK is a complete Lava Network client written in Typescript
+
 
 ## Installation: 
 
@@ -128,5 +132,3 @@ All examples are located in the **./src/examples** folder. Currently we support 
     ```bash
     yarn example
     ```
-
-basic example can be executed with the **yarn example** command
