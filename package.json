@@ -13,7 +13,8 @@
     "server": "http-server dist/",
     "dev": "tsc && npm run build && npm run server",
     "main": "ts-node src/ts/main.ts",
-    "test": "jest ./src"
+    "test": "jest ./src",
+    "example": "node ./bin/examples/basic.js"
   },
   "bin": {
     "lava-sdk": "./bin/main.js"

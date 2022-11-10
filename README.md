@@ -74,12 +74,14 @@ Download the latest Lava binary from https://github.com/lavanet/lava/releases
     ```
     
 ## How to use it 
-Current lava-sdk implementation can be used only with the terminal. 
+Current lava-sdk implementation can be used with the terminal and we have an example folder to demonstrate how the sdk will be used 
 
     ```md
     !!! Caution
     Before continuing to follow the guide, please make sure you finished all the steps in the Prerequisites section
     ```
+
+### Terminal
 
 1. List all supported commands
 
@@ -111,3 +113,20 @@ Current lava-sdk implementation can be used only with the terminal.
     ```
 
     ![gif-maker-imgflip-10-november-2022_58WOWHr5_AdobeExpress (1)](https://user-images.githubusercontent.com/42786413/201049338-918c1112-ab74-4258-bdfe-61cea82b80dc.gif)
+
+### Example
+
+All examples are located in the **./src/examples** folder. Currently we support only running **./src/examples/basic.ts** out of the box. 
+1. Compile ts -> js
+
+    ```bash
+    yarn build
+    ```
+
+2. Run example/basic.ts 
+
+    ```bash
+    yarn example
+    ```
+
+basic example can be executed with the **yarn example** command
