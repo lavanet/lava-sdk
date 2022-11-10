@@ -72,3 +72,6 @@ Download the latest Lava binary from https://github.com/lavanet/lava/releases
     ```bash
     lavad q pairing clients <network> --node <lava_node_address>
     ```
+    
+    
+![gif-maker-imgflip-10-november-2022_58WOWHr5_AdobeExpress (1)](https://user-images.githubusercontent.com/42786413/201049338-918c1112-ab74-4258-bdfe-61cea82b80dc.gif)
