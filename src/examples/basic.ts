@@ -39,7 +39,10 @@ async function run() {
     const paring = await consumer.getPairing();
 
     // Print paring
-    consumer.printPairingList(paring);
+    consumer.printParingList(paring);
+
+    // Pick provider
+    consumer.pickRandomProvider(paring)
 }
 
 

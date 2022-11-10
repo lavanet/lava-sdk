@@ -5,6 +5,9 @@ class ConsumerErrors{
     static errQueryServiceNotInitialized: Error = new Error(
         "Query service was not initialized"
     )
+    static errEpochQueryServiceNotInitialized: Error = new Error(
+        "Epoch query service was not initialized"
+    )
 }
 
 export default ConsumerErrors

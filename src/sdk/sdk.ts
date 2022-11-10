@@ -33,11 +33,14 @@ class LavaSDK{
         // Initialize lava consumer
         await this.lavaConsumer.init(account)
 
-        // Get pairing
-        const pairing = await this.lavaConsumer.getPairing()
+        // Get paring
+        const paring = await this.lavaConsumer.getPairing()
 
-        // Log pairing list
-        this.lavaConsumer.printPairingList(pairing)
+        // Log paring list
+        this.lavaConsumer.printParingList(paring)
+
+        // Pick provider
+        this.lavaConsumer.pickRandomProvider(paring)
     }
 }
 
