@@ -1,6 +1,4 @@
-# Lava-SDK
-
-<h2 align="center">Welcome to Lava SDK!</h2>
+<h1 align="center">Welcome to Lava SDK!</h1>
 
 A Lava SDK is a complete Lava Network client written in Typescript
 
