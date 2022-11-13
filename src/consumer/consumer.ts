@@ -136,7 +136,7 @@ class LavaConsumer {
 
         // Print Random provider
         Logger.success("Provider picked: ")
-        Logger.infoAnyFull(validProviders[random])
+        Logger.deepInfo(validProviders[random])
         Logger.emptyLine
 
         return validProviders[random]
@@ -195,7 +195,7 @@ class LavaConsumer {
         Logger.emptyLine();
         Logger.success("Paring list successfully fetched")
         Logger.success("Providers: ")
-        Logger.infoAnyFull(pairing)
+        Logger.deepInfo(pairing)
         Logger.emptyLine();
     }
 }
