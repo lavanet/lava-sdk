@@ -1,25 +1,27 @@
 import { DirectSecp256k1HdWallet, AccountData} from "@cosmjs/proto-signing";
+import {Secp256k1Wallet} from "@cosmjs/amino"
 import WalletErrors from "./errors"
 import Logger from "../logger/logger";
+import { fromHex } from "@cosmjs/encoding";
 
 // prefix for lava accounts
 const lavaPrefix = "lava@"
 
 class LavaWallet{
-    private wallet: DirectSecp256k1HdWallet| Error;
-    private mnemonic:string;
+    private wallet: Secp256k1Wallet| Error;
+    private privKey:string;
 
-    constructor(mnemonic:string){
-        this.mnemonic = mnemonic;
+    constructor(privKey:string){
+        this.privKey = privKey;
         this.wallet = WalletErrors.errWalletNotInitialized;
     }
 
     // Initialize client
     async init(){
         try{
-            this.wallet = await DirectSecp256k1HdWallet.fromMnemonic(this.mnemonic,{ prefix: lavaPrefix });
+            this.wallet = await Secp256k1Wallet.fromKey(fromHex(this.privKey), lavaPrefix );
         }catch(err){
-            throw WalletErrors.errInvalidMnemonic
+            throw WalletErrors.errInvalidPrivateKey
         } 
     }
 

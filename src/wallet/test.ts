@@ -1,12 +1,12 @@
 import LavaWallet from './wallet'
 import ClientErrors from "./errors"
 
-describe("Fetching account from mnemonic", ()=>{
+describe("Fetching account from private key", ()=>{
     it("Successfully fetch account", async ()=> {
-        const mnemonic = "client marine special phone fury cry little bar loop soap kiwi kick donate pattern curious spatial grab attend board tuna add famous head crystal"
+        const privateKey = "885c3ebe355979d68d16f51e267040eb91e39021db07a9608ad881782d546009"
         const expectedAddress = "lava@194hjlf7swpm9c0rmktswt55p6xhhj6huzxnhaj"
         // Create lava wallet instance
-        const lavaWallet = new LavaWallet(mnemonic);
+        const lavaWallet = new LavaWallet(privateKey);
 
         // Initialize lava wallet
         await lavaWallet.init();
@@ -22,10 +22,10 @@ describe("Fetching account from mnemonic", ()=>{
     })
 
     it("Fail to fetch account", async ()=> {
-        const mnemonic = "client marine special phone fury cry little bar loop soap kiwi kick donate pattern curious spatial grab attend board tuna add famous head crystal"
+        const privateKey = "client marine special phone fury cry little bar loop soap kiwi kick donate pattern curious spatial grab attend board tuna add famous head crystal"
 
         // Create lava wallet instance
-        const lavaWallet = new LavaWallet(mnemonic);
+        const lavaWallet = new LavaWallet(privateKey);
 
         // Wallet was never initialized, expect error
         try {
@@ -34,17 +34,17 @@ describe("Fetching account from mnemonic", ()=>{
             expect(err.message).toBe(ClientErrors.errWalletNotInitialized.message)
         }
     })
-    it("Invalid mnemonic, can not create wallet", async ()=> {
-        const mnemonic = ""
+    it("Invalid private key, can not create wallet", async ()=> {
+        const privayeKey = ""
 
         // Create lava wallet instance
-        const lavaWallet = new LavaWallet(mnemonic);
+        const lavaWallet = new LavaWallet(privayeKey);
 
         // Wallet was never initialized, expect error
         try {
             await lavaWallet.init()
         }catch (err:any){
-            expect(err.message).toBe(ClientErrors.errInvalidMnemonic.message)
+            expect(err.message).toBe(ClientErrors.errInvalidPrivateKey.message)
         }
     })
     

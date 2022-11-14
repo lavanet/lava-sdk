@@ -91,27 +91,27 @@ Current lava-sdk implementation can be used with the terminal and we have an exa
     lava-sdk --help
     ```
 
-1. Get paring
+1. Get pairing
 
     ```bash
-    lava-sdk get-paring --help
+    lava-sdk get-pairing --help
     ```
     ```bash
-    Usage: Lava SDK get-paring [options]
+    Usage: Lava SDK get-pairing [options]
 
     Gets the pairing list for current epoch
 
     Options:
     -e, --endpoint <endpoint>           An lava node Endpoint
     -c, --chainId <chain-id>            An lava network chain ID
-    -m, --mnemonic <mnemonic>           The client mnemonic
+    -p, --privateKey <privateKey>       The client private key
     -r, --rpcInterface <rpc-interface>  A used rpc interface
     -h, --help                          display help for command
     ```
 
     ```bash
     Example:
-    lava-sdk get-paring -e <node_address> -c <chain_id> -m <mnemonic_with_staked_account> -r <rpc_interface>
+    lava-sdk get-paring -e <node_address> -c <chain_id> -p <private_key_staked_account> -r <rpc_interface>
     ```
 
     ![gif-maker-imgflip-10-november-2022_58WOWHr5_AdobeExpress (1)](https://user-images.githubusercontent.com/42786413/201049338-918c1112-ab74-4258-bdfe-61cea82b80dc.gif)

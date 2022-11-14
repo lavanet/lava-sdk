@@ -17,7 +17,7 @@ async function run() {
     .version('0.0.1')
     
     // Initialize sub commands
-    program.command('get-paring')
+    program.command('get-pairing')
     .description('Gets the pairing list for current epoch')
     .requiredOption(
         '-e, --endpoint <endpoint>',
@@ -28,8 +28,8 @@ async function run() {
         'An lava network chain ID'
     )
     .requiredOption(
-        '-m, --mnemonic <mnemonic>',
-        'The client mnemonic'
+        '-p, --privateKey <privateKey>',
+        'The client private key'
     )
     .requiredOption(
         '-r, --rpcInterface <rpc-interface>',
@@ -41,7 +41,7 @@ async function run() {
         await getPairing(
             option.endpoint,
             option.chainId,
-            option.mnemonic,
+            option.privateKey,
             option.rpcInterface,
         )
     });
@@ -53,13 +53,13 @@ async function run() {
 async function getPairing(
     endpoint:string,
     chainID:string,
-    mnemonic:string,
+    privateKey:string,
     rpcInterface:string,
 ) {
     const lavaSDK = new LavaSDK(
         endpoint,
         chainID,
-        mnemonic,
+        privateKey,
         rpcInterface
     )
     

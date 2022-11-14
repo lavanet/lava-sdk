@@ -9,11 +9,11 @@ class LavaSDK{
     constructor(
         endpoint:string, 
         chainID:string, 
-        mnemonic:string, 
+        privKey:string, 
         rpcInterface:string
     ){
         // Create lava wallet instance
-        this.lavaWallet = new LavaWallet(mnemonic)
+        this.lavaWallet = new LavaWallet(privKey)
 
         // Create lava consumer instance
         this.lavaConsumer = new LavaConsumer(endpoint, chainID, rpcInterface)
