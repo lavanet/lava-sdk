@@ -13,7 +13,7 @@ import LavaConsumer from "../consumer/consumer"
 
 async function run() {
     const privKey = "885c3ebe355979d68d16f51e267040eb91e39021db07a9608ad881782d546009"
-    const endpoint = "http://44.205.140.46:26657"
+    const endpoint = "http://public-rpc.lavanet.xyz:80/rpc/"
     const chainID = "ETH1"
     const rpcInterface = "jsonrpc"
 

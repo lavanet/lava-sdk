@@ -8,6 +8,9 @@ class ConsumerErrors{
     static errEpochQueryServiceNotInitialized: Error = new Error(
         "Epoch query service was not initialized"
     )
+    static errTendermintClientServiceNotInitialized: Error = new Error(
+        "Tendermint client service was not initialized"
+    )
 }
 
 export default ConsumerErrors

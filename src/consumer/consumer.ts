@@ -6,7 +6,6 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import {ConsumerSessionWithProvider, Endpoint} from "./types"
 import ConsumerErrors from './errors'
 import Logger from '../logger/logger'
-import JsonRPC from '../jsonrpc/jsonrpc'
 import Long from 'long'
 
 
@@ -17,7 +16,7 @@ class LavaConsumer {
     private account: AccountData | Error
     private queryService: QueryClientImpl | Error;
     private epochQueryService: EpochQueryService | Error
-    private jsonRPC: JsonRPC
+    private tendermintClient: Tendermint34Client | Error
 
     constructor(endpoint:string, chainID:string, rpcInterface:string){
         this.endpoint= endpoint
@@ -26,8 +25,7 @@ class LavaConsumer {
         this.account= ConsumerErrors.errAccountNotInitialized
         this.queryService = ConsumerErrors.errQueryServiceNotInitialized
         this.epochQueryService = ConsumerErrors.errEpochQueryServiceNotInitialized
-
-        this.jsonRPC = new JsonRPC()
+        this.tendermintClient = ConsumerErrors.errTendermintClientServiceNotInitialized
     }
 
     // Initialize consumer
@@ -43,7 +41,7 @@ class LavaConsumer {
         const rpcClient = createProtobufRpcClient(queryClient);
         this.queryService = new QueryClientImpl(rpcClient);
         this.epochQueryService = new EpochQueryService(rpcClient)
-
+        this.tendermintClient = tmClient
     }
 
     // Get pairing list for specified wallet in current epoch
@@ -51,6 +49,10 @@ class LavaConsumer {
         // Check if account was initialized
         if(this.account instanceof Error){
             throw ConsumerErrors.errAccountNotInitialized
+        }
+
+        if(this.tendermintClient instanceof Error){
+            throw ConsumerErrors.errTendermintClientServiceNotInitialized
         }
 
         // Create pairing request for getPairing method
@@ -68,8 +70,11 @@ class LavaConsumer {
         // Initialize ConsumerSessionWithProvider array
         const pairing: Array<ConsumerSessionWithProvider> = []
 
+        // Fetch latest block
+        const blockResponse = await this.tendermintClient.block()
+
         // Fetch latest block number
-        const latestBlockNumber = await this.jsonRPC.getLatestBlock(this.endpoint)
+        const latestBlockNumber = blockResponse.block.header.height
 
         // fetch epoch size
         const epochNumber = await this.getEpochNumber(latestBlockNumber)
@@ -194,7 +199,6 @@ class LavaConsumer {
     printParingList(pairing:Array<ConsumerSessionWithProvider>) {
         Logger.emptyLine();
         Logger.success("Paring list successfully fetched")
-        Logger.success("Providers: ")
         Logger.deepInfo(pairing)
         Logger.emptyLine();
     }

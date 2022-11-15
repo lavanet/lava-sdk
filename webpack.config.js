@@ -27,5 +27,6 @@ module.exports = [
     }),
   ],
   devtool: "source-map",
+  cache: false,
 },
 ];
