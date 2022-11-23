@@ -2,21 +2,25 @@ import {AccountData} from "@cosmjs/proto-signing";
 import { createProtobufRpcClient, QueryClient} from "@cosmjs/stargate";
 import {QueryClientImpl,QueryGetPairingRequest, QueryGetPairingResponse, QueryUserEntryRequest} from "../codec/pairing/query";
 import {QueryClientImpl as EpochQueryService, QueryParamsRequest} from "../codec/epochstorage/query"
+
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import {ConsumerSessionWithProvider, Endpoint} from "./types"
+import {ConsumerSessionWithProvider, Endpoint, SingleConsumerSession} from "./types"
 import ConsumerErrors from './errors'
 import Logger from '../logger/logger'
 import Long from 'long'
 
 
-class LavaConsumer {
+class consumerSessionManager {
     private chainID:string 
     private endpoint:string
     private rpcInterface:string
     private account: AccountData | Error
+
     private queryService: QueryClientImpl | Error;
     private epochQueryService: EpochQueryService | Error
     private tendermintClient: Tendermint34Client | Error
+
+    private activeConsumerSession: ConsumerSessionWithProvider | Error
 
     constructor(endpoint:string, chainID:string, rpcInterface:string){
         this.endpoint= endpoint
@@ -26,6 +30,7 @@ class LavaConsumer {
         this.queryService = ConsumerErrors.errQueryServiceNotInitialized
         this.epochQueryService = ConsumerErrors.errEpochQueryServiceNotInitialized
         this.tendermintClient = ConsumerErrors.errTendermintClientServiceNotInitialized
+        this.activeConsumerSession = ConsumerErrors.errActiveConsumerSessionNotInitialized
     }
 
     // Initialize consumer
@@ -42,6 +47,23 @@ class LavaConsumer {
         this.queryService = new QueryClientImpl(rpcClient);
         this.epochQueryService = new EpochQueryService(rpcClient)
         this.tendermintClient = tmClient
+    }
+
+    async getConsumerSession(): Promise<SingleConsumerSession>{
+        // Check if active session exists
+        if (this.activeConsumerSession instanceof Error){
+            // Fetch pairing
+            const pairing = await this.getPairing()
+
+            // Pick provider
+            const consumerSession = this.pickRandomProvider(pairing)
+
+            // Set active session
+            this.activeConsumerSession = consumerSession
+        }
+
+        // Return active consumer session
+        return this.activeConsumerSession.Session
     }
 
     // Get pairing list for specified wallet in current epoch
@@ -113,9 +135,19 @@ class LavaConsumer {
             }
 
             // Create a new pairing object
+
+            // TODO when initializing relevantEndpoints it needs to check if valid
             const newPairing = new ConsumerSessionWithProvider(
                 this.account.address,
                 relevantEndpoints,
+                new SingleConsumerSession(
+                    0,
+                    0,
+                    this.getNewSessionId(),
+                    0,
+                    relevantEndpoints[0],
+                    (epochNumber-1)*20
+                ),
                 maxcu,
                 0,
                 false,
@@ -138,11 +170,6 @@ class LavaConsumer {
 
         // Pick random provider
         const random = Math.floor(Math.random() * validProviders.length);
-
-        // Print Random provider
-        Logger.success("Provider picked: ")
-        Logger.deepInfo(validProviders[random])
-        Logger.emptyLine
 
         return validProviders[random]
     }
@@ -196,6 +223,13 @@ class LavaConsumer {
         return epochNumber
     }
 
+    private getNewSessionId(): number {
+        // TODO for production need better session generator
+        const min = 100000
+        const max = 1000000000000
+        return Math.floor( Math.random() * (max - min) + min);
+    }
+
     printParingList(pairing:Array<ConsumerSessionWithProvider>) {
         Logger.emptyLine();
         Logger.success("Paring list successfully fetched")
@@ -204,4 +238,4 @@ class LavaConsumer {
     }
 }
 
-export default LavaConsumer
+export default consumerSessionManager

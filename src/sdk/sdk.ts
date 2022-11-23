@@ -1,6 +1,6 @@
 import LavaWallet from '../wallet/wallet'
 import Logger from '../logger/logger';
-import LavaConsumer from '../consumer/consumer'
+import LavaConsumer from '../consumerSessionManager/consumerSessionManager'
 
 class LavaSDK{
     private lavaWallet: LavaWallet

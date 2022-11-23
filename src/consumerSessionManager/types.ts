@@ -1,7 +1,7 @@
 export class ConsumerSessionWithProvider{
     Acc:string
     Endpoints: Array<Endpoint>
-    // TODO missing sessions attribute
+    Session: SingleConsumerSession
     MaxComputeUnits: number
     UsedComputeUnits: number
     ReliabilitySent: boolean
@@ -9,7 +9,8 @@ export class ConsumerSessionWithProvider{
 
     constructor(
         acc:string, 
-        endpoints:Array<Endpoint>, 
+        endpoints:Array<Endpoint>,
+        session: SingleConsumerSession, 
         maxComputeUnits:number,
         usedComputeUnits:number,
         reliabilitySent:boolean,
@@ -17,6 +18,7 @@ export class ConsumerSessionWithProvider{
     ){
         this.Acc=acc;
         this.Endpoints=endpoints;
+        this.Session=session;
         this.MaxComputeUnits=maxComputeUnits;
         this.UsedComputeUnits=usedComputeUnits;
         this.ReliabilitySent=reliabilitySent;
@@ -24,6 +26,31 @@ export class ConsumerSessionWithProvider{
     }
 
 
+}
+
+export class SingleConsumerSession{
+    CuSum: number
+    LatestRelayCu: number
+    SessionId: number
+    RelayNum: number
+    Endpoint: Endpoint
+    PairingEpoch: number
+
+    constructor(
+        cuSum: number,
+        latestRelayCu: number,
+        sessionId: number,
+        relayNum: number,
+        endpoint: Endpoint,
+        pairingEpoch: number
+    ){
+        this.CuSum=cuSum
+        this.LatestRelayCu=latestRelayCu
+        this.SessionId=sessionId
+        this.RelayNum=relayNum
+        this.Endpoint=endpoint
+        this.PairingEpoch=pairingEpoch
+    }   
 }
 
 export class Endpoint{

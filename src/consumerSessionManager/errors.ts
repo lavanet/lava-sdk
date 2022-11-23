@@ -11,6 +11,9 @@ class ConsumerErrors{
     static errTendermintClientServiceNotInitialized: Error = new Error(
         "Tendermint client service was not initialized"
     )
+    static errActiveConsumerSessionNotInitialized: Error = new Error(
+        "Active consumer session was not initialized"
+    )
 }
 
 export default ConsumerErrors
