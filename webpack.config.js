@@ -18,7 +18,7 @@ module.exports = [
       stream: false,
       string_decoder: false,
     },
-  },   
+  }, 
   plugins: [
     // fix "process is not defined" error:
     // (do "npm install process" before running the build)

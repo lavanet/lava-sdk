@@ -10,7 +10,7 @@
     "build": "yarn tsc && yarn chmod && webpack --config webpack.config.js",
     "chmod": "chmod u+x ./bin/main.js",
     "protoc": "./scripts/protoc.sh",
-    "server": "http-server dist/",
+    "server": "http-server dist/ -c-1",
     "test": "jest ./src",
     "example": "node ./bin/examples/basic.js"
   },
@@ -57,6 +57,8 @@
     "@grpc/grpc-js": "^1.7.1",
     "chalk": "4.1.2",
     "commander": "^9.4.1",
+    "google-protobuf": "^3.21.2",
+    "grpc-web": "^1.4.2",
     "jest": "^29.3.1",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
