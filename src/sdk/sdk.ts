@@ -2,20 +2,32 @@ import LavaWallet from "../wallet/wallet";
 import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
-import {QueryClientImpl,QueryGetPairingRequest,QueryGetPairingResponse,QueryUserEntryRequest,} from "../codec/pairing/query";
-import {QueryClientImpl as EpochQueryService,QueryParamsRequest,} from "../codec/epochstorage/query";
+import {
+  QueryClientImpl,
+  QueryGetPairingRequest,
+  QueryGetPairingResponse,
+  QueryUserEntryRequest,
+} from "../codec/pairing/query";
+import {
+  QueryClientImpl as EpochQueryService,
+  QueryParamsRequest,
+} from "../codec/epochstorage/query";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import {ConsumerSessionWithProvider,Endpoint,SingleConsumerSession,} from "../types/types";
+import {
+  ConsumerSessionWithProvider,
+  Endpoint,
+  SingleConsumerSession,
+} from "../types/types";
 import Long from "long";
-import {Secp256k1, sha256} from "@cosmjs/crypto"
-import { fromHex} from "@cosmjs/encoding";
-import {RelayerClient} from "../proto/proto/RelayServiceClientPb";
-import {RelayRequest, RelayReply} from "../proto/proto/relay_pb"
+import { Secp256k1, sha256 } from "@cosmjs/crypto";
+import { fromHex } from "@cosmjs/encoding";
+import { RelayerClient } from "../proto/proto/RelayServiceClientPb";
+import { RelayRequest, RelayReply } from "../proto/proto/relay_pb";
 
 class LavaSDK {
   private chainID: string;
   private endpoint: string;
-  private privKey:string;
+  private privKey: string;
   private rpcInterface: string;
   private account: AccountData | Error;
 
@@ -25,11 +37,16 @@ class LavaSDK {
 
   private activeConsumerSession: ConsumerSessionWithProvider | Error;
 
-  constructor(endpoint: string, chainID: string, rpcInterface: string, privKey:string) {
+  constructor(
+    endpoint: string,
+    chainID: string,
+    rpcInterface: string,
+    privKey: string
+  ) {
     this.endpoint = endpoint;
     this.chainID = chainID;
     this.rpcInterface = rpcInterface;
-    this.privKey=privKey
+    this.privKey = privKey;
     this.account = SDKErrors.errAccountNotInitialized;
     this.queryService = SDKErrors.errQueryServiceNotInitialized;
     this.epochQueryService = SDKErrors.errEpochQueryServiceNotInitialized;
@@ -65,61 +82,64 @@ class LavaSDK {
     this.tendermintClient = tmClient;
   }
 
-  async sendRelay(): Promise<RelayReply>{
-   // Fetch consumer session
-   const consumerSession = await this.getConsumerSession()
+  async sendRelay(): Promise<RelayReply> {
+    // Fetch consumer session
+    const consumerSession = await this.getConsumerSession();
 
-   // Create relay client
-   const client = new RelayerClient('http://localhost:8081', null, null)
+    // Create relay client
+    const client = new RelayerClient("http://localhost:8081", null, null);
 
-   // Create request
-   const request = new RelayRequest
-   request.setChainid(this.chainID)
-   request.setConnectionType("GET")
-   request.setApiUrl("/blocks/latest")
-   request.setSessionId(consumerSession.SessionId)
-   request.setCuSum(10)
-   request.setSig(new Uint8Array())
-   request.setData(new Uint8Array())
-   request.setProvider(consumerSession.Endpoint.Addr)
-   request.setBlockHeight(consumerSession.PairingEpoch)
-   request.setRelayNum(consumerSession.RelayNum+1)
-   request.setRequestBlock(0)
-   request.setUnresponsiveProviders(new Uint8Array())
+    // Create request
+    const request = new RelayRequest();
+    request.setChainid(this.chainID);
+    request.setConnectionType("GET");
+    request.setApiUrl("/blocks/latest");
+    request.setSessionId(consumerSession.SessionId);
+    request.setCuSum(10);
+    request.setSig(new Uint8Array());
+    request.setData(new Uint8Array());
+    request.setProvider(consumerSession.Endpoint.Addr);
+    request.setBlockHeight(consumerSession.PairingEpoch);
+    request.setRelayNum(consumerSession.RelayNum + 1);
+    request.setRequestBlock(0);
+    request.setUnresponsiveProviders(new Uint8Array());
 
-   // Sign data
-   var enc = new TextEncoder();
-   var jsonMessage = JSON.stringify(request.toObject(),(key, value) => {
-       if (value !== null && value!== 0 && value !== "") return value
-   })
-   const messageReplaced = jsonMessage.replace(/"([^"]+)":/g, '$1:').slice(1, -1).replace(/,/g," ")
-   const encodedMessage = enc.encode(messageReplaced+" ")
-   const hash = sha256(encodedMessage);
+    // Sign data
+    var enc = new TextEncoder();
+    var jsonMessage = JSON.stringify(request.toObject(), (key, value) => {
+      if (value !== null && value !== 0 && value !== "") return value;
+    });
+    const messageReplaced = jsonMessage
+      .replace(/"([^"]+)":/g, "$1:")
+      .slice(1, -1)
+      .replace(/,/g, " ");
+    const encodedMessage = enc.encode(messageReplaced + " ");
+    const hash = sha256(encodedMessage);
 
-   const signedMessage = await this.SignRelay(hash,this.privKey)
+    const signedMessage = await this.SignRelay(hash, this.privKey);
 
-   // Add signature in the request
-   request.setSig(signedMessage)
+    // Add signature in the request
+    request.setSig(signedMessage);
 
-   console.log("Request sent")
+    console.log("Request sent");
 
-   const relayResponse = await client.relay(request, null)
+    const relayResponse = await client.relay(request, null);
 
-   return relayResponse
+    return relayResponse;
   }
 
-  async SignRelay(message:Uint8Array, privKey:string): Promise<Uint8Array>{
-    const sig = await Secp256k1.createSignature(message, fromHex(privKey))
+  async SignRelay(message: Uint8Array, privKey: string): Promise<Uint8Array> {
+    const sig = await Secp256k1.createSignature(message, fromHex(privKey));
 
-    const recovery = sig.recovery
+    const recovery = sig.recovery;
     const r = sig.r();
     const s = sig.s();
-    
+
     // TODO consider adding compression in the signing
     // construct signature
     // <(byte of 27+public key solution)>< padded bytes for signature R><padded bytes for signature S>
-    return Uint8Array.from([27+recovery,...r,...s])
-}
+    return Uint8Array.from([27 + recovery, ...r, ...s]);
+  }
 
   async getConsumerSession(): Promise<SingleConsumerSession> {
     // Check if active session exists

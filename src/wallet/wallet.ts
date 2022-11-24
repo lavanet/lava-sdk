@@ -1,50 +1,53 @@
-import { DirectSecp256k1HdWallet, AccountData} from "@cosmjs/proto-signing";
-import {Secp256k1Wallet} from "@cosmjs/amino"
-import WalletErrors from "./errors"
+import { DirectSecp256k1HdWallet, AccountData } from "@cosmjs/proto-signing";
+import { Secp256k1Wallet } from "@cosmjs/amino";
+import WalletErrors from "./errors";
 import Logger from "../logger/logger";
 import { fromHex } from "@cosmjs/encoding";
 
 // prefix for lava accounts
-const lavaPrefix = "lava@"
+const lavaPrefix = "lava@";
 
-class LavaWallet{
-    private wallet: Secp256k1Wallet| Error;
-    private privKey:string;
+class LavaWallet {
+  private wallet: Secp256k1Wallet | Error;
+  private privKey: string;
 
-    constructor(privKey:string){
-        this.privKey = privKey;
-        this.wallet = WalletErrors.errWalletNotInitialized;
+  constructor(privKey: string) {
+    this.privKey = privKey;
+    this.wallet = WalletErrors.errWalletNotInitialized;
+  }
+
+  // Initialize client
+  async init() {
+    try {
+      this.wallet = await Secp256k1Wallet.fromKey(
+        fromHex(this.privKey),
+        lavaPrefix
+      );
+    } catch (err) {
+      throw WalletErrors.errInvalidPrivateKey;
+    }
+  }
+
+  // Get consumer account from the wallet
+  async getConsumerAccount(): Promise<AccountData> {
+    // check if wallet was initialized
+    if (this.wallet instanceof Error) {
+      throw new Error(this.wallet.message);
     }
 
-    // Initialize client
-    async init(){
-        try{
-            this.wallet = await Secp256k1Wallet.fromKey(fromHex(this.privKey), lavaPrefix );
-        }catch(err){
-            throw WalletErrors.errInvalidPrivateKey
-        } 
-    }
+    // Return zero account from wallet
+    var accountZero = (await this.wallet.getAccounts())[0];
 
-    // Get consumer account from the wallet
-    async getConsumerAccount(): Promise<AccountData> {
-        // check if wallet was initialized
-        if (this.wallet instanceof Error) {
-            throw new Error(this.wallet.message)
-        };
+    return accountZero;
+  }
 
-        // Return zero account from wallet
-        var accountZero = (await this.wallet.getAccounts())[0];
-        
-        return accountZero;
-    }
-
-    // Print account details
-    printAccount(AccountData: AccountData) {
-        Logger.info("INFO:")
-        Logger.info("Address: " + AccountData.address)
-        Logger.info("Public key: " + AccountData.pubkey)
-        Logger.emptyLine()
-    }
+  // Print account details
+  printAccount(AccountData: AccountData) {
+    Logger.info("INFO:");
+    Logger.info("Address: " + AccountData.address);
+    Logger.info("Public key: " + AccountData.pubkey);
+    Logger.emptyLine();
+  }
 }
 
-export default LavaWallet
+export default LavaWallet;

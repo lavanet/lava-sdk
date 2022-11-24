@@ -1,3 +1,3 @@
 class consumerSessionManager {}
 
-export default consumerSessionManager
+export default consumerSessionManager;
