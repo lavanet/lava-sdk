@@ -39,18 +39,24 @@ export class SingleConsumerSession{
     constructor(
         cuSum: number,
         latestRelayCu: number,
-        sessionId: number,
         relayNum: number,
         endpoint: Endpoint,
         pairingEpoch: number
     ){
         this.CuSum=cuSum
         this.LatestRelayCu=latestRelayCu
-        this.SessionId=sessionId
+        this.SessionId=this.getNewSessionId()
         this.RelayNum=relayNum
         this.Endpoint=endpoint
         this.PairingEpoch=pairingEpoch
     }   
+
+    private getNewSessionId(): number {
+        // TODO for production need better session generator
+        const min = 100000
+        const max = 1000000000000
+        return Math.floor( Math.random() * (max - min) + min);
+    }
 }
 
 export class Endpoint{

@@ -1,4 +1,4 @@
-class ConsumerErrors{
+class SDKErrors{
     static errAccountNotInitialized: Error = new Error(
         "Account was not initialized"
     )
@@ -16,4 +16,4 @@ class ConsumerErrors{
     )
 }
 
-export default ConsumerErrors
+export default SDKErrors
