@@ -1,4 +1,4 @@
-import {createWallet} from "./wallet";
+import { createWallet } from "./wallet";
 import ClientErrors from "./errors";
 
 describe("Fetching account from private key", () => {
@@ -25,7 +25,7 @@ describe("Fetching account from private key", () => {
 
     // Wallet was never initialized, expect error
     try {
-        // Create lava wallet instance
+      // Create lava wallet instance
       await createWallet(privateKey);
     } catch (err: any) {
       expect(err.message).toBe(ClientErrors.errInvalidPrivateKey.message);

@@ -8,7 +8,7 @@
 import Logger from "../logger/logger";
 
 // Fetch from package
-import {createLavaSDK} from "../sdk/sdk";
+import { createLavaSDK } from "../sdk/sdk";
 
 async function run() {
   const privKey =
@@ -19,7 +19,7 @@ async function run() {
 
   // Create lavaSDK
   const lavaSDK = await createLavaSDK(endpoint, chainID, rpcInterface, privKey);
-  
+
   // Send relay
   const response = await lavaSDK.sendRelay();
 

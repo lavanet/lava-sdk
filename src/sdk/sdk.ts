@@ -1,17 +1,17 @@
-import {createWallet} from "../wallet/wallet";
+import { createWallet } from "../wallet/wallet";
 import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
-import Relayer from "../relayer/relayer"
-import {RelayReply } from "../proto/proto/relay_pb";
-import {StateTracker, createStateTracker} from "../stateTracker/stateTracker"
+import Relayer from "../relayer/relayer";
+import { RelayReply } from "../proto/proto/relay_pb";
+import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
 
 class LavaSDK {
-  private lavaEndpoint:string
+  private lavaEndpoint: string;
   private privKey: string;
-  private chainID:string;
+  private chainID: string;
   private rpcInterface: string;
 
-  private stateTracker: StateTracker | Error
+  private stateTracker: StateTracker | Error;
   private account: AccountData | Error;
   private relayer: Relayer | Error;
 
@@ -24,11 +24,11 @@ class LavaSDK {
     this.chainID = chainID;
     this.rpcInterface = rpcInterface;
     this.privKey = privKey;
-    this.lavaEndpoint = endpoint
+    this.lavaEndpoint = endpoint;
 
     this.account = SDKErrors.errAccountNotInitialized;
-    this.relayer = SDKErrors.errRelayerServiceNotInitialized
-    this.stateTracker = SDKErrors.errStateTrackerServiceNotInitialized
+    this.relayer = SDKErrors.errRelayerServiceNotInitialized;
+    this.stateTracker = SDKErrors.errStateTrackerServiceNotInitialized;
   }
 
   async init() {
@@ -46,8 +46,7 @@ class LavaSDK {
     // Initialize state tracker
 
     // Create state stracker
-    this.stateTracker = await createStateTracker(this.lavaEndpoint)
-
+    this.stateTracker = await createStateTracker(this.lavaEndpoint);
 
     // Initialize relayer
 
@@ -56,22 +55,22 @@ class LavaSDK {
       this.account,
       this.chainID,
       this.rpcInterface
-    )
+    );
 
     // Create relayer
-    this.relayer = new Relayer(consumerSession, this.chainID, this.privKey)
+    this.relayer = new Relayer(consumerSession, this.chainID, this.privKey);
   }
 
-  async sendRelay(): Promise<RelayReply>{
-     // Check if account was initialized
-     if (this.relayer instanceof Error) {
+  async sendRelay(): Promise<RelayReply> {
+    // Check if account was initialized
+    if (this.relayer instanceof Error) {
       throw SDKErrors.errRelayerServiceNotInitialized;
     }
 
     // Send relay
-    const relayResponse = await this.relayer.sendRelay()
+    const relayResponse = await this.relayer.sendRelay();
 
-    return relayResponse
+    return relayResponse;
   }
 }
 

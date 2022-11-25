@@ -45,7 +45,7 @@ export class StateTracker {
   async getConsumerSession(
     account: AccountData,
     chainID: string,
-    rpcInterface:string,
+    rpcInterface: string
   ): Promise<SingleConsumerSession> {
     // Fetch pairing
     const pairing = await this.getPairing(account, chainID, rpcInterface);
@@ -61,7 +61,7 @@ export class StateTracker {
   private async getPairing(
     account: AccountData,
     chainID: string,
-    rpcInterface:string
+    rpcInterface: string
   ): Promise<Array<ConsumerSessionWithProvider>> {
     try {
       if (this.tendermintClient instanceof Error) {
@@ -224,9 +224,9 @@ export class StateTracker {
 }
 
 export async function createStateTracker(endpoint: string) {
-    const stateTracker = new StateTracker()
+  const stateTracker = new StateTracker();
 
-    await stateTracker.init(endpoint)
+  await stateTracker.init(endpoint);
 
-    return stateTracker
+  return stateTracker;
 }

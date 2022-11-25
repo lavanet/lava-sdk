@@ -98,4 +98,4 @@ class Relayer {
   }
 }
 
-export default Relayer
+export default Relayer;
