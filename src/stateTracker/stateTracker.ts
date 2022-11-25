@@ -134,7 +134,7 @@ export class StateTracker {
           new SingleConsumerSession(
             0,
             0,
-            0,
+            1,
             relevantEndpoints[0],
             (epochNumber - 1) * 20
           ),
