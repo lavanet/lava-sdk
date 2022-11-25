@@ -19,15 +19,13 @@ import {
   SingleConsumerSession,
 } from "../types/types";
 import Long from "long";
-import { Secp256k1, sha256 } from "@cosmjs/crypto";
-import { fromHex } from "@cosmjs/encoding";
-import { RelayerClient } from "../proto/proto/RelayServiceClientPb";
-import { RelayRequest, RelayReply } from "../proto/proto/relay_pb";
+import Relayer from "../relayer/relayer"
+import {RelayReply } from "../proto/proto/relay_pb";
 
 class LavaSDK {
-  private chainID: string;
   private endpoint: string;
   private privKey: string;
+  private chainID:string;
   private rpcInterface: string;
   private account: AccountData | Error;
 
@@ -35,7 +33,7 @@ class LavaSDK {
   private epochQueryService: EpochQueryService | Error;
   private tendermintClient: Tendermint34Client | Error;
 
-  private activeConsumerSession: ConsumerSessionWithProvider | Error;
+  private relayer: Relayer | Error;
 
   constructor(
     endpoint: string,
@@ -51,12 +49,12 @@ class LavaSDK {
     this.queryService = SDKErrors.errQueryServiceNotInitialized;
     this.epochQueryService = SDKErrors.errEpochQueryServiceNotInitialized;
     this.tendermintClient = SDKErrors.errTendermintClientServiceNotInitialized;
-    this.activeConsumerSession =
-      SDKErrors.errActiveConsumerSessionNotInitialized;
+    this.relayer = SDKErrors.errRelayerServiceNotInitialized
   }
 
-  // Initialize consumer
   async init() {
+    // Initialize wallet
+
     // Create wallet
     const wallet = await createWallet(this.privKey);
 
@@ -75,82 +73,37 @@ class LavaSDK {
     this.queryService = new QueryClientImpl(rpcClient);
     this.epochQueryService = new EpochQueryService(rpcClient);
     this.tendermintClient = tmClient;
+
+    // Initialize relayer
+
+    // Get current consumer session
+    const consumerSession = await this.getConsumerSession()
+
+    // Create relayer
+    this.relayer = new Relayer(consumerSession, this.chainID, this.privKey)
   }
 
-  async sendRelay(): Promise<RelayReply> {
-    // Fetch consumer session
-    const consumerSession = await this.getConsumerSession();
+  async sendRelay(): Promise<RelayReply>{
+     // Check if account was initialized
+     if (this.relayer instanceof Error) {
+      throw SDKErrors.errRelayerServiceNotInitialized;
+    }
 
-    // Create relay client
-    const client = new RelayerClient("http://localhost:8081", null, null);
+    // Send relay
+    const relayResponse = await this.relayer.sendRelay()
 
-    // Create request
-    const request = new RelayRequest();
-    request.setChainid(this.chainID);
-    request.setConnectionType("GET");
-    request.setApiUrl("/blocks/latest");
-    request.setSessionId(consumerSession.SessionId);
-    request.setCuSum(10);
-    request.setSig(new Uint8Array());
-    request.setData(new Uint8Array());
-    request.setProvider(consumerSession.Endpoint.Addr);
-    request.setBlockHeight(consumerSession.PairingEpoch);
-    request.setRelayNum(consumerSession.RelayNum + 1);
-    request.setRequestBlock(0);
-    request.setUnresponsiveProviders(new Uint8Array());
-
-    // Sign data
-    var enc = new TextEncoder();
-    var jsonMessage = JSON.stringify(request.toObject(), (key, value) => {
-      if (value !== null && value !== 0 && value !== "") return value;
-    });
-    const messageReplaced = jsonMessage
-      .replace(/"([^"]+)":/g, "$1:")
-      .slice(1, -1)
-      .replace(/,/g, " ");
-    const encodedMessage = enc.encode(messageReplaced + " ");
-    const hash = sha256(encodedMessage);
-
-    const signedMessage = await this.SignRelay(hash, this.privKey);
-
-    // Add signature in the request
-    request.setSig(signedMessage);
-
-    console.log("Request sent");
-
-    const relayResponse = await client.relay(request, null);
-
-    return relayResponse;
-  }
-
-  async SignRelay(message: Uint8Array, privKey: string): Promise<Uint8Array> {
-    const sig = await Secp256k1.createSignature(message, fromHex(privKey));
-
-    const recovery = sig.recovery;
-    const r = sig.r();
-    const s = sig.s();
-
-    // TODO consider adding compression in the signing
-    // construct signature
-    // <(byte of 27+public key solution)>< padded bytes for signature R><padded bytes for signature S>
-    return Uint8Array.from([27 + recovery, ...r, ...s]);
+    return relayResponse
   }
 
   async getConsumerSession(): Promise<SingleConsumerSession> {
-    // Check if active session exists
-    if (this.activeConsumerSession instanceof Error) {
       // Fetch pairing
       const pairing = await this.getPairing();
 
       // Pick provider
       const consumerSession = this.pickRandomProvider(pairing);
 
-      // Set active session
-      this.activeConsumerSession = consumerSession;
-    }
-
-    // Return active consumer session
-    return this.activeConsumerSession.Session;
+      // Return session
+      return consumerSession.Session;
   }
 
   // Get pairing list for specified wallet in current epoch

@@ -11,8 +11,8 @@ class SDKErrors {
   static errTendermintClientServiceNotInitialized: Error = new Error(
     "Tendermint client service was not initialized"
   );
-  static errActiveConsumerSessionNotInitialized: Error = new Error(
-    "Active consumer session was not initialized"
+  static errRelayerServiceNotInitialized: Error = new Error(
+    "Relayer service was not initialized"
   );
 }
 
