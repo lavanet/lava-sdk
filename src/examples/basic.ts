@@ -8,21 +8,18 @@
 import Logger from "../logger/logger";
 
 // Fetch from package
-import LavaSDk from "../sdk/sdk";
+import {createLavaSDK} from "../sdk/sdk";
 
 async function run() {
   const privKey =
-    "84a3a0b14484df39907303a7c575937de123b7b2d90d789f57121d273f1a23fd";
+    "bf60816af563aff5ae4f211214c5f4214084940b80e7044f2f3eeb6f3eea22f5";
   const endpoint = "localhost:26657";
   const chainID = "LAV1";
   const rpcInterface = "rest";
 
   // Create lavaSDK
-  const lavaSDK = new LavaSDk(endpoint, chainID, rpcInterface, privKey);
-
-  // Initialize lavaSDK
-  await lavaSDK.init();
-
+  const lavaSDK = await createLavaSDK(endpoint, chainID, rpcInterface, privKey);
+  
   // Send relay
   const response = await lavaSDK.sendRelay();
 

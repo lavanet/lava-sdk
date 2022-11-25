@@ -50,4 +50,12 @@ class LavaWallet {
   }
 }
 
-export default LavaWallet;
+export async function createWallet(privKey: string): Promise<LavaWallet> {
+  // Create lavaSDK
+  const wallet = new LavaWallet(privKey);
+
+  // Initialize wallet
+  await wallet.init();
+
+  return wallet;
+}

@@ -1,4 +1,4 @@
-import LavaWallet from "../wallet/wallet";
+import {createWallet} from "../wallet/wallet";
 import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
@@ -57,15 +57,10 @@ class LavaSDK {
 
   // Initialize consumer
   async init() {
-    // Initialize account
-
     // Create wallet
-    const wallet = new LavaWallet(this.privKey);
+    const wallet = await createWallet(this.privKey);
 
-    // Initialize wallet
-    await wallet.init();
-
-    // get account from wallet
+    // Get account from wallet
     this.account = await wallet.getConsumerAccount();
 
     // print account detail
@@ -160,96 +155,101 @@ class LavaSDK {
 
   // Get pairing list for specified wallet in current epoch
   async getPairing(): Promise<Array<ConsumerSessionWithProvider>> {
-    // Check if account was initialized
-    if (this.account instanceof Error) {
-      throw SDKErrors.errAccountNotInitialized;
-    }
-
-    if (this.tendermintClient instanceof Error) {
-      throw SDKErrors.errTendermintClientServiceNotInitialized;
-    }
-
-    // Create pairing request for getPairing method
-    const pairingRequest = {
-      chainID: this.chainID,
-      client: this.account.address,
-    };
-
-    // Get pairing from the chain
-    const pairingResponse = await this.getPairingFromChain(pairingRequest);
-
-    // Extract providers from pairing response
-    const providers = pairingResponse.providers;
-
-    // Initialize ConsumerSessionWithProvider array
-    const pairing: Array<ConsumerSessionWithProvider> = [];
-
-    // Fetch latest block
-    const blockResponse = await this.tendermintClient.block();
-
-    // Fetch latest block number
-    const latestBlockNumber = blockResponse.block.header.height;
-
-    // fetch epoch size
-    const epochNumber = await this.getEpochNumber(latestBlockNumber);
-
-    // create request for getting userEntity
-    const userEntityRequest = {
-      address: this.account.address,
-      chainID: this.chainID,
-      block: new Long(latestBlockNumber),
-    };
-
-    // fetch max compute units
-    const maxcu = await this.getMaxCuForUser(userEntityRequest);
-
-    //Iterate over providers to populate pairing list
-    for (let provider of providers) {
-      // Skip providers with no endpoints
-      if (provider.endpoints.length == 0) {
-        continue;
+    try {
+      // Check if account was initialized
+      if (this.account instanceof Error) {
+        throw SDKErrors.errAccountNotInitialized;
       }
 
-      // Initialize relevantEndpoints array
-      let relevantEndpoints: Array<Endpoint> = [];
+      if (this.tendermintClient instanceof Error) {
+        throw SDKErrors.errTendermintClientServiceNotInitialized;
+      }
 
-      //only take into account endpoints that use the same api interface
-      for (let endpoint of provider.endpoints) {
-        if (endpoint.useType == this.rpcInterface) {
-          const convertedEndpoint = new Endpoint(endpoint.iPPORT, true, 0);
-          relevantEndpoints.push(convertedEndpoint);
+      // Create pairing request for getPairing method
+      const pairingRequest = {
+        chainID: this.chainID,
+        client: this.account.address,
+      };
+
+      // Get pairing from the chain
+      const pairingResponse = await this.getPairingFromChain(pairingRequest);
+
+      // Extract providers from pairing response
+      const providers = pairingResponse.providers;
+
+      // Initialize ConsumerSessionWithProvider array
+      const pairing: Array<ConsumerSessionWithProvider> = [];
+
+      // Fetch latest block
+      const blockResponse = await this.tendermintClient.block();
+
+      // Fetch latest block number
+      const latestBlockNumber = blockResponse.block.header.height;
+
+      // fetch epoch size
+      const epochNumber = await this.getEpochNumber(latestBlockNumber);
+
+      // create request for getting userEntity
+      const userEntityRequest = {
+        address: this.account.address,
+        chainID: this.chainID,
+        block: new Long(latestBlockNumber),
+      };
+
+      // fetch max compute units
+      const maxcu = await this.getMaxCuForUser(userEntityRequest);
+
+      //Iterate over providers to populate pairing list
+      for (let provider of providers) {
+        // Skip providers with no endpoints
+        if (provider.endpoints.length == 0) {
+          continue;
         }
+
+        // Initialize relevantEndpoints array
+        let relevantEndpoints: Array<Endpoint> = [];
+
+        //only take into account endpoints that use the same api interface
+        for (let endpoint of provider.endpoints) {
+          if (endpoint.useType == this.rpcInterface) {
+            const convertedEndpoint = new Endpoint(endpoint.iPPORT, true, 0);
+            relevantEndpoints.push(convertedEndpoint);
+          }
+        }
+
+        // Skip providers with no relevant endpoints
+        if (relevantEndpoints.length == 0) {
+          continue;
+        }
+
+        // Create a new pairing object
+
+        // TODO when initializing relevantEndpoints it needs to check if valid
+        const newPairing = new ConsumerSessionWithProvider(
+          this.account.address,
+          relevantEndpoints,
+          new SingleConsumerSession(
+            0,
+            0,
+            0,
+            relevantEndpoints[0],
+            (epochNumber - 1) * 20
+          ),
+          maxcu,
+          0,
+          false,
+          epochNumber
+        );
+
+        // Add newly created pairing in the pairing list
+        pairing.push(newPairing);
       }
 
-      // Skip providers with no relevant endpoints
-      if (relevantEndpoints.length == 0) {
-        continue;
-      }
-
-      // Create a new pairing object
-
-      // TODO when initializing relevantEndpoints it needs to check if valid
-      const newPairing = new ConsumerSessionWithProvider(
-        this.account.address,
-        relevantEndpoints,
-        new SingleConsumerSession(
-          0,
-          0,
-          0,
-          relevantEndpoints[0],
-          (epochNumber - 1) * 20
-        ),
-        maxcu,
-        0,
-        false,
-        epochNumber
-      );
-
-      // Add newly created pairing in the pairing list
-      pairing.push(newPairing);
+      return pairing;
+    } catch (err) {
+      console.log(err);
+      throw err;
     }
-
-    return pairing;
   }
 
   pickRandomProvider(
@@ -320,4 +320,17 @@ class LavaSDK {
   }
 }
 
-export default LavaSDK;
+export async function createLavaSDK(
+  endpoint: string,
+  chainID: string,
+  rpcInterface: string,
+  privKey: string
+): Promise<LavaSDK> {
+  // Create lavaSDK
+  const lavaSDK = new LavaSDK(endpoint, chainID, rpcInterface, privKey);
+
+  // Initialize lavaSDK
+  await lavaSDK.init();
+
+  return lavaSDK;
+}
