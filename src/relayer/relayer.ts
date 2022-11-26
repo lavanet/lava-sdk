@@ -26,22 +26,34 @@ class Relayer {
     this.activeConsumerSession = consumerSession;
   }
 
-  async sendRelay(): Promise<RelayReply> {
+  async sendRelay(method: string, params: string[]): Promise<RelayReply> {
+    const stringifyMethod = JSON.stringify(method);
+    const stringifyParam = JSON.stringify(params);
+
     // Create relay client
     const client = new RelayerClient(this.relayerGrpcWeb, null, null);
 
     // Get consumer session
     const consumerSession = this.activeConsumerSession;
 
+    var enc = new TextEncoder();
+
+    const data =
+      '{"jsonrpc": "2.0", "id": 1, "method": ' +
+      stringifyMethod +
+      ', "params": ' +
+      stringifyParam +
+      "}";
+
     // Create request
     const request = new RelayRequest();
     request.setChainid(this.chainID);
-    request.setConnectionType("GET");
-    request.setApiUrl("/blocks/latest");
+    request.setConnectionType("");
+    request.setApiUrl("");
     request.setSessionId(consumerSession.SessionId);
     request.setCuSum(10);
     request.setSig(new Uint8Array());
-    request.setData(new Uint8Array());
+    request.setData(data);
     request.setProvider(consumerSession.Endpoint.Addr);
     request.setBlockHeight(consumerSession.PairingEpoch);
     request.setRelayNum(consumerSession.RelayNum);
@@ -53,7 +65,7 @@ class Relayer {
 
     // Add signature in the request
     request.setSig(signedMessage);
-
+    request.setData(enc.encode(data));
     const relayResponse = await client.relay(request, null);
 
     return relayResponse;
@@ -86,9 +98,9 @@ class Relayer {
     });
 
     const messageReplaced = jsonMessage
-      .replace(/"([^"]+)":/g, "$1:")
-      .slice(1, -1)
-      .replace(/,/g, " ");
+      .replace(/,"/g, ' "')
+      .replace(/"(\w+)"\s*:/g, "$1:")
+      .slice(1, -1);
 
     const encodedMessage = enc.encode(messageReplaced + " ");
 

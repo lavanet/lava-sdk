@@ -68,7 +68,7 @@ class LavaSDK {
     }
 
     // Send relay
-    const relayResponse = await this.relayer.sendRelay();
+    const relayResponse = await this.relayer.sendRelay("status", []);
 
     return relayResponse;
   }

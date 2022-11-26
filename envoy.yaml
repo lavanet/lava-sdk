@@ -58,4 +58,4 @@ static_resources:
                 address:
                   socket_address:
                     address: host.docker.internal
-                    port_value: 2271
+                    port_value: 2261
