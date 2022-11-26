@@ -61,14 +61,14 @@ class LavaSDK {
     this.relayer = new Relayer(consumerSession, this.chainID, this.privKey);
   }
 
-  async sendRelay(): Promise<RelayReply> {
+  async sendRelay(method: string, params: string[]): Promise<RelayReply> {
     // Check if account was initialized
     if (this.relayer instanceof Error) {
       throw SDKErrors.errRelayerServiceNotInitialized;
     }
 
     // Send relay
-    const relayResponse = await this.relayer.sendRelay("status", []);
+    const relayResponse = await this.relayer.sendRelay(method, params);
 
     return relayResponse;
   }

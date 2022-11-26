@@ -50,7 +50,7 @@ class Relayer {
     request.setChainid(this.chainID);
     request.setConnectionType("");
     request.setApiUrl("");
-    request.setSessionId(consumerSession.SessionId);
+    request.setSessionId(consumerSession.getNewSessionId()); //Every time generate new session
     request.setCuSum(10);
     request.setSig(new Uint8Array());
     request.setData(data);

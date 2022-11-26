@@ -21,11 +21,13 @@ async function run() {
   const lavaSDK = await createLavaSDK(endpoint, chainID, rpcInterface, privKey);
 
   // Send relay
-  const response = await lavaSDK.sendRelay();
+  const statusResponse = await lavaSDK.sendRelay("status", []);
+  const blockResponse = await lavaSDK.sendRelay("block", ["5"]);
 
   // Print relay
   var dec = new TextDecoder();
-  console.log("Response", dec.decode(response.getData_asU8()));
+  console.log("StatusResponse: ", dec.decode(statusResponse.getData_asU8()));
+  console.log("BlockResponse: ", dec.decode(blockResponse.getData_asU8()));
 }
 
 run()

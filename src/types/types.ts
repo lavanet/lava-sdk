@@ -49,7 +49,7 @@ export class SingleConsumerSession {
     this.PairingEpoch = pairingEpoch;
   }
 
-  private getNewSessionId(): number {
+  getNewSessionId(): number {
     // TODO for production need better session generator
     const min = 100000;
     const max = 1000000000000;
