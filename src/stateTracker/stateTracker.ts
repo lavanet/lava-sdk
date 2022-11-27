@@ -103,17 +103,17 @@ export class StateTracker {
       const maxcu = await this.getMaxCuForUser(userEntityRequest);
 
       //Iterate over providers to populate pairing list
-      for (let provider of providers) {
+      for (const provider of providers) {
         // Skip providers with no endpoints
         if (provider.endpoints.length == 0) {
           continue;
         }
 
         // Initialize relevantEndpoints array
-        let relevantEndpoints: Array<Endpoint> = [];
+        const relevantEndpoints: Array<Endpoint> = [];
 
         //only take into account endpoints that use the same api interface
-        for (let endpoint of provider.endpoints) {
+        for (const endpoint of provider.endpoints) {
           if (endpoint.useType == rpcInterface) {
             const convertedEndpoint = new Endpoint(endpoint.iPPORT, true, 0);
             relevantEndpoints.push(convertedEndpoint);
@@ -159,7 +159,7 @@ export class StateTracker {
     providers: Array<ConsumerSessionWithProvider>
   ): ConsumerSessionWithProvider {
     // Remove providers which does not match criteria
-    let validProviders = providers.filter((item) => item.MaxComputeUnits > 0);
+    const validProviders = providers.filter((item) => item.MaxComputeUnits > 0);
 
     // TODO check with Ran how to know if provider is blocked?
 

@@ -27,6 +27,8 @@ describe("Fetching account from private key", () => {
     try {
       // Create lava wallet instance
       await createWallet(privateKey);
+
+      // eslint-disable-next-line
     } catch (err: any) {
       expect(err.message).toBe(ClientErrors.errInvalidPrivateKey.message);
     }

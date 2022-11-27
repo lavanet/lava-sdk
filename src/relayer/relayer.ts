@@ -36,7 +36,7 @@ class Relayer {
     // Get consumer session
     const consumerSession = this.activeConsumerSession;
 
-    var enc = new TextEncoder();
+    const enc = new TextEncoder();
 
     const data =
       '{"jsonrpc": "2.0", "id": 1, "method": ' +
@@ -91,9 +91,9 @@ class Relayer {
   }
 
   private prepareRequest(request: RelayRequest): Uint8Array {
-    var enc = new TextEncoder();
+    const enc = new TextEncoder();
 
-    var jsonMessage = JSON.stringify(request.toObject(), (key, value) => {
+    const jsonMessage = JSON.stringify(request.toObject(), (key, value) => {
       if (value !== null && value !== 0 && value !== "") return value;
     });
 
