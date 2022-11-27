@@ -72,8 +72,8 @@ class LavaSDK {
       throw SDKErrors.errStateTrackerServiceNotInitialized;
     }
 
-     // Check if state tracker was initialized
-     if (this.account instanceof Error) {
+    // Check if state tracker was initialized
+    if (this.account instanceof Error) {
       throw SDKErrors.errAccountNotInitialized;
     }
 
@@ -86,7 +86,7 @@ class LavaSDK {
       this.rpcInterface
     );
 
-    this.relayer.setConsumerSession(consumerSession)
+    this.relayer.setConsumerSession(consumerSession);
 
     // Send relay
     const relayResponse = await this.relayer.sendRelay(method, params);

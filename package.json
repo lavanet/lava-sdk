@@ -12,7 +12,8 @@
     "protoc": "./scripts/protoc.sh",
     "server": "http-server dist/ -c-1",
     "test": "jest ./src",
-    "example": "node ./bin/examples/basic.js"
+    "example": "node ./bin/examples/basic.js",
+    "prettier": "prettier --write ."
   },
   "bin": {
     "lava-sdk": "./bin/main.js"
@@ -63,6 +64,7 @@
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
     "os": "^0.1.2",
+    "prettier": "^2.8.0",
     "process": "^0.11.10",
     "rxjs": "^7.5.7",
     "ts-jest": "^29.0.3",

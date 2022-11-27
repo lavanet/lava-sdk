@@ -1,0 +1,14 @@
+# Exclude everything except src folder without proto and codec
+node_modules
+bin
+yarn.lock
+dist
+.vscode
+.idea
+src/codec
+src/proto
+
+*.json
+*.yaml
+*.js
+*.md
