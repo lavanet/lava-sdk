@@ -12,10 +12,10 @@ import { createLavaSDK } from "../sdk/sdk";
 
 async function run() {
   const privKey =
-    "6f8dabc7ad64dd0ea89f50bf3f0d38330002720af16ed85db231fe3c7aae7d0c";
+    "1a0023826ce81e7fb66c1e6cb7d9e61329a47b72480ebcfd5e902b5e7c6c3090";
   const endpoint = "localhost:26657";
   const chainID = "LAV1";
-  const rpcInterface = "rest";
+  const rpcInterface = "tendermintrpc";
 
   // Create lavaSDK
   const lavaSDK = await createLavaSDK(endpoint, chainID, rpcInterface, privKey);

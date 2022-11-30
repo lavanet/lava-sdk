@@ -27,6 +27,7 @@ export class ConsumerSessionWithProvider {
 }
 
 export class SingleConsumerSession {
+  Account: string;
   CuSum: number;
   LatestRelayCu: number;
   SessionId: number;
@@ -39,7 +40,8 @@ export class SingleConsumerSession {
     latestRelayCu: number,
     relayNum: number,
     endpoint: Endpoint,
-    pairingEpoch: number
+    pairingEpoch: number,
+    account: string,
   ) {
     this.CuSum = cuSum;
     this.LatestRelayCu = latestRelayCu;
@@ -47,6 +49,7 @@ export class SingleConsumerSession {
     this.RelayNum = relayNum;
     this.Endpoint = endpoint;
     this.PairingEpoch = pairingEpoch;
+    this.Account = account;
   }
 
   getNewSessionId(): number {

@@ -54,7 +54,7 @@ class Relayer {
     request.setCuSum(10);
     request.setSig(new Uint8Array());
     request.setData(data);
-    request.setProvider(consumerSession.Endpoint.Addr);
+    request.setProvider(consumerSession.Account);
     request.setBlockHeight(consumerSession.PairingEpoch);
     request.setRelayNum(consumerSession.RelayNum);
     request.setRequestBlock(0);
