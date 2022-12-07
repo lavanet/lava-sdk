@@ -27,8 +27,8 @@ describe("Fetching account from private key", () => {
     try {
       // Create lava wallet instance
       await createWallet(privateKey);
-    } catch (err: any) {
-      expect(err.message).toBe(ClientErrors.errInvalidPrivateKey.message);
+    } catch (err: unknown) {
+      expect(err).toBe(ClientErrors.errInvalidPrivateKey);
     }
   });
 });

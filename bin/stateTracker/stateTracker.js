@@ -81,15 +81,15 @@ class StateTracker {
                 // fetch max compute units
                 const maxcu = yield this.getMaxCuForUser(userEntityRequest);
                 //Iterate over providers to populate pairing list
-                for (let provider of providers) {
+                for (const provider of providers) {
                     // Skip providers with no endpoints
                     if (provider.endpoints.length == 0) {
                         continue;
                     }
                     // Initialize relevantEndpoints array
-                    let relevantEndpoints = [];
+                    const relevantEndpoints = [];
                     //only take into account endpoints that use the same api interface
-                    for (let endpoint of provider.endpoints) {
+                    for (const endpoint of provider.endpoints) {
                         if (endpoint.useType == rpcInterface) {
                             const convertedEndpoint = new types_1.Endpoint(endpoint.iPPORT, true, 0);
                             relevantEndpoints.push(convertedEndpoint);
@@ -115,7 +115,7 @@ class StateTracker {
     }
     pickRandomProvider(providers) {
         // Remove providers which does not match criteria
-        let validProviders = providers.filter((item) => item.MaxComputeUnits > 0);
+        const validProviders = providers.filter((item) => item.MaxComputeUnits > 0);
         // TODO check with Ran how to know if provider is blocked?
         // Pick random provider
         const random = Math.floor(Math.random() * validProviders.length);

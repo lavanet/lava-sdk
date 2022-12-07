@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chalk_1 = __importDefault(require("chalk"));
-const util_1 = __importDefault(require("util"));
 class Logger {
     static info(s) {
         console.log(s);
     }
+    // eslint-disable-next-line
     static deepInfo(s) {
-        console.log(util_1.default.inspect(s, false, null, true));
+        console.log(s);
     }
     static title(s) {
         console.log(chalk_1.default.blue(s));

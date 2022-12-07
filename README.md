@@ -2,8 +2,11 @@
 
 A Lava SDK is a complete Lava Network client written in Typescript
 
+### Prerequisites
+1. [Docker](https://docs.docker.com/engine/install/ubuntu/) installed locally
+2. [Node version 16.](https://github.com/nvm-sh/nvm) installed locally
 
-## Installation: 
+## Want to try it locally?
 
 1. clone the directory. 
     
@@ -17,100 +20,67 @@ A Lava SDK is a complete Lava Network client written in Typescript
     yarn install
     ```
 
-3. Compile to javascript, and convert to browser compatible JavaScript. 
-    
-    ```bash
-    yarn build
-    ```
-
-5. Run lava-sdk
+3. Start the proxy
 
     ```bash
-    lava-sdk
-    ```
-    ```md
-    !!! Caution
-    If you are having an error  "lava-sdk: command not found", 
-    execute Yarn link to create an symlink 
-    ```
+    # Build envoy proxy image
+    docker build -t envoy:v1 .
 
-6. Run unit tests
-
-    Lava SDK is extensively covered with unit tests, to run the tests execute:
-    ```bash
-    yarn test
+    # Run envoy proxy image
+    docker run -d --name envoy -p 9901:9901 -p 8081:8081 envoy:v1
     ```
 
-## Prerequisites
-To be able to use Lava SDK, you must first create an account and stake to Lava Network
-
-Download the latest Lava binary from https://github.com/lavanet/lava/releases
-
-1. Create an account
-
-   ```bash
-    lavad keys add user_name_of_your_chosing
-    ```
-2. Found account using Lava Faucet
+4. Start lava network + provider
 
     ```bash
-    curl -X POST -d '{"address": "<account_address>"}' <faucet_address>
-    ```
+    # Clone lava
+    git clone git@github.com:lavanet/lava.git
 
-4. Check account balance
+    # Go to lava folder
+    cd lava
+
+    # Run network
+    ignite chain serve -v -r 2>&1 | grep -e lava_ -e ERR_ -e STARPORT] -e !
+
+    # Init chain commands
+    # Copy init_one_provider_lava.sh in lava/scripts
+    ./scripts/init_one_provider_lava.sh
+    ```
+4. Get staked account
 
     ```bash
-    lavad q bank balances <account_address> --node <lava_node_address>
+    # Fetch private key for staked user
+    lavad keys export user4 --unsafe --unarmored-hex
+
+    # Copy private key in the:
+    # examples/basic.ts -> privKey
     ```
 
-4. Stake
-
-    ```bash
-    lavad tx pairing stake-client <network> <amount> 1 -y --from <account_name> --gas "auto" --node <lava_node_address> --keyring-backend <keyring_backend_name>
-    ```
-
-5. Verify staking
-   
-    ```bash
-    lavad q pairing clients <network> --node <lava_node_address>
-    ```
-    
-## How to use it 
-Current lava-sdk implementation can be used only inside browser
-
-    ```md
-    !!! Caution
-    Before continuing to follow the guide, please make sure you finished all the steps in the Prerequisites section
-    ```
-
-### Example src
-*(Doesn't work now, fix in progress)*
-
-All examples are located in the **./src/examples** folder. Currently we support only running **./src/examples/basic.ts** out of the box. 
-1. Compile ts -> js
+5. Build lava-sdk
 
     ```bash
     yarn build
     ```
 
-2. Run example/basic.ts 
+6. Start lava-sdk
 
     ```bash
-    yarn example
-    ```
-
-### Browser
-
-
-1. Compile ts -> js
-
-    ```bash
-    yarn build
-    ```
-
-2. Run example/basic.ts in browser
-
-    ```bash
+    # Fetch private key for staked user
     yarn server
+
+    # Check the consol you should see 2 responses:
     ```
-3. Check console
+
+### Work in progress
+
+1. Remove Proxy
+
+    This version of the sdk depend on the external proxy, which means that you need to pre-input provider address. Currently we are working on moving proxy logic in the provider but till then you must use init_one_provider_lava.sh or it will not work
+
+2. NodeJs version
+
+    There is an issue with latest nodejs version, we are investigating what it is not working, till then please use node 16.
+
+3. Node support
+
+    This version support only Browser usage, we are working on enabling sdk to work both on Browser and Node

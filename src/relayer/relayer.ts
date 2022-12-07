@@ -1,8 +1,10 @@
 import { SingleConsumerSession } from "../types/types";
 import { Secp256k1, sha256 } from "@cosmjs/crypto";
 import { fromHex } from "@cosmjs/encoding";
-import { RelayerClient } from "../proto/proto/RelayServiceClientPb";
-import { RelayRequest, RelayReply } from "../proto/proto/relay_pb";
+import { grpc } from "@improbable-eng/grpc-web";
+import { RelayRequest, RelayReply } from "../proto/relay_pb";
+import { Relayer as RelayerService } from "../proto/relay_pb_service";
+import transport from "../util/browser";
 
 class Relayer {
   private activeConsumerSession: SingleConsumerSession;
@@ -31,12 +33,11 @@ class Relayer {
     const stringifyParam = JSON.stringify(params);
 
     // Create relay client
-    const client = new RelayerClient(this.relayerGrpcWeb, null, null);
 
     // Get consumer session
     const consumerSession = this.activeConsumerSession;
 
-    var enc = new TextEncoder();
+    const enc = new TextEncoder();
 
     const data =
       '{"jsonrpc": "2.0", "id": 1, "method": ' +
@@ -66,9 +67,21 @@ class Relayer {
     // Add signature in the request
     request.setSig(signedMessage);
     request.setData(enc.encode(data));
-    const relayResponse = await client.relay(request, null);
 
-    return relayResponse;
+    const requestPromise = new Promise<RelayReply>((resolve) => {
+      grpc.invoke(RelayerService.Relay, {
+        request: request,
+        host: this.relayerGrpcWeb,
+        transport: transport,
+        onMessage: (message: RelayReply) => {
+          resolve(message);
+        },
+        onEnd: () => {
+          // Consider printing response status here, it's optional
+        },
+      });
+    });
+    return requestPromise;
   }
 
   // Sign relay request using priv key
@@ -91,9 +104,9 @@ class Relayer {
   }
 
   private prepareRequest(request: RelayRequest): Uint8Array {
-    var enc = new TextEncoder();
+    const enc = new TextEncoder();
 
-    var jsonMessage = JSON.stringify(request.toObject(), (key, value) => {
+    const jsonMessage = JSON.stringify(request.toObject(), (key, value) => {
       if (value !== null && value !== 0 && value !== "") return value;
     });
 

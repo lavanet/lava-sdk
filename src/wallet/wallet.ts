@@ -1,4 +1,4 @@
-import { DirectSecp256k1HdWallet, AccountData } from "@cosmjs/proto-signing";
+import { AccountData } from "@cosmjs/proto-signing";
 import { Secp256k1Wallet } from "@cosmjs/amino";
 import WalletErrors from "./errors";
 import Logger from "../logger/logger";
@@ -36,7 +36,7 @@ class LavaWallet {
     }
 
     // Return zero account from wallet
-    var accountZero = (await this.wallet.getAccounts())[0];
+    const accountZero = (await this.wallet.getAccounts())[0];
 
     return accountZero;
   }

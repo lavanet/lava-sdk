@@ -2,7 +2,7 @@ import { createWallet } from "../wallet/wallet";
 import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
 import Relayer from "../relayer/relayer";
-import { RelayReply } from "../proto/proto/relay_pb";
+import { RelayReply } from "../proto/relay_pb";
 import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
 
 class LavaSDK {
@@ -72,8 +72,8 @@ class LavaSDK {
       throw SDKErrors.errStateTrackerServiceNotInitialized;
     }
 
-     // Check if state tracker was initialized
-     if (this.account instanceof Error) {
+    // Check if state tracker was initialized
+    if (this.account instanceof Error) {
       throw SDKErrors.errAccountNotInitialized;
     }
 
@@ -86,7 +86,7 @@ class LavaSDK {
       this.rpcInterface
     );
 
-    this.relayer.setConsumerSession(consumerSession)
+    this.relayer.setConsumerSession(consumerSession);
 
     // Send relay
     const relayResponse = await this.relayer.sendRelay(method, params);

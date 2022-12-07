@@ -37,7 +37,7 @@ describe("Fetching account from private key", () => {
             yield (0, wallet_1.createWallet)(privateKey);
         }
         catch (err) {
-            expect(err.message).toBe(errors_1.default.errInvalidPrivateKey.message);
+            expect(err).toBe(errors_1.default.errInvalidPrivateKey);
         }
     }));
 });

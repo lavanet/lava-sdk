@@ -24,7 +24,7 @@ const logger_1 = __importDefault(require("../logger/logger"));
 const sdk_1 = require("../sdk/sdk");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "6f8dabc7ad64dd0ea89f50bf3f0d38330002720af16ed85db231fe3c7aae7d0c";
+        const privKey = "94ccef1f3cbff09144358e5339974ed4e29f05e761aee349bb7a539b79cd3221";
         const endpoint = "localhost:26657";
         const chainID = "LAV1";
         const rpcInterface = "rest";
@@ -34,7 +34,7 @@ function run() {
         const statusResponse = yield lavaSDK.sendRelay("status", []);
         const blockResponse = yield lavaSDK.sendRelay("block", ["5"]);
         // Print relay
-        var dec = new TextDecoder();
+        const dec = new TextDecoder();
         console.log("StatusResponse: ", dec.decode(statusResponse.getData_asU8()));
         console.log("BlockResponse: ", dec.decode(blockResponse.getData_asU8()));
     });

@@ -43,7 +43,7 @@ class LavaWallet {
                 throw new Error(this.wallet.message);
             }
             // Return zero account from wallet
-            var accountZero = (yield this.wallet.getAccounts())[0];
+            const accountZero = (yield this.wallet.getAccounts())[0];
             return accountZero;
         });
     }
