@@ -41,7 +41,7 @@ export class SingleConsumerSession {
     relayNum: number,
     endpoint: Endpoint,
     pairingEpoch: number,
-    account: string,
+    account: string
   ) {
     this.CuSum = cuSum;
     this.LatestRelayCu = latestRelayCu;

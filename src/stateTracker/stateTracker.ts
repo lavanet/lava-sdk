@@ -137,7 +137,7 @@ export class StateTracker {
             1,
             relevantEndpoints[0],
             (epochNumber - 1) * 20,
-            provider.address,
+            provider.address
           ),
           maxcu,
           0,
