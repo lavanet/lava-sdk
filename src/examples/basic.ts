@@ -12,7 +12,7 @@ import { createLavaSDK } from "../sdk/sdk";
 
 async function run() {
   const privKey =
-    "1a0023826ce81e7fb66c1e6cb7d9e61329a47b72480ebcfd5e902b5e7c6c3090";
+    "b12aafc9bc603c5c01e4fa9d6f5bd2dcf43e25c44da0502ce8b629bc467c0f82";
   const endpoint = "localhost:26657";
   const chainID = "LAV1";
   const rpcInterface = "tendermintrpc";

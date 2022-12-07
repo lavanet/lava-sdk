@@ -24,10 +24,10 @@ const logger_1 = __importDefault(require("../logger/logger"));
 const sdk_1 = require("../sdk/sdk");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "94ccef1f3cbff09144358e5339974ed4e29f05e761aee349bb7a539b79cd3221";
+        const privKey = "b12aafc9bc603c5c01e4fa9d6f5bd2dcf43e25c44da0502ce8b629bc467c0f82";
         const endpoint = "localhost:26657";
         const chainID = "LAV1";
-        const rpcInterface = "rest";
+        const rpcInterface = "tendermintrpc";
         // Create lavaSDK
         const lavaSDK = yield (0, sdk_1.createLavaSDK)(endpoint, chainID, rpcInterface, privKey);
         // Send relay

@@ -51,7 +51,7 @@ class Relayer {
             request.setCuSum(10);
             request.setSig(new Uint8Array());
             request.setData(data);
-            request.setProvider(consumerSession.Endpoint.Addr);
+            request.setProvider(consumerSession.Account);
             request.setBlockHeight(consumerSession.PairingEpoch);
             request.setRelayNum(consumerSession.RelayNum);
             request.setRequestBlock(0);
@@ -64,7 +64,7 @@ class Relayer {
             const requestPromise = new Promise((resolve) => {
                 grpc_web_1.grpc.invoke(relay_pb_service_1.Relayer.Relay, {
                     request: request,
-                    host: this.relayerGrpcWeb,
+                    host: "https://" + consumerSession.Endpoint.Addr,
                     transport: browser_1.default,
                     onMessage: (message) => {
                         resolve(message);

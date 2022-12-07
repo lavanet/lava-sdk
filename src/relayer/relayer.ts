@@ -11,9 +11,6 @@ class Relayer {
   private chainID: string;
   private privKey: string;
 
-  // For demo use static relayer address
-  private relayerGrpcWeb = "http://localhost:8081";
-
   constructor(
     consumerSession: SingleConsumerSession,
     chainID: string,
@@ -71,7 +68,7 @@ class Relayer {
     const requestPromise = new Promise<RelayReply>((resolve) => {
       grpc.invoke(RelayerService.Relay, {
         request: request,
-        host: this.relayerGrpcWeb,
+        host: "https://"+ consumerSession.Endpoint.Addr,
         transport: transport,
         onMessage: (message: RelayReply) => {
           resolve(message);

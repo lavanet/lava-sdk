@@ -14,13 +14,14 @@ class ConsumerSessionWithProvider {
 }
 exports.ConsumerSessionWithProvider = ConsumerSessionWithProvider;
 class SingleConsumerSession {
-    constructor(cuSum, latestRelayCu, relayNum, endpoint, pairingEpoch) {
+    constructor(cuSum, latestRelayCu, relayNum, endpoint, pairingEpoch, account) {
         this.CuSum = cuSum;
         this.LatestRelayCu = latestRelayCu;
         this.SessionId = this.getNewSessionId();
         this.RelayNum = relayNum;
         this.Endpoint = endpoint;
         this.PairingEpoch = pairingEpoch;
+        this.Account = account;
     }
     getNewSessionId() {
         // TODO for production need better session generator

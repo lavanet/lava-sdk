@@ -101,7 +101,7 @@ class StateTracker {
                     }
                     // Create a new pairing object
                     // TODO when initializing relevantEndpoints it needs to check if valid
-                    const newPairing = new types_1.ConsumerSessionWithProvider(account.address, relevantEndpoints, new types_1.SingleConsumerSession(0, 0, 1, relevantEndpoints[0], (epochNumber - 1) * 20), maxcu, 0, false, epochNumber);
+                    const newPairing = new types_1.ConsumerSessionWithProvider(account.address, relevantEndpoints, new types_1.SingleConsumerSession(0, 0, 1, relevantEndpoints[0], (epochNumber - 1) * 20, provider.address), maxcu, 0, false, epochNumber);
                     // Add newly created pairing in the pairing list
                     pairing.push(newPairing);
                 }
