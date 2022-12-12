@@ -344,12 +344,26 @@ exports.QueryGetPairingRequest = {
     },
 };
 function createBaseQueryGetPairingResponse() {
-    return { providers: [] };
+    return {
+        providers: [],
+        currentEpoch: long_1.default.UZERO,
+        timeLeftToNextPairing: long_1.default.UZERO,
+        specLastUpdatedBlock: long_1.default.UZERO,
+    };
 }
 exports.QueryGetPairingResponse = {
     encode(message, writer = minimal_1.default.Writer.create()) {
         for (const v of message.providers) {
             stake_entry_1.StakeEntry.encode(v, writer.uint32(10).fork()).ldelim();
+        }
+        if (!message.currentEpoch.isZero()) {
+            writer.uint32(16).uint64(message.currentEpoch);
+        }
+        if (!message.timeLeftToNextPairing.isZero()) {
+            writer.uint32(24).uint64(message.timeLeftToNextPairing);
+        }
+        if (!message.specLastUpdatedBlock.isZero()) {
+            writer.uint32(32).uint64(message.specLastUpdatedBlock);
         }
         return writer;
     },
@@ -363,6 +377,15 @@ exports.QueryGetPairingResponse = {
                 case 1:
                     message.providers.push(stake_entry_1.StakeEntry.decode(reader, reader.uint32()));
                     break;
+                case 2:
+                    message.currentEpoch = reader.uint64();
+                    break;
+                case 3:
+                    message.timeLeftToNextPairing = reader.uint64();
+                    break;
+                case 4:
+                    message.specLastUpdatedBlock = reader.uint64();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -373,6 +396,13 @@ exports.QueryGetPairingResponse = {
     fromJSON(object) {
         return {
             providers: Array.isArray(object === null || object === void 0 ? void 0 : object.providers) ? object.providers.map((e) => stake_entry_1.StakeEntry.fromJSON(e)) : [],
+            currentEpoch: isSet(object.currentEpoch) ? long_1.default.fromValue(object.currentEpoch) : long_1.default.UZERO,
+            timeLeftToNextPairing: isSet(object.timeLeftToNextPairing)
+                ? long_1.default.fromValue(object.timeLeftToNextPairing)
+                : long_1.default.UZERO,
+            specLastUpdatedBlock: isSet(object.specLastUpdatedBlock)
+                ? long_1.default.fromValue(object.specLastUpdatedBlock)
+                : long_1.default.UZERO,
         };
     },
     toJSON(message) {
@@ -383,12 +413,27 @@ exports.QueryGetPairingResponse = {
         else {
             obj.providers = [];
         }
+        message.currentEpoch !== undefined && (obj.currentEpoch = (message.currentEpoch || long_1.default.UZERO).toString());
+        message.timeLeftToNextPairing !== undefined &&
+            (obj.timeLeftToNextPairing = (message.timeLeftToNextPairing || long_1.default.UZERO).toString());
+        message.specLastUpdatedBlock !== undefined &&
+            (obj.specLastUpdatedBlock = (message.specLastUpdatedBlock || long_1.default.UZERO).toString());
         return obj;
     },
     fromPartial(object) {
         var _a;
         const message = createBaseQueryGetPairingResponse();
         message.providers = ((_a = object.providers) === null || _a === void 0 ? void 0 : _a.map((e) => stake_entry_1.StakeEntry.fromPartial(e))) || [];
+        message.currentEpoch = (object.currentEpoch !== undefined && object.currentEpoch !== null)
+            ? long_1.default.fromValue(object.currentEpoch)
+            : long_1.default.UZERO;
+        message.timeLeftToNextPairing =
+            (object.timeLeftToNextPairing !== undefined && object.timeLeftToNextPairing !== null)
+                ? long_1.default.fromValue(object.timeLeftToNextPairing)
+                : long_1.default.UZERO;
+        message.specLastUpdatedBlock = (object.specLastUpdatedBlock !== undefined && object.specLastUpdatedBlock !== null)
+            ? long_1.default.fromValue(object.specLastUpdatedBlock)
+            : long_1.default.UZERO;
         return message;
     },
 };
@@ -1229,7 +1274,8 @@ exports.QueryUserEntryResponse = {
     },
 };
 class QueryClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "lavanet.lava.pairing.Query";
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.Providers = this.Providers.bind(this);
@@ -1246,62 +1292,62 @@ class QueryClientImpl {
     }
     Params(request) {
         const data = exports.QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "Params", data);
+        const promise = this.rpc.request(this.service, "Params", data);
         return promise.then((data) => exports.QueryParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
     Providers(request) {
         const data = exports.QueryProvidersRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "Providers", data);
+        const promise = this.rpc.request(this.service, "Providers", data);
         return promise.then((data) => exports.QueryProvidersResponse.decode(new minimal_1.default.Reader(data)));
     }
     Clients(request) {
         const data = exports.QueryClientsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "Clients", data);
+        const promise = this.rpc.request(this.service, "Clients", data);
         return promise.then((data) => exports.QueryClientsResponse.decode(new minimal_1.default.Reader(data)));
     }
     GetPairing(request) {
         const data = exports.QueryGetPairingRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "GetPairing", data);
+        const promise = this.rpc.request(this.service, "GetPairing", data);
         return promise.then((data) => exports.QueryGetPairingResponse.decode(new minimal_1.default.Reader(data)));
     }
     VerifyPairing(request) {
         const data = exports.QueryVerifyPairingRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "VerifyPairing", data);
+        const promise = this.rpc.request(this.service, "VerifyPairing", data);
         return promise.then((data) => exports.QueryVerifyPairingResponse.decode(new minimal_1.default.Reader(data)));
     }
     UniquePaymentStorageClientProvider(request) {
         const data = exports.QueryGetUniquePaymentStorageClientProviderRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "UniquePaymentStorageClientProvider", data);
+        const promise = this.rpc.request(this.service, "UniquePaymentStorageClientProvider", data);
         return promise.then((data) => exports.QueryGetUniquePaymentStorageClientProviderResponse.decode(new minimal_1.default.Reader(data)));
     }
     UniquePaymentStorageClientProviderAll(request) {
         const data = exports.QueryAllUniquePaymentStorageClientProviderRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "UniquePaymentStorageClientProviderAll", data);
+        const promise = this.rpc.request(this.service, "UniquePaymentStorageClientProviderAll", data);
         return promise.then((data) => exports.QueryAllUniquePaymentStorageClientProviderResponse.decode(new minimal_1.default.Reader(data)));
     }
     ProviderPaymentStorage(request) {
         const data = exports.QueryGetProviderPaymentStorageRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "ProviderPaymentStorage", data);
+        const promise = this.rpc.request(this.service, "ProviderPaymentStorage", data);
         return promise.then((data) => exports.QueryGetProviderPaymentStorageResponse.decode(new minimal_1.default.Reader(data)));
     }
     ProviderPaymentStorageAll(request) {
         const data = exports.QueryAllProviderPaymentStorageRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "ProviderPaymentStorageAll", data);
+        const promise = this.rpc.request(this.service, "ProviderPaymentStorageAll", data);
         return promise.then((data) => exports.QueryAllProviderPaymentStorageResponse.decode(new minimal_1.default.Reader(data)));
     }
     EpochPayments(request) {
         const data = exports.QueryGetEpochPaymentsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "EpochPayments", data);
+        const promise = this.rpc.request(this.service, "EpochPayments", data);
         return promise.then((data) => exports.QueryGetEpochPaymentsResponse.decode(new minimal_1.default.Reader(data)));
     }
     EpochPaymentsAll(request) {
         const data = exports.QueryAllEpochPaymentsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "EpochPaymentsAll", data);
+        const promise = this.rpc.request(this.service, "EpochPaymentsAll", data);
         return promise.then((data) => exports.QueryAllEpochPaymentsResponse.decode(new minimal_1.default.Reader(data)));
     }
     UserEntry(request) {
         const data = exports.QueryUserEntryRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Query", "UserEntry", data);
+        const promise = this.rpc.request(this.service, "UserEntry", data);
         return promise.then((data) => exports.QueryUserEntryResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

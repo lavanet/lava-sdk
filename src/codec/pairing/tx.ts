@@ -630,7 +630,9 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "lavanet.lava.pairing.Msg";
     this.rpc = rpc;
     this.StakeProvider = this.StakeProvider.bind(this);
     this.StakeClient = this.StakeClient.bind(this);
@@ -640,31 +642,31 @@ export class MsgClientImpl implements Msg {
   }
   StakeProvider(request: MsgStakeProvider): Promise<MsgStakeProviderResponse> {
     const data = MsgStakeProvider.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Msg", "StakeProvider", data);
+    const promise = this.rpc.request(this.service, "StakeProvider", data);
     return promise.then((data) => MsgStakeProviderResponse.decode(new _m0.Reader(data)));
   }
 
   StakeClient(request: MsgStakeClient): Promise<MsgStakeClientResponse> {
     const data = MsgStakeClient.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Msg", "StakeClient", data);
+    const promise = this.rpc.request(this.service, "StakeClient", data);
     return promise.then((data) => MsgStakeClientResponse.decode(new _m0.Reader(data)));
   }
 
   UnstakeProvider(request: MsgUnstakeProvider): Promise<MsgUnstakeProviderResponse> {
     const data = MsgUnstakeProvider.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Msg", "UnstakeProvider", data);
+    const promise = this.rpc.request(this.service, "UnstakeProvider", data);
     return promise.then((data) => MsgUnstakeProviderResponse.decode(new _m0.Reader(data)));
   }
 
   UnstakeClient(request: MsgUnstakeClient): Promise<MsgUnstakeClientResponse> {
     const data = MsgUnstakeClient.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Msg", "UnstakeClient", data);
+    const promise = this.rpc.request(this.service, "UnstakeClient", data);
     return promise.then((data) => MsgUnstakeClientResponse.decode(new _m0.Reader(data)));
   }
 
   RelayPayment(request: MsgRelayPayment): Promise<MsgRelayPaymentResponse> {
     const data = MsgRelayPayment.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Msg", "RelayPayment", data);
+    const promise = this.rpc.request(this.service, "RelayPayment", data);
     return promise.then((data) => MsgRelayPaymentResponse.decode(new _m0.Reader(data)));
   }
 }

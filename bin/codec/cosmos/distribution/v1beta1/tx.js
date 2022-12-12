@@ -565,7 +565,8 @@ exports.MsgCommunityPoolSpendResponse = {
     },
 };
 class MsgClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "cosmos.distribution.v1beta1.Msg";
         this.rpc = rpc;
         this.SetWithdrawAddress = this.SetWithdrawAddress.bind(this);
         this.WithdrawDelegatorReward = this.WithdrawDelegatorReward.bind(this);
@@ -576,32 +577,32 @@ class MsgClientImpl {
     }
     SetWithdrawAddress(request) {
         const data = exports.MsgSetWithdrawAddress.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "SetWithdrawAddress", data);
+        const promise = this.rpc.request(this.service, "SetWithdrawAddress", data);
         return promise.then((data) => exports.MsgSetWithdrawAddressResponse.decode(new minimal_1.default.Reader(data)));
     }
     WithdrawDelegatorReward(request) {
         const data = exports.MsgWithdrawDelegatorReward.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "WithdrawDelegatorReward", data);
+        const promise = this.rpc.request(this.service, "WithdrawDelegatorReward", data);
         return promise.then((data) => exports.MsgWithdrawDelegatorRewardResponse.decode(new minimal_1.default.Reader(data)));
     }
     WithdrawValidatorCommission(request) {
         const data = exports.MsgWithdrawValidatorCommission.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "WithdrawValidatorCommission", data);
+        const promise = this.rpc.request(this.service, "WithdrawValidatorCommission", data);
         return promise.then((data) => exports.MsgWithdrawValidatorCommissionResponse.decode(new minimal_1.default.Reader(data)));
     }
     FundCommunityPool(request) {
         const data = exports.MsgFundCommunityPool.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "FundCommunityPool", data);
+        const promise = this.rpc.request(this.service, "FundCommunityPool", data);
         return promise.then((data) => exports.MsgFundCommunityPoolResponse.decode(new minimal_1.default.Reader(data)));
     }
     UpdateParams(request) {
         const data = exports.MsgUpdateParams.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "UpdateParams", data);
+        const promise = this.rpc.request(this.service, "UpdateParams", data);
         return promise.then((data) => exports.MsgUpdateParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
     CommunityPoolSpend(request) {
         const data = exports.MsgCommunityPoolSpend.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "CommunityPoolSpend", data);
+        const promise = this.rpc.request(this.service, "CommunityPoolSpend", data);
         return promise.then((data) => exports.MsgCommunityPoolSpendResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

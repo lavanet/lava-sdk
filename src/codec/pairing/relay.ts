@@ -557,20 +557,22 @@ export interface Relayer {
 
 export class RelayerClientImpl implements Relayer {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "lavanet.lava.pairing.Relayer";
     this.rpc = rpc;
     this.Relay = this.Relay.bind(this);
     this.RelaySubscribe = this.RelaySubscribe.bind(this);
   }
   Relay(request: RelayRequest): Promise<RelayReply> {
     const data = RelayRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Relayer", "Relay", data);
+    const promise = this.rpc.request(this.service, "Relay", data);
     return promise.then((data) => RelayReply.decode(new _m0.Reader(data)));
   }
 
   RelaySubscribe(request: RelayRequest): Observable<RelayReply> {
     const data = RelayRequest.encode(request).finish();
-    const result = this.rpc.serverStreamingRequest("lavanet.lava.pairing.Relayer", "RelaySubscribe", data);
+    const result = this.rpc.serverStreamingRequest(this.service, "RelaySubscribe", data);
     return result.pipe(map((data) => RelayReply.decode(new _m0.Reader(data))));
   }
 }

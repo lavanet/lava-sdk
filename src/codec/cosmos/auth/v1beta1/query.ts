@@ -1082,7 +1082,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.auth.v1beta1.Query";
     this.rpc = rpc;
     this.Accounts = this.Accounts.bind(this);
     this.Account = this.Account.bind(this);
@@ -1096,55 +1098,55 @@ export class QueryClientImpl implements Query {
   }
   Accounts(request: QueryAccountsRequest): Promise<QueryAccountsResponse> {
     const data = QueryAccountsRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Accounts", data);
+    const promise = this.rpc.request(this.service, "Accounts", data);
     return promise.then((data) => QueryAccountsResponse.decode(new _m0.Reader(data)));
   }
 
   Account(request: QueryAccountRequest): Promise<QueryAccountResponse> {
     const data = QueryAccountRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Account", data);
+    const promise = this.rpc.request(this.service, "Account", data);
     return promise.then((data) => QueryAccountResponse.decode(new _m0.Reader(data)));
   }
 
   AccountAddressByID(request: QueryAccountAddressByIDRequest): Promise<QueryAccountAddressByIDResponse> {
     const data = QueryAccountAddressByIDRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AccountAddressByID", data);
+    const promise = this.rpc.request(this.service, "AccountAddressByID", data);
     return promise.then((data) => QueryAccountAddressByIDResponse.decode(new _m0.Reader(data)));
   }
 
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Params", data);
+    const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
   }
 
   ModuleAccounts(request: QueryModuleAccountsRequest): Promise<QueryModuleAccountsResponse> {
     const data = QueryModuleAccountsRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "ModuleAccounts", data);
+    const promise = this.rpc.request(this.service, "ModuleAccounts", data);
     return promise.then((data) => QueryModuleAccountsResponse.decode(new _m0.Reader(data)));
   }
 
   Bech32Prefix(request: Bech32PrefixRequest): Promise<Bech32PrefixResponse> {
     const data = Bech32PrefixRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Bech32Prefix", data);
+    const promise = this.rpc.request(this.service, "Bech32Prefix", data);
     return promise.then((data) => Bech32PrefixResponse.decode(new _m0.Reader(data)));
   }
 
   AddressBytesToString(request: AddressBytesToStringRequest): Promise<AddressBytesToStringResponse> {
     const data = AddressBytesToStringRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AddressBytesToString", data);
+    const promise = this.rpc.request(this.service, "AddressBytesToString", data);
     return promise.then((data) => AddressBytesToStringResponse.decode(new _m0.Reader(data)));
   }
 
   AddressStringToBytes(request: AddressStringToBytesRequest): Promise<AddressStringToBytesResponse> {
     const data = AddressStringToBytesRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AddressStringToBytes", data);
+    const promise = this.rpc.request(this.service, "AddressStringToBytes", data);
     return promise.then((data) => AddressStringToBytesResponse.decode(new _m0.Reader(data)));
   }
 
   AccountInfo(request: QueryAccountInfoRequest): Promise<QueryAccountInfoResponse> {
     const data = QueryAccountInfoRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AccountInfo", data);
+    const promise = this.rpc.request(this.service, "AccountInfo", data);
     return promise.then((data) => QueryAccountInfoResponse.decode(new _m0.Reader(data)));
   }
 }

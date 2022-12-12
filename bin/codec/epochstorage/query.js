@@ -553,7 +553,8 @@ exports.QueryAllFixatedParamsResponse = {
     },
 };
 class QueryClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "lavanet.lava.epochstorage.Query";
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.StakeStorage = this.StakeStorage.bind(this);
@@ -564,32 +565,32 @@ class QueryClientImpl {
     }
     Params(request) {
         const data = exports.QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "Params", data);
+        const promise = this.rpc.request(this.service, "Params", data);
         return promise.then((data) => exports.QueryParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
     StakeStorage(request) {
         const data = exports.QueryGetStakeStorageRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "StakeStorage", data);
+        const promise = this.rpc.request(this.service, "StakeStorage", data);
         return promise.then((data) => exports.QueryGetStakeStorageResponse.decode(new minimal_1.default.Reader(data)));
     }
     StakeStorageAll(request) {
         const data = exports.QueryAllStakeStorageRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "StakeStorageAll", data);
+        const promise = this.rpc.request(this.service, "StakeStorageAll", data);
         return promise.then((data) => exports.QueryAllStakeStorageResponse.decode(new minimal_1.default.Reader(data)));
     }
     EpochDetails(request) {
         const data = exports.QueryGetEpochDetailsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "EpochDetails", data);
+        const promise = this.rpc.request(this.service, "EpochDetails", data);
         return promise.then((data) => exports.QueryGetEpochDetailsResponse.decode(new minimal_1.default.Reader(data)));
     }
     FixatedParams(request) {
         const data = exports.QueryGetFixatedParamsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "FixatedParams", data);
+        const promise = this.rpc.request(this.service, "FixatedParams", data);
         return promise.then((data) => exports.QueryGetFixatedParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
     FixatedParamsAll(request) {
         const data = exports.QueryAllFixatedParamsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "FixatedParamsAll", data);
+        const promise = this.rpc.request(this.service, "FixatedParamsAll", data);
         return promise.then((data) => exports.QueryAllFixatedParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

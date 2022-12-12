@@ -780,7 +780,9 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.distribution.v1beta1.Msg";
     this.rpc = rpc;
     this.SetWithdrawAddress = this.SetWithdrawAddress.bind(this);
     this.WithdrawDelegatorReward = this.WithdrawDelegatorReward.bind(this);
@@ -791,13 +793,13 @@ export class MsgClientImpl implements Msg {
   }
   SetWithdrawAddress(request: MsgSetWithdrawAddress): Promise<MsgSetWithdrawAddressResponse> {
     const data = MsgSetWithdrawAddress.encode(request).finish();
-    const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "SetWithdrawAddress", data);
+    const promise = this.rpc.request(this.service, "SetWithdrawAddress", data);
     return promise.then((data) => MsgSetWithdrawAddressResponse.decode(new _m0.Reader(data)));
   }
 
   WithdrawDelegatorReward(request: MsgWithdrawDelegatorReward): Promise<MsgWithdrawDelegatorRewardResponse> {
     const data = MsgWithdrawDelegatorReward.encode(request).finish();
-    const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "WithdrawDelegatorReward", data);
+    const promise = this.rpc.request(this.service, "WithdrawDelegatorReward", data);
     return promise.then((data) => MsgWithdrawDelegatorRewardResponse.decode(new _m0.Reader(data)));
   }
 
@@ -805,25 +807,25 @@ export class MsgClientImpl implements Msg {
     request: MsgWithdrawValidatorCommission,
   ): Promise<MsgWithdrawValidatorCommissionResponse> {
     const data = MsgWithdrawValidatorCommission.encode(request).finish();
-    const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "WithdrawValidatorCommission", data);
+    const promise = this.rpc.request(this.service, "WithdrawValidatorCommission", data);
     return promise.then((data) => MsgWithdrawValidatorCommissionResponse.decode(new _m0.Reader(data)));
   }
 
   FundCommunityPool(request: MsgFundCommunityPool): Promise<MsgFundCommunityPoolResponse> {
     const data = MsgFundCommunityPool.encode(request).finish();
-    const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "FundCommunityPool", data);
+    const promise = this.rpc.request(this.service, "FundCommunityPool", data);
     return promise.then((data) => MsgFundCommunityPoolResponse.decode(new _m0.Reader(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "UpdateParams", data);
+    const promise = this.rpc.request(this.service, "UpdateParams", data);
     return promise.then((data) => MsgUpdateParamsResponse.decode(new _m0.Reader(data)));
   }
 
   CommunityPoolSpend(request: MsgCommunityPoolSpend): Promise<MsgCommunityPoolSpendResponse> {
     const data = MsgCommunityPoolSpend.encode(request).finish();
-    const promise = this.rpc.request("cosmos.distribution.v1beta1.Msg", "CommunityPoolSpend", data);
+    const promise = this.rpc.request(this.service, "CommunityPoolSpend", data);
     return promise.then((data) => MsgCommunityPoolSpendResponse.decode(new _m0.Reader(data)));
   }
 }

@@ -398,7 +398,9 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "lavanet.lava.conflict.Msg";
     this.rpc = rpc;
     this.Detection = this.Detection.bind(this);
     this.ConflictVoteCommit = this.ConflictVoteCommit.bind(this);
@@ -406,19 +408,19 @@ export class MsgClientImpl implements Msg {
   }
   Detection(request: MsgDetection): Promise<MsgDetectionResponse> {
     const data = MsgDetection.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.conflict.Msg", "Detection", data);
+    const promise = this.rpc.request(this.service, "Detection", data);
     return promise.then((data) => MsgDetectionResponse.decode(new _m0.Reader(data)));
   }
 
   ConflictVoteCommit(request: MsgConflictVoteCommit): Promise<MsgConflictVoteCommitResponse> {
     const data = MsgConflictVoteCommit.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.conflict.Msg", "ConflictVoteCommit", data);
+    const promise = this.rpc.request(this.service, "ConflictVoteCommit", data);
     return promise.then((data) => MsgConflictVoteCommitResponse.decode(new _m0.Reader(data)));
   }
 
   ConflictVoteReveal(request: MsgConflictVoteReveal): Promise<MsgConflictVoteRevealResponse> {
     const data = MsgConflictVoteReveal.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.conflict.Msg", "ConflictVoteReveal", data);
+    const promise = this.rpc.request(this.service, "ConflictVoteReveal", data);
     return promise.then((data) => MsgConflictVoteRevealResponse.decode(new _m0.Reader(data)));
   }
 }

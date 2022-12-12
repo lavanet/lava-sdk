@@ -45,6 +45,9 @@ export interface QueryGetPairingRequest {
 
 export interface QueryGetPairingResponse {
   providers: StakeEntry[];
+  currentEpoch: Long;
+  timeLeftToNextPairing: Long;
+  specLastUpdatedBlock: Long;
 }
 
 export interface QueryVerifyPairingRequest {
@@ -486,13 +489,27 @@ export const QueryGetPairingRequest = {
 };
 
 function createBaseQueryGetPairingResponse(): QueryGetPairingResponse {
-  return { providers: [] };
+  return {
+    providers: [],
+    currentEpoch: Long.UZERO,
+    timeLeftToNextPairing: Long.UZERO,
+    specLastUpdatedBlock: Long.UZERO,
+  };
 }
 
 export const QueryGetPairingResponse = {
   encode(message: QueryGetPairingResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.providers) {
       StakeEntry.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (!message.currentEpoch.isZero()) {
+      writer.uint32(16).uint64(message.currentEpoch);
+    }
+    if (!message.timeLeftToNextPairing.isZero()) {
+      writer.uint32(24).uint64(message.timeLeftToNextPairing);
+    }
+    if (!message.specLastUpdatedBlock.isZero()) {
+      writer.uint32(32).uint64(message.specLastUpdatedBlock);
     }
     return writer;
   },
@@ -507,6 +524,15 @@ export const QueryGetPairingResponse = {
         case 1:
           message.providers.push(StakeEntry.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.currentEpoch = reader.uint64() as Long;
+          break;
+        case 3:
+          message.timeLeftToNextPairing = reader.uint64() as Long;
+          break;
+        case 4:
+          message.specLastUpdatedBlock = reader.uint64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -518,6 +544,13 @@ export const QueryGetPairingResponse = {
   fromJSON(object: any): QueryGetPairingResponse {
     return {
       providers: Array.isArray(object?.providers) ? object.providers.map((e: any) => StakeEntry.fromJSON(e)) : [],
+      currentEpoch: isSet(object.currentEpoch) ? Long.fromValue(object.currentEpoch) : Long.UZERO,
+      timeLeftToNextPairing: isSet(object.timeLeftToNextPairing)
+        ? Long.fromValue(object.timeLeftToNextPairing)
+        : Long.UZERO,
+      specLastUpdatedBlock: isSet(object.specLastUpdatedBlock)
+        ? Long.fromValue(object.specLastUpdatedBlock)
+        : Long.UZERO,
     };
   },
 
@@ -528,12 +561,27 @@ export const QueryGetPairingResponse = {
     } else {
       obj.providers = [];
     }
+    message.currentEpoch !== undefined && (obj.currentEpoch = (message.currentEpoch || Long.UZERO).toString());
+    message.timeLeftToNextPairing !== undefined &&
+      (obj.timeLeftToNextPairing = (message.timeLeftToNextPairing || Long.UZERO).toString());
+    message.specLastUpdatedBlock !== undefined &&
+      (obj.specLastUpdatedBlock = (message.specLastUpdatedBlock || Long.UZERO).toString());
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryGetPairingResponse>, I>>(object: I): QueryGetPairingResponse {
     const message = createBaseQueryGetPairingResponse();
     message.providers = object.providers?.map((e) => StakeEntry.fromPartial(e)) || [];
+    message.currentEpoch = (object.currentEpoch !== undefined && object.currentEpoch !== null)
+      ? Long.fromValue(object.currentEpoch)
+      : Long.UZERO;
+    message.timeLeftToNextPairing =
+      (object.timeLeftToNextPairing !== undefined && object.timeLeftToNextPairing !== null)
+        ? Long.fromValue(object.timeLeftToNextPairing)
+        : Long.UZERO;
+    message.specLastUpdatedBlock = (object.specLastUpdatedBlock !== undefined && object.specLastUpdatedBlock !== null)
+      ? Long.fromValue(object.specLastUpdatedBlock)
+      : Long.UZERO;
     return message;
   },
 };
@@ -1537,7 +1585,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "lavanet.lava.pairing.Query";
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.Providers = this.Providers.bind(this);
@@ -1554,31 +1604,31 @@ export class QueryClientImpl implements Query {
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "Params", data);
+    const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
   }
 
   Providers(request: QueryProvidersRequest): Promise<QueryProvidersResponse> {
     const data = QueryProvidersRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "Providers", data);
+    const promise = this.rpc.request(this.service, "Providers", data);
     return promise.then((data) => QueryProvidersResponse.decode(new _m0.Reader(data)));
   }
 
   Clients(request: QueryClientsRequest): Promise<QueryClientsResponse> {
     const data = QueryClientsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "Clients", data);
+    const promise = this.rpc.request(this.service, "Clients", data);
     return promise.then((data) => QueryClientsResponse.decode(new _m0.Reader(data)));
   }
 
   GetPairing(request: QueryGetPairingRequest): Promise<QueryGetPairingResponse> {
     const data = QueryGetPairingRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "GetPairing", data);
+    const promise = this.rpc.request(this.service, "GetPairing", data);
     return promise.then((data) => QueryGetPairingResponse.decode(new _m0.Reader(data)));
   }
 
   VerifyPairing(request: QueryVerifyPairingRequest): Promise<QueryVerifyPairingResponse> {
     const data = QueryVerifyPairingRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "VerifyPairing", data);
+    const promise = this.rpc.request(this.service, "VerifyPairing", data);
     return promise.then((data) => QueryVerifyPairingResponse.decode(new _m0.Reader(data)));
   }
 
@@ -1586,7 +1636,7 @@ export class QueryClientImpl implements Query {
     request: QueryGetUniquePaymentStorageClientProviderRequest,
   ): Promise<QueryGetUniquePaymentStorageClientProviderResponse> {
     const data = QueryGetUniquePaymentStorageClientProviderRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "UniquePaymentStorageClientProvider", data);
+    const promise = this.rpc.request(this.service, "UniquePaymentStorageClientProvider", data);
     return promise.then((data) => QueryGetUniquePaymentStorageClientProviderResponse.decode(new _m0.Reader(data)));
   }
 
@@ -1594,7 +1644,7 @@ export class QueryClientImpl implements Query {
     request: QueryAllUniquePaymentStorageClientProviderRequest,
   ): Promise<QueryAllUniquePaymentStorageClientProviderResponse> {
     const data = QueryAllUniquePaymentStorageClientProviderRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "UniquePaymentStorageClientProviderAll", data);
+    const promise = this.rpc.request(this.service, "UniquePaymentStorageClientProviderAll", data);
     return promise.then((data) => QueryAllUniquePaymentStorageClientProviderResponse.decode(new _m0.Reader(data)));
   }
 
@@ -1602,7 +1652,7 @@ export class QueryClientImpl implements Query {
     request: QueryGetProviderPaymentStorageRequest,
   ): Promise<QueryGetProviderPaymentStorageResponse> {
     const data = QueryGetProviderPaymentStorageRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "ProviderPaymentStorage", data);
+    const promise = this.rpc.request(this.service, "ProviderPaymentStorage", data);
     return promise.then((data) => QueryGetProviderPaymentStorageResponse.decode(new _m0.Reader(data)));
   }
 
@@ -1610,25 +1660,25 @@ export class QueryClientImpl implements Query {
     request: QueryAllProviderPaymentStorageRequest,
   ): Promise<QueryAllProviderPaymentStorageResponse> {
     const data = QueryAllProviderPaymentStorageRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "ProviderPaymentStorageAll", data);
+    const promise = this.rpc.request(this.service, "ProviderPaymentStorageAll", data);
     return promise.then((data) => QueryAllProviderPaymentStorageResponse.decode(new _m0.Reader(data)));
   }
 
   EpochPayments(request: QueryGetEpochPaymentsRequest): Promise<QueryGetEpochPaymentsResponse> {
     const data = QueryGetEpochPaymentsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "EpochPayments", data);
+    const promise = this.rpc.request(this.service, "EpochPayments", data);
     return promise.then((data) => QueryGetEpochPaymentsResponse.decode(new _m0.Reader(data)));
   }
 
   EpochPaymentsAll(request: QueryAllEpochPaymentsRequest): Promise<QueryAllEpochPaymentsResponse> {
     const data = QueryAllEpochPaymentsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "EpochPaymentsAll", data);
+    const promise = this.rpc.request(this.service, "EpochPaymentsAll", data);
     return promise.then((data) => QueryAllEpochPaymentsResponse.decode(new _m0.Reader(data)));
   }
 
   UserEntry(request: QueryUserEntryRequest): Promise<QueryUserEntryResponse> {
     const data = QueryUserEntryRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.pairing.Query", "UserEntry", data);
+    const promise = this.rpc.request(this.service, "UserEntry", data);
     return promise.then((data) => QueryUserEntryResponse.decode(new _m0.Reader(data)));
   }
 }

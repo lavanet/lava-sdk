@@ -447,7 +447,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "lavanet.lava.spec.Query";
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.Spec = this.Spec.bind(this);
@@ -456,25 +458,25 @@ export class QueryClientImpl implements Query {
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.spec.Query", "Params", data);
+    const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
   }
 
   Spec(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse> {
     const data = QueryGetSpecRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.spec.Query", "Spec", data);
+    const promise = this.rpc.request(this.service, "Spec", data);
     return promise.then((data) => QueryGetSpecResponse.decode(new _m0.Reader(data)));
   }
 
   SpecAll(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse> {
     const data = QueryAllSpecRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.spec.Query", "SpecAll", data);
+    const promise = this.rpc.request(this.service, "SpecAll", data);
     return promise.then((data) => QueryAllSpecResponse.decode(new _m0.Reader(data)));
   }
 
   Chain(request: QueryChainRequest): Promise<QueryChainResponse> {
     const data = QueryChainRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.spec.Query", "Chain", data);
+    const promise = this.rpc.request(this.service, "Chain", data);
     return promise.then((data) => QueryChainResponse.decode(new _m0.Reader(data)));
   }
 }

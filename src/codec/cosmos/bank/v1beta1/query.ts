@@ -1472,7 +1472,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.bank.v1beta1.Query";
     this.rpc = rpc;
     this.Balance = this.Balance.bind(this);
     this.AllBalances = this.AllBalances.bind(this);
@@ -1487,61 +1489,61 @@ export class QueryClientImpl implements Query {
   }
   Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse> {
     const data = QueryBalanceRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "Balance", data);
+    const promise = this.rpc.request(this.service, "Balance", data);
     return promise.then((data) => QueryBalanceResponse.decode(new _m0.Reader(data)));
   }
 
   AllBalances(request: QueryAllBalancesRequest): Promise<QueryAllBalancesResponse> {
     const data = QueryAllBalancesRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "AllBalances", data);
+    const promise = this.rpc.request(this.service, "AllBalances", data);
     return promise.then((data) => QueryAllBalancesResponse.decode(new _m0.Reader(data)));
   }
 
   SpendableBalances(request: QuerySpendableBalancesRequest): Promise<QuerySpendableBalancesResponse> {
     const data = QuerySpendableBalancesRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "SpendableBalances", data);
+    const promise = this.rpc.request(this.service, "SpendableBalances", data);
     return promise.then((data) => QuerySpendableBalancesResponse.decode(new _m0.Reader(data)));
   }
 
   TotalSupply(request: QueryTotalSupplyRequest): Promise<QueryTotalSupplyResponse> {
     const data = QueryTotalSupplyRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "TotalSupply", data);
+    const promise = this.rpc.request(this.service, "TotalSupply", data);
     return promise.then((data) => QueryTotalSupplyResponse.decode(new _m0.Reader(data)));
   }
 
   SupplyOf(request: QuerySupplyOfRequest): Promise<QuerySupplyOfResponse> {
     const data = QuerySupplyOfRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "SupplyOf", data);
+    const promise = this.rpc.request(this.service, "SupplyOf", data);
     return promise.then((data) => QuerySupplyOfResponse.decode(new _m0.Reader(data)));
   }
 
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "Params", data);
+    const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
   }
 
   DenomMetadata(request: QueryDenomMetadataRequest): Promise<QueryDenomMetadataResponse> {
     const data = QueryDenomMetadataRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "DenomMetadata", data);
+    const promise = this.rpc.request(this.service, "DenomMetadata", data);
     return promise.then((data) => QueryDenomMetadataResponse.decode(new _m0.Reader(data)));
   }
 
   DenomsMetadata(request: QueryDenomsMetadataRequest): Promise<QueryDenomsMetadataResponse> {
     const data = QueryDenomsMetadataRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "DenomsMetadata", data);
+    const promise = this.rpc.request(this.service, "DenomsMetadata", data);
     return promise.then((data) => QueryDenomsMetadataResponse.decode(new _m0.Reader(data)));
   }
 
   DenomOwners(request: QueryDenomOwnersRequest): Promise<QueryDenomOwnersResponse> {
     const data = QueryDenomOwnersRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "DenomOwners", data);
+    const promise = this.rpc.request(this.service, "DenomOwners", data);
     return promise.then((data) => QueryDenomOwnersResponse.decode(new _m0.Reader(data)));
   }
 
   SendEnabled(request: QuerySendEnabledRequest): Promise<QuerySendEnabledResponse> {
     const data = QuerySendEnabledRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Query", "SendEnabled", data);
+    const promise = this.rpc.request(this.service, "SendEnabled", data);
     return promise.then((data) => QuerySendEnabledResponse.decode(new _m0.Reader(data)));
   }
 }

@@ -687,7 +687,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "lavanet.lava.epochstorage.Query";
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.StakeStorage = this.StakeStorage.bind(this);
@@ -698,37 +700,37 @@ export class QueryClientImpl implements Query {
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "Params", data);
+    const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
   }
 
   StakeStorage(request: QueryGetStakeStorageRequest): Promise<QueryGetStakeStorageResponse> {
     const data = QueryGetStakeStorageRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "StakeStorage", data);
+    const promise = this.rpc.request(this.service, "StakeStorage", data);
     return promise.then((data) => QueryGetStakeStorageResponse.decode(new _m0.Reader(data)));
   }
 
   StakeStorageAll(request: QueryAllStakeStorageRequest): Promise<QueryAllStakeStorageResponse> {
     const data = QueryAllStakeStorageRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "StakeStorageAll", data);
+    const promise = this.rpc.request(this.service, "StakeStorageAll", data);
     return promise.then((data) => QueryAllStakeStorageResponse.decode(new _m0.Reader(data)));
   }
 
   EpochDetails(request: QueryGetEpochDetailsRequest): Promise<QueryGetEpochDetailsResponse> {
     const data = QueryGetEpochDetailsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "EpochDetails", data);
+    const promise = this.rpc.request(this.service, "EpochDetails", data);
     return promise.then((data) => QueryGetEpochDetailsResponse.decode(new _m0.Reader(data)));
   }
 
   FixatedParams(request: QueryGetFixatedParamsRequest): Promise<QueryGetFixatedParamsResponse> {
     const data = QueryGetFixatedParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "FixatedParams", data);
+    const promise = this.rpc.request(this.service, "FixatedParams", data);
     return promise.then((data) => QueryGetFixatedParamsResponse.decode(new _m0.Reader(data)));
   }
 
   FixatedParamsAll(request: QueryAllFixatedParamsRequest): Promise<QueryAllFixatedParamsResponse> {
     const data = QueryAllFixatedParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.epochstorage.Query", "FixatedParamsAll", data);
+    const promise = this.rpc.request(this.service, "FixatedParamsAll", data);
     return promise.then((data) => QueryAllFixatedParamsResponse.decode(new _m0.Reader(data)));
   }
 }

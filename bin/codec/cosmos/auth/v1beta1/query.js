@@ -771,7 +771,8 @@ exports.QueryAccountInfoResponse = {
     },
 };
 class QueryClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "cosmos.auth.v1beta1.Query";
         this.rpc = rpc;
         this.Accounts = this.Accounts.bind(this);
         this.Account = this.Account.bind(this);
@@ -785,47 +786,47 @@ class QueryClientImpl {
     }
     Accounts(request) {
         const data = exports.QueryAccountsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Accounts", data);
+        const promise = this.rpc.request(this.service, "Accounts", data);
         return promise.then((data) => exports.QueryAccountsResponse.decode(new minimal_1.default.Reader(data)));
     }
     Account(request) {
         const data = exports.QueryAccountRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Account", data);
+        const promise = this.rpc.request(this.service, "Account", data);
         return promise.then((data) => exports.QueryAccountResponse.decode(new minimal_1.default.Reader(data)));
     }
     AccountAddressByID(request) {
         const data = exports.QueryAccountAddressByIDRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AccountAddressByID", data);
+        const promise = this.rpc.request(this.service, "AccountAddressByID", data);
         return promise.then((data) => exports.QueryAccountAddressByIDResponse.decode(new minimal_1.default.Reader(data)));
     }
     Params(request) {
         const data = exports.QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Params", data);
+        const promise = this.rpc.request(this.service, "Params", data);
         return promise.then((data) => exports.QueryParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
     ModuleAccounts(request) {
         const data = exports.QueryModuleAccountsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "ModuleAccounts", data);
+        const promise = this.rpc.request(this.service, "ModuleAccounts", data);
         return promise.then((data) => exports.QueryModuleAccountsResponse.decode(new minimal_1.default.Reader(data)));
     }
     Bech32Prefix(request) {
         const data = exports.Bech32PrefixRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "Bech32Prefix", data);
+        const promise = this.rpc.request(this.service, "Bech32Prefix", data);
         return promise.then((data) => exports.Bech32PrefixResponse.decode(new minimal_1.default.Reader(data)));
     }
     AddressBytesToString(request) {
         const data = exports.AddressBytesToStringRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AddressBytesToString", data);
+        const promise = this.rpc.request(this.service, "AddressBytesToString", data);
         return promise.then((data) => exports.AddressBytesToStringResponse.decode(new minimal_1.default.Reader(data)));
     }
     AddressStringToBytes(request) {
         const data = exports.AddressStringToBytesRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AddressStringToBytes", data);
+        const promise = this.rpc.request(this.service, "AddressStringToBytes", data);
         return promise.then((data) => exports.AddressStringToBytesResponse.decode(new minimal_1.default.Reader(data)));
     }
     AccountInfo(request) {
         const data = exports.QueryAccountInfoRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.auth.v1beta1.Query", "AccountInfo", data);
+        const promise = this.rpc.request(this.service, "AccountInfo", data);
         return promise.then((data) => exports.QueryAccountInfoResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

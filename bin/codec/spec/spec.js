@@ -21,6 +21,7 @@ function createBaseSpec() {
         savedBlocks: 0,
         averageBlockTime: long_1.default.ZERO,
         allowedBlockLagForQosSync: long_1.default.ZERO,
+        blockLastUpdated: long_1.default.UZERO,
     };
 }
 exports.Spec = {
@@ -54,6 +55,9 @@ exports.Spec = {
         }
         if (!message.allowedBlockLagForQosSync.isZero()) {
             writer.uint32(80).int64(message.allowedBlockLagForQosSync);
+        }
+        if (!message.blockLastUpdated.isZero()) {
+            writer.uint32(88).uint64(message.blockLastUpdated);
         }
         return writer;
     },
@@ -94,6 +98,9 @@ exports.Spec = {
                 case 10:
                     message.allowedBlockLagForQosSync = reader.int64();
                     break;
+                case 11:
+                    message.blockLastUpdated = reader.uint64();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -115,6 +122,7 @@ exports.Spec = {
             allowedBlockLagForQosSync: isSet(object.allowedBlockLagForQosSync)
                 ? long_1.default.fromValue(object.allowedBlockLagForQosSync)
                 : long_1.default.ZERO,
+            blockLastUpdated: isSet(object.blockLastUpdated) ? long_1.default.fromValue(object.blockLastUpdated) : long_1.default.UZERO,
         };
     },
     toJSON(message) {
@@ -136,6 +144,8 @@ exports.Spec = {
             (obj.averageBlockTime = (message.averageBlockTime || long_1.default.ZERO).toString());
         message.allowedBlockLagForQosSync !== undefined &&
             (obj.allowedBlockLagForQosSync = (message.allowedBlockLagForQosSync || long_1.default.ZERO).toString());
+        message.blockLastUpdated !== undefined &&
+            (obj.blockLastUpdated = (message.blockLastUpdated || long_1.default.UZERO).toString());
         return obj;
     },
     fromPartial(object) {
@@ -156,6 +166,9 @@ exports.Spec = {
             (object.allowedBlockLagForQosSync !== undefined && object.allowedBlockLagForQosSync !== null)
                 ? long_1.default.fromValue(object.allowedBlockLagForQosSync)
                 : long_1.default.ZERO;
+        message.blockLastUpdated = (object.blockLastUpdated !== undefined && object.blockLastUpdated !== null)
+            ? long_1.default.fromValue(object.blockLastUpdated)
+            : long_1.default.UZERO;
         return message;
     },
 };

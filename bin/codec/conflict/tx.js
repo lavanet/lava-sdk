@@ -330,7 +330,8 @@ exports.MsgConflictVoteRevealResponse = {
     },
 };
 class MsgClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "lavanet.lava.conflict.Msg";
         this.rpc = rpc;
         this.Detection = this.Detection.bind(this);
         this.ConflictVoteCommit = this.ConflictVoteCommit.bind(this);
@@ -338,17 +339,17 @@ class MsgClientImpl {
     }
     Detection(request) {
         const data = exports.MsgDetection.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.conflict.Msg", "Detection", data);
+        const promise = this.rpc.request(this.service, "Detection", data);
         return promise.then((data) => exports.MsgDetectionResponse.decode(new minimal_1.default.Reader(data)));
     }
     ConflictVoteCommit(request) {
         const data = exports.MsgConflictVoteCommit.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.conflict.Msg", "ConflictVoteCommit", data);
+        const promise = this.rpc.request(this.service, "ConflictVoteCommit", data);
         return promise.then((data) => exports.MsgConflictVoteCommitResponse.decode(new minimal_1.default.Reader(data)));
     }
     ConflictVoteReveal(request) {
         const data = exports.MsgConflictVoteReveal.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.conflict.Msg", "ConflictVoteReveal", data);
+        const promise = this.rpc.request(this.service, "ConflictVoteReveal", data);
         return promise.then((data) => exports.MsgConflictVoteRevealResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

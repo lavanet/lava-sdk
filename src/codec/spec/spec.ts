@@ -16,6 +16,7 @@ export interface Spec {
   savedBlocks: number;
   averageBlockTime: Long;
   allowedBlockLagForQosSync: Long;
+  blockLastUpdated: Long;
 }
 
 function createBaseSpec(): Spec {
@@ -30,6 +31,7 @@ function createBaseSpec(): Spec {
     savedBlocks: 0,
     averageBlockTime: Long.ZERO,
     allowedBlockLagForQosSync: Long.ZERO,
+    blockLastUpdated: Long.UZERO,
   };
 }
 
@@ -64,6 +66,9 @@ export const Spec = {
     }
     if (!message.allowedBlockLagForQosSync.isZero()) {
       writer.uint32(80).int64(message.allowedBlockLagForQosSync);
+    }
+    if (!message.blockLastUpdated.isZero()) {
+      writer.uint32(88).uint64(message.blockLastUpdated);
     }
     return writer;
   },
@@ -105,6 +110,9 @@ export const Spec = {
         case 10:
           message.allowedBlockLagForQosSync = reader.int64() as Long;
           break;
+        case 11:
+          message.blockLastUpdated = reader.uint64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -127,6 +135,7 @@ export const Spec = {
       allowedBlockLagForQosSync: isSet(object.allowedBlockLagForQosSync)
         ? Long.fromValue(object.allowedBlockLagForQosSync)
         : Long.ZERO,
+      blockLastUpdated: isSet(object.blockLastUpdated) ? Long.fromValue(object.blockLastUpdated) : Long.UZERO,
     };
   },
 
@@ -148,6 +157,8 @@ export const Spec = {
       (obj.averageBlockTime = (message.averageBlockTime || Long.ZERO).toString());
     message.allowedBlockLagForQosSync !== undefined &&
       (obj.allowedBlockLagForQosSync = (message.allowedBlockLagForQosSync || Long.ZERO).toString());
+    message.blockLastUpdated !== undefined &&
+      (obj.blockLastUpdated = (message.blockLastUpdated || Long.UZERO).toString());
     return obj;
   },
 
@@ -168,6 +179,9 @@ export const Spec = {
       (object.allowedBlockLagForQosSync !== undefined && object.allowedBlockLagForQosSync !== null)
         ? Long.fromValue(object.allowedBlockLagForQosSync)
         : Long.ZERO;
+    message.blockLastUpdated = (object.blockLastUpdated !== undefined && object.blockLastUpdated !== null)
+      ? Long.fromValue(object.blockLastUpdated)
+      : Long.UZERO;
     return message;
   },
 };

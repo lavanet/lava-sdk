@@ -348,7 +348,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "lavanet.lava.conflict.Query";
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.ConflictVote = this.ConflictVote.bind(this);
@@ -356,19 +358,19 @@ export class QueryClientImpl implements Query {
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.conflict.Query", "Params", data);
+    const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
   }
 
   ConflictVote(request: QueryGetConflictVoteRequest): Promise<QueryGetConflictVoteResponse> {
     const data = QueryGetConflictVoteRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.conflict.Query", "ConflictVote", data);
+    const promise = this.rpc.request(this.service, "ConflictVote", data);
     return promise.then((data) => QueryGetConflictVoteResponse.decode(new _m0.Reader(data)));
   }
 
   ConflictVoteAll(request: QueryAllConflictVoteRequest): Promise<QueryAllConflictVoteResponse> {
     const data = QueryAllConflictVoteRequest.encode(request).finish();
-    const promise = this.rpc.request("lavanet.lava.conflict.Query", "ConflictVoteAll", data);
+    const promise = this.rpc.request(this.service, "ConflictVoteAll", data);
     return promise.then((data) => QueryAllConflictVoteResponse.decode(new _m0.Reader(data)));
   }
 }

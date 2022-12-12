@@ -483,19 +483,20 @@ exports.QualityOfServiceReport = {
     },
 };
 class RelayerClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "lavanet.lava.pairing.Relayer";
         this.rpc = rpc;
         this.Relay = this.Relay.bind(this);
         this.RelaySubscribe = this.RelaySubscribe.bind(this);
     }
     Relay(request) {
         const data = exports.RelayRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.pairing.Relayer", "Relay", data);
+        const promise = this.rpc.request(this.service, "Relay", data);
         return promise.then((data) => exports.RelayReply.decode(new minimal_1.default.Reader(data)));
     }
     RelaySubscribe(request) {
         const data = exports.RelayRequest.encode(request).finish();
-        const result = this.rpc.serverStreamingRequest("lavanet.lava.pairing.Relayer", "RelaySubscribe", data);
+        const result = this.rpc.serverStreamingRequest(this.service, "RelaySubscribe", data);
         return result.pipe((0, operators_1.map)((data) => exports.RelayReply.decode(new minimal_1.default.Reader(data))));
     }
 }

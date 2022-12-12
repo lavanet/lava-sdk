@@ -4362,7 +4362,9 @@ export interface ABCIApplication {
 
 export class ABCIApplicationClientImpl implements ABCIApplication {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "tendermint.abci.ABCIApplication";
     this.rpc = rpc;
     this.Echo = this.Echo.bind(this);
     this.Flush = this.Flush.bind(this);
@@ -4383,97 +4385,97 @@ export class ABCIApplicationClientImpl implements ABCIApplication {
   }
   Echo(request: RequestEcho): Promise<ResponseEcho> {
     const data = RequestEcho.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "Echo", data);
+    const promise = this.rpc.request(this.service, "Echo", data);
     return promise.then((data) => ResponseEcho.decode(new _m0.Reader(data)));
   }
 
   Flush(request: RequestFlush): Promise<ResponseFlush> {
     const data = RequestFlush.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "Flush", data);
+    const promise = this.rpc.request(this.service, "Flush", data);
     return promise.then((data) => ResponseFlush.decode(new _m0.Reader(data)));
   }
 
   Info(request: RequestInfo): Promise<ResponseInfo> {
     const data = RequestInfo.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "Info", data);
+    const promise = this.rpc.request(this.service, "Info", data);
     return promise.then((data) => ResponseInfo.decode(new _m0.Reader(data)));
   }
 
   DeliverTx(request: RequestDeliverTx): Promise<ResponseDeliverTx> {
     const data = RequestDeliverTx.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "DeliverTx", data);
+    const promise = this.rpc.request(this.service, "DeliverTx", data);
     return promise.then((data) => ResponseDeliverTx.decode(new _m0.Reader(data)));
   }
 
   CheckTx(request: RequestCheckTx): Promise<ResponseCheckTx> {
     const data = RequestCheckTx.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "CheckTx", data);
+    const promise = this.rpc.request(this.service, "CheckTx", data);
     return promise.then((data) => ResponseCheckTx.decode(new _m0.Reader(data)));
   }
 
   Query(request: RequestQuery): Promise<ResponseQuery> {
     const data = RequestQuery.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "Query", data);
+    const promise = this.rpc.request(this.service, "Query", data);
     return promise.then((data) => ResponseQuery.decode(new _m0.Reader(data)));
   }
 
   Commit(request: RequestCommit): Promise<ResponseCommit> {
     const data = RequestCommit.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "Commit", data);
+    const promise = this.rpc.request(this.service, "Commit", data);
     return promise.then((data) => ResponseCommit.decode(new _m0.Reader(data)));
   }
 
   InitChain(request: RequestInitChain): Promise<ResponseInitChain> {
     const data = RequestInitChain.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "InitChain", data);
+    const promise = this.rpc.request(this.service, "InitChain", data);
     return promise.then((data) => ResponseInitChain.decode(new _m0.Reader(data)));
   }
 
   BeginBlock(request: RequestBeginBlock): Promise<ResponseBeginBlock> {
     const data = RequestBeginBlock.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "BeginBlock", data);
+    const promise = this.rpc.request(this.service, "BeginBlock", data);
     return promise.then((data) => ResponseBeginBlock.decode(new _m0.Reader(data)));
   }
 
   EndBlock(request: RequestEndBlock): Promise<ResponseEndBlock> {
     const data = RequestEndBlock.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "EndBlock", data);
+    const promise = this.rpc.request(this.service, "EndBlock", data);
     return promise.then((data) => ResponseEndBlock.decode(new _m0.Reader(data)));
   }
 
   ListSnapshots(request: RequestListSnapshots): Promise<ResponseListSnapshots> {
     const data = RequestListSnapshots.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "ListSnapshots", data);
+    const promise = this.rpc.request(this.service, "ListSnapshots", data);
     return promise.then((data) => ResponseListSnapshots.decode(new _m0.Reader(data)));
   }
 
   OfferSnapshot(request: RequestOfferSnapshot): Promise<ResponseOfferSnapshot> {
     const data = RequestOfferSnapshot.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "OfferSnapshot", data);
+    const promise = this.rpc.request(this.service, "OfferSnapshot", data);
     return promise.then((data) => ResponseOfferSnapshot.decode(new _m0.Reader(data)));
   }
 
   LoadSnapshotChunk(request: RequestLoadSnapshotChunk): Promise<ResponseLoadSnapshotChunk> {
     const data = RequestLoadSnapshotChunk.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "LoadSnapshotChunk", data);
+    const promise = this.rpc.request(this.service, "LoadSnapshotChunk", data);
     return promise.then((data) => ResponseLoadSnapshotChunk.decode(new _m0.Reader(data)));
   }
 
   ApplySnapshotChunk(request: RequestApplySnapshotChunk): Promise<ResponseApplySnapshotChunk> {
     const data = RequestApplySnapshotChunk.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "ApplySnapshotChunk", data);
+    const promise = this.rpc.request(this.service, "ApplySnapshotChunk", data);
     return promise.then((data) => ResponseApplySnapshotChunk.decode(new _m0.Reader(data)));
   }
 
   PrepareProposal(request: RequestPrepareProposal): Promise<ResponsePrepareProposal> {
     const data = RequestPrepareProposal.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "PrepareProposal", data);
+    const promise = this.rpc.request(this.service, "PrepareProposal", data);
     return promise.then((data) => ResponsePrepareProposal.decode(new _m0.Reader(data)));
   }
 
   ProcessProposal(request: RequestProcessProposal): Promise<ResponseProcessProposal> {
     const data = RequestProcessProposal.encode(request).finish();
-    const promise = this.rpc.request("tendermint.abci.ABCIApplication", "ProcessProposal", data);
+    const promise = this.rpc.request(this.service, "ProcessProposal", data);
     return promise.then((data) => ResponseProcessProposal.decode(new _m0.Reader(data)));
   }
 }

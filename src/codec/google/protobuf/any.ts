@@ -43,10 +43,13 @@ export const protobufPackage = "google.protobuf";
  *  Example 4: Pack and unpack a message in Go
  *
  *      foo := &pb.Foo{...}
- *      any, err := ptypes.MarshalAny(foo)
+ *      any, err := anypb.New(foo)
+ *      if err != nil {
+ *        ...
+ *      }
  *      ...
  *      foo := &pb.Foo{}
- *      if err := ptypes.UnmarshalAny(any, foo); err != nil {
+ *      if err := any.UnmarshalTo(foo); err != nil {
  *        ...
  *      }
  *
@@ -87,7 +90,8 @@ export const protobufPackage = "google.protobuf";
 export interface Any {
   /**
    * A URL/resource name that uniquely identifies the type of the serialized
-   * protocol buffer message. The last segment of the URL's path must represent
+   * protocol buffer message. This string must contain at least
+   * one "/" character. The last segment of the URL's path must represent
    * the fully qualified name of the type (as in
    * `path/google.protobuf.Duration`). The name should be in a canonical form
    * (e.g., leading "." is not accepted).

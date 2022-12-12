@@ -359,7 +359,8 @@ exports.QueryChainResponse = {
     },
 };
 class QueryClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "lavanet.lava.spec.Query";
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.Spec = this.Spec.bind(this);
@@ -368,22 +369,22 @@ class QueryClientImpl {
     }
     Params(request) {
         const data = exports.QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.spec.Query", "Params", data);
+        const promise = this.rpc.request(this.service, "Params", data);
         return promise.then((data) => exports.QueryParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
     Spec(request) {
         const data = exports.QueryGetSpecRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.spec.Query", "Spec", data);
+        const promise = this.rpc.request(this.service, "Spec", data);
         return promise.then((data) => exports.QueryGetSpecResponse.decode(new minimal_1.default.Reader(data)));
     }
     SpecAll(request) {
         const data = exports.QueryAllSpecRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.spec.Query", "SpecAll", data);
+        const promise = this.rpc.request(this.service, "SpecAll", data);
         return promise.then((data) => exports.QueryAllSpecResponse.decode(new minimal_1.default.Reader(data)));
     }
     Chain(request) {
         const data = exports.QueryChainRequest.encode(request).finish();
-        const promise = this.rpc.request("lavanet.lava.spec.Query", "Chain", data);
+        const promise = this.rpc.request(this.service, "Chain", data);
         return promise.then((data) => exports.QueryChainResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

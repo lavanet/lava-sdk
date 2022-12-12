@@ -977,7 +977,8 @@ exports.QueryCommunityPoolResponse = {
     },
 };
 class QueryClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "cosmos.distribution.v1beta1.Query";
         this.rpc = rpc;
         this.Params = this.Params.bind(this);
         this.ValidatorDistributionInfo = this.ValidatorDistributionInfo.bind(this);
@@ -992,52 +993,52 @@ class QueryClientImpl {
     }
     Params(request) {
         const data = exports.QueryParamsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "Params", data);
+        const promise = this.rpc.request(this.service, "Params", data);
         return promise.then((data) => exports.QueryParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
     ValidatorDistributionInfo(request) {
         const data = exports.QueryValidatorDistributionInfoRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "ValidatorDistributionInfo", data);
+        const promise = this.rpc.request(this.service, "ValidatorDistributionInfo", data);
         return promise.then((data) => exports.QueryValidatorDistributionInfoResponse.decode(new minimal_1.default.Reader(data)));
     }
     ValidatorOutstandingRewards(request) {
         const data = exports.QueryValidatorOutstandingRewardsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "ValidatorOutstandingRewards", data);
+        const promise = this.rpc.request(this.service, "ValidatorOutstandingRewards", data);
         return promise.then((data) => exports.QueryValidatorOutstandingRewardsResponse.decode(new minimal_1.default.Reader(data)));
     }
     ValidatorCommission(request) {
         const data = exports.QueryValidatorCommissionRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "ValidatorCommission", data);
+        const promise = this.rpc.request(this.service, "ValidatorCommission", data);
         return promise.then((data) => exports.QueryValidatorCommissionResponse.decode(new minimal_1.default.Reader(data)));
     }
     ValidatorSlashes(request) {
         const data = exports.QueryValidatorSlashesRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "ValidatorSlashes", data);
+        const promise = this.rpc.request(this.service, "ValidatorSlashes", data);
         return promise.then((data) => exports.QueryValidatorSlashesResponse.decode(new minimal_1.default.Reader(data)));
     }
     DelegationRewards(request) {
         const data = exports.QueryDelegationRewardsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "DelegationRewards", data);
+        const promise = this.rpc.request(this.service, "DelegationRewards", data);
         return promise.then((data) => exports.QueryDelegationRewardsResponse.decode(new minimal_1.default.Reader(data)));
     }
     DelegationTotalRewards(request) {
         const data = exports.QueryDelegationTotalRewardsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "DelegationTotalRewards", data);
+        const promise = this.rpc.request(this.service, "DelegationTotalRewards", data);
         return promise.then((data) => exports.QueryDelegationTotalRewardsResponse.decode(new minimal_1.default.Reader(data)));
     }
     DelegatorValidators(request) {
         const data = exports.QueryDelegatorValidatorsRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "DelegatorValidators", data);
+        const promise = this.rpc.request(this.service, "DelegatorValidators", data);
         return promise.then((data) => exports.QueryDelegatorValidatorsResponse.decode(new minimal_1.default.Reader(data)));
     }
     DelegatorWithdrawAddress(request) {
         const data = exports.QueryDelegatorWithdrawAddressRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "DelegatorWithdrawAddress", data);
+        const promise = this.rpc.request(this.service, "DelegatorWithdrawAddress", data);
         return promise.then((data) => exports.QueryDelegatorWithdrawAddressResponse.decode(new minimal_1.default.Reader(data)));
     }
     CommunityPool(request) {
         const data = exports.QueryCommunityPoolRequest.encode(request).finish();
-        const promise = this.rpc.request("cosmos.distribution.v1beta1.Query", "CommunityPool", data);
+        const promise = this.rpc.request(this.service, "CommunityPool", data);
         return promise.then((data) => exports.QueryCommunityPoolResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

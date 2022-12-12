@@ -20,8 +20,6 @@ const relay_pb_service_1 = require("../proto/relay_pb_service");
 const browser_1 = __importDefault(require("../util/browser"));
 class Relayer {
     constructor(consumerSession, chainID, privKey) {
-        // For demo use static relayer address
-        this.relayerGrpcWeb = "http://localhost:8081";
         this.activeConsumerSession = consumerSession;
         this.chainID = chainID;
         this.privKey = privKey;
@@ -64,7 +62,7 @@ class Relayer {
             const requestPromise = new Promise((resolve) => {
                 grpc_web_1.grpc.invoke(relay_pb_service_1.Relayer.Relay, {
                     request: request,
-                    host: "https://" + consumerSession.Endpoint.Addr,
+                    host: "http://" + consumerSession.Endpoint.Addr,
                     transport: browser_1.default,
                     onMessage: (message) => {
                         resolve(message);

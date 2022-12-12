@@ -781,7 +781,8 @@ exports.MsgUpdateParamsResponse = {
     },
 };
 class MsgClientImpl {
-    constructor(rpc) {
+    constructor(rpc, opts) {
+        this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "cosmos.staking.v1beta1.Msg";
         this.rpc = rpc;
         this.CreateValidator = this.CreateValidator.bind(this);
         this.EditValidator = this.EditValidator.bind(this);
@@ -793,37 +794,37 @@ class MsgClientImpl {
     }
     CreateValidator(request) {
         const data = exports.MsgCreateValidator.encode(request).finish();
-        const promise = this.rpc.request("cosmos.staking.v1beta1.Msg", "CreateValidator", data);
+        const promise = this.rpc.request(this.service, "CreateValidator", data);
         return promise.then((data) => exports.MsgCreateValidatorResponse.decode(new minimal_1.default.Reader(data)));
     }
     EditValidator(request) {
         const data = exports.MsgEditValidator.encode(request).finish();
-        const promise = this.rpc.request("cosmos.staking.v1beta1.Msg", "EditValidator", data);
+        const promise = this.rpc.request(this.service, "EditValidator", data);
         return promise.then((data) => exports.MsgEditValidatorResponse.decode(new minimal_1.default.Reader(data)));
     }
     Delegate(request) {
         const data = exports.MsgDelegate.encode(request).finish();
-        const promise = this.rpc.request("cosmos.staking.v1beta1.Msg", "Delegate", data);
+        const promise = this.rpc.request(this.service, "Delegate", data);
         return promise.then((data) => exports.MsgDelegateResponse.decode(new minimal_1.default.Reader(data)));
     }
     BeginRedelegate(request) {
         const data = exports.MsgBeginRedelegate.encode(request).finish();
-        const promise = this.rpc.request("cosmos.staking.v1beta1.Msg", "BeginRedelegate", data);
+        const promise = this.rpc.request(this.service, "BeginRedelegate", data);
         return promise.then((data) => exports.MsgBeginRedelegateResponse.decode(new minimal_1.default.Reader(data)));
     }
     Undelegate(request) {
         const data = exports.MsgUndelegate.encode(request).finish();
-        const promise = this.rpc.request("cosmos.staking.v1beta1.Msg", "Undelegate", data);
+        const promise = this.rpc.request(this.service, "Undelegate", data);
         return promise.then((data) => exports.MsgUndelegateResponse.decode(new minimal_1.default.Reader(data)));
     }
     CancelUnbondingDelegation(request) {
         const data = exports.MsgCancelUnbondingDelegation.encode(request).finish();
-        const promise = this.rpc.request("cosmos.staking.v1beta1.Msg", "CancelUnbondingDelegation", data);
+        const promise = this.rpc.request(this.service, "CancelUnbondingDelegation", data);
         return promise.then((data) => exports.MsgCancelUnbondingDelegationResponse.decode(new minimal_1.default.Reader(data)));
     }
     UpdateParams(request) {
         const data = exports.MsgUpdateParams.encode(request).finish();
-        const promise = this.rpc.request("cosmos.staking.v1beta1.Msg", "UpdateParams", data);
+        const promise = this.rpc.request(this.service, "UpdateParams", data);
         return promise.then((data) => exports.MsgUpdateParamsResponse.decode(new minimal_1.default.Reader(data)));
     }
 }

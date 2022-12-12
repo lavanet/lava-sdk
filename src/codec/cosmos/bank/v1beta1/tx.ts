@@ -542,7 +542,9 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.bank.v1beta1.Msg";
     this.rpc = rpc;
     this.Send = this.Send.bind(this);
     this.MultiSend = this.MultiSend.bind(this);
@@ -551,25 +553,25 @@ export class MsgClientImpl implements Msg {
   }
   Send(request: MsgSend): Promise<MsgSendResponse> {
     const data = MsgSend.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Msg", "Send", data);
+    const promise = this.rpc.request(this.service, "Send", data);
     return promise.then((data) => MsgSendResponse.decode(new _m0.Reader(data)));
   }
 
   MultiSend(request: MsgMultiSend): Promise<MsgMultiSendResponse> {
     const data = MsgMultiSend.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Msg", "MultiSend", data);
+    const promise = this.rpc.request(this.service, "MultiSend", data);
     return promise.then((data) => MsgMultiSendResponse.decode(new _m0.Reader(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Msg", "UpdateParams", data);
+    const promise = this.rpc.request(this.service, "UpdateParams", data);
     return promise.then((data) => MsgUpdateParamsResponse.decode(new _m0.Reader(data)));
   }
 
   SetSendEnabled(request: MsgSetSendEnabled): Promise<MsgSetSendEnabledResponse> {
     const data = MsgSetSendEnabled.encode(request).finish();
-    const promise = this.rpc.request("cosmos.bank.v1beta1.Msg", "SetSendEnabled", data);
+    const promise = this.rpc.request(this.service, "SetSendEnabled", data);
     return promise.then((data) => MsgSetSendEnabledResponse.decode(new _m0.Reader(data)));
   }
 }
