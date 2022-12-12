@@ -18,6 +18,7 @@ const tendermint_rpc_1 = require("@cosmjs/tendermint-rpc");
 const query_1 = require("../codec/pairing/query");
 const types_1 = require("../types/types");
 const errors_1 = __importDefault(require("./errors"));
+const errors_2 = __importDefault(require("./errors"));
 class StateTracker {
     constructor() {
         this.queryService = errors_1.default.errQueryServiceNotInitialized;
@@ -99,6 +100,9 @@ class StateTracker {
     pickRandomProvider(providers) {
         // Remove providers which does not match criteria
         const validProviders = providers.filter((item) => item.MaxComputeUnits > item.UsedComputeUnits);
+        if (validProviders.length === 0) {
+            throw errors_2.default.errNoValidProvidersForCurrentEpoch;
+        }
         // Pick random provider
         const random = Math.floor(Math.random() * validProviders.length);
         return validProviders[random];

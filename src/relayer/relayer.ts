@@ -1,6 +1,4 @@
-import {
-  ConsumerSessionWithProvider,
-} from "../types/types";
+import { ConsumerSessionWithProvider } from "../types/types";
 import { Secp256k1, sha256 } from "@cosmjs/crypto";
 import { fromHex } from "@cosmjs/encoding";
 import { grpc } from "@improbable-eng/grpc-web";
@@ -69,8 +67,7 @@ class Relayer {
         },
         onEnd: (
           code: grpc.Code,
-          msg: string | undefined,
-          trailers: grpc.Metadata
+          msg: string | undefined
         ) => {
           if (code != grpc.Code.OK) {
             if (msg != undefined) {

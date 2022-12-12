@@ -11,6 +11,9 @@ class StateTrackerErrors {
   static errRelayerServiceNotInitialized: Error = new Error(
     "Relayer service was not initialized"
   );
+  static errNoValidProvidersForCurrentEpoch: Error = new Error(
+    "No valid providers for current epoch"
+  );
 }
 
 export default StateTrackerErrors;

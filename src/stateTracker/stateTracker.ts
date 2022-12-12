@@ -14,6 +14,7 @@ import {
 } from "../types/types";
 import StateTrackerError from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
+import StateTrackerErrors from "./errors";
 
 export class StateTracker {
   private queryService: QueryClientImpl | Error;
@@ -137,6 +138,10 @@ export class StateTracker {
     const validProviders = providers.filter(
       (item) => item.MaxComputeUnits > item.UsedComputeUnits
     );
+
+    if (validProviders.length === 0) {
+      throw StateTrackerErrors.errNoValidProvidersForCurrentEpoch;
+    }
 
     // Pick random provider
     const random = Math.floor(Math.random() * validProviders.length);

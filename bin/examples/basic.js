@@ -12,6 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/*
+                    Basic example
+        This file shows basic usage of the future polygon-sdk library
+        Currently we have implemented:
+        1. Recreating account from private key
+        2. Fetching paring list
+*/
 const logger_1 = __importDefault(require("../logger/logger"));
 // Fetch from package
 const sdk_1 = require("../sdk/sdk");
@@ -31,9 +38,10 @@ function run() {
         console.log("StatusResponse: ", dec.decode(statusResponse.getData_asU8()));
         console.log("BlockResponse: ", dec.decode(blockResponse.getData_asU8()));
         setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+            console.log("New epoch");
             const statusResponse = yield lavaSDK.sendRelay("status", []);
             const dec = new TextDecoder();
-            console.log("aaaa: ", dec.decode(statusResponse.getData_asU8()));
+            console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
         }), 30000);
     });
 }

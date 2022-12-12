@@ -62,7 +62,7 @@ class Relayer {
                     onMessage: (message) => {
                         resolve(message);
                     },
-                    onEnd: (code, msg, trailers) => {
+                    onEnd: (code, msg) => {
                         if (code != grpc_web_1.grpc.Code.OK) {
                             if (msg != undefined) {
                                 logger_1.default.error(msg);

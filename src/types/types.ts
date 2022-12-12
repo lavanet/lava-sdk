@@ -4,10 +4,10 @@ export class Session {
 
   constructor(
     pairingList: ConsumerSessionWithProvider[],
-    nextEpochStart: Date,
-  ){
-    this.NextEpochStart = nextEpochStart
-    this.PairingList = pairingList
+    nextEpochStart: Date
+  ) {
+    this.NextEpochStart = nextEpochStart;
+    this.PairingList = pairingList;
   }
 }
 
@@ -25,7 +25,7 @@ export class ConsumerSessionWithProvider {
     session: SingleConsumerSession,
     maxComputeUnits: number,
     usedComputeUnits: number,
-    reliabilitySent: boolean,
+    reliabilitySent: boolean
   ) {
     this.Acc = acc;
     this.Endpoints = endpoints;

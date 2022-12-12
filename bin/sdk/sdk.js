@@ -49,32 +49,35 @@ class LavaSDK {
     }
     sendRelay(method, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Check if account was initialized
-            if (this.relayer instanceof Error) {
-                throw errors_1.default.errRelayerServiceNotInitialized;
+            try {
+                // Check if account was initialized
+                if (this.relayer instanceof Error) {
+                    throw errors_1.default.errRelayerServiceNotInitialized;
+                }
+                // Check if state tracker was initialized
+                if (this.stateTracker instanceof Error) {
+                    throw errors_1.default.errStateTrackerServiceNotInitialized;
+                }
+                // Check if state tracker was initialized
+                if (this.account instanceof Error) {
+                    throw errors_1.default.errAccountNotInitialized;
+                }
+                // Check if activeSession was initialized
+                if (this.activeSession instanceof Error) {
+                    throw errors_1.default.errSessionNotInitialized;
+                }
+                // Check if new epoch has started
+                if (this.newEpochStarted()) {
+                    this.activeSession = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
+                }
+                const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSession.PairingList);
+                // Send relay
+                const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession);
+                return relayResponse;
             }
-            // Check if state tracker was initialized
-            if (this.stateTracker instanceof Error) {
-                throw errors_1.default.errStateTrackerServiceNotInitialized;
+            catch (err) {
+                throw err;
             }
-            // Check if state tracker was initialized
-            if (this.account instanceof Error) {
-                throw errors_1.default.errAccountNotInitialized;
-            }
-            // Check if activeSession was initialized
-            if (this.activeSession instanceof Error) {
-                throw errors_1.default.errSessionNotInitialized;
-            }
-            // Check if new epoch has started
-            if (this.newEpochStarted()) {
-                console.log("USAOO nova epocha");
-                this.activeSession = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
-            }
-            // TODO check if there are no valid providers for this epoch
-            const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSession.PairingList);
-            // Send relay
-            const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession);
-            return relayResponse;
         });
     }
     newEpochStarted() {

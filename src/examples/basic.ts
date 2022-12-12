@@ -5,7 +5,6 @@
         1. Recreating account from private key
         2. Fetching paring list
 */
-import { timeInterval } from "rxjs";
 import Logger from "../logger/logger";
 
 // Fetch from package

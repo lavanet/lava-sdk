@@ -66,48 +66,51 @@ class LavaSDK {
   }
 
   async sendRelay(method: string, params: string[]): Promise<RelayReply> {
-    // Check if account was initialized
-    if (this.relayer instanceof Error) {
-      throw SDKErrors.errRelayerServiceNotInitialized;
-    }
+    try {
+      // Check if account was initialized
+      if (this.relayer instanceof Error) {
+        throw SDKErrors.errRelayerServiceNotInitialized;
+      }
 
-    // Check if state tracker was initialized
-    if (this.stateTracker instanceof Error) {
-      throw SDKErrors.errStateTrackerServiceNotInitialized;
-    }
+      // Check if state tracker was initialized
+      if (this.stateTracker instanceof Error) {
+        throw SDKErrors.errStateTrackerServiceNotInitialized;
+      }
 
-    // Check if state tracker was initialized
-    if (this.account instanceof Error) {
-      throw SDKErrors.errAccountNotInitialized;
-    }
+      // Check if state tracker was initialized
+      if (this.account instanceof Error) {
+        throw SDKErrors.errAccountNotInitialized;
+      }
 
-    // Check if activeSession was initialized
-    if (this.activeSession instanceof Error) {
-      throw SDKErrors.errSessionNotInitialized;
-    }
+      // Check if activeSession was initialized
+      if (this.activeSession instanceof Error) {
+        throw SDKErrors.errSessionNotInitialized;
+      }
 
-    // Check if new epoch has started
-    if (this.newEpochStarted()) {
-      this.activeSession = await this.stateTracker.getSession(
-        this.account,
-        this.chainID,
-        this.rpcInterface
+      // Check if new epoch has started
+      if (this.newEpochStarted()) {
+        this.activeSession = await this.stateTracker.getSession(
+          this.account,
+          this.chainID,
+          this.rpcInterface
+        );
+      }
+
+      const consumerProviderSession = this.stateTracker.pickRandomProvider(
+        this.activeSession.PairingList
       );
+
+      // Send relay
+      const relayResponse = await this.relayer.sendRelay(
+        method,
+        params,
+        consumerProviderSession
+      );
+
+      return relayResponse;
+    } catch (err) {
+      throw err;
     }
-
-    // TODO check if there are no valid providers for this epoch
-    const consumerProviderSession = this.stateTracker.pickRandomProvider(
-      this.activeSession.PairingList
-    );
-
-    // Send relay
-    const relayResponse = await this.relayer.sendRelay(
-      method,
-      params,
-      consumerProviderSession
-    );
-
-    return relayResponse;
   }
 
   private newEpochStarted(): boolean {
