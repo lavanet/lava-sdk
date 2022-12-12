@@ -5,7 +5,6 @@ import { grpc } from "@improbable-eng/grpc-web";
 import { RelayRequest, RelayReply } from "../proto/relay_pb";
 import { Relayer as RelayerService } from "../proto/relay_pb_service";
 import transport from "../util/browser";
-import Logger from "../logger/logger";
 
 class Relayer {
   private chainID: string;
@@ -28,6 +27,13 @@ class Relayer {
 
     const consumerSession = consumerProviderSession.Session;
 
+    // Required cuSUm
+    const cuSum = 10;
+
+    // Increase used compute units
+    consumerProviderSession.UsedComputeUnits =
+      consumerProviderSession.UsedComputeUnits + cuSum;
+
     const data =
       '{"jsonrpc": "2.0", "id": 1, "method": ' +
       stringifyMethod +
@@ -41,7 +47,7 @@ class Relayer {
     request.setConnectionType("");
     request.setApiUrl("");
     request.setSessionId(consumerSession.getNewSessionId());
-    request.setCuSum(10);
+    request.setCuSum(cuSum);
     request.setSig(new Uint8Array());
     request.setData(data);
     request.setProvider(consumerSession.Account);
@@ -57,7 +63,7 @@ class Relayer {
     request.setSig(signedMessage);
     request.setData(enc.encode(data));
 
-    const requestPromise = new Promise<RelayReply>((resolve) => {
+    const requestPromise = new Promise<RelayReply>((resolve, reject) => {
       grpc.invoke(RelayerService.Relay, {
         request: request,
         host: "http://" + consumerSession.Endpoint.Addr,
@@ -65,13 +71,13 @@ class Relayer {
         onMessage: (message: RelayReply) => {
           resolve(message);
         },
-        onEnd: (
-          code: grpc.Code,
-          msg: string | undefined
-        ) => {
+        onEnd: (code: grpc.Code, msg: string | undefined) => {
           if (code != grpc.Code.OK) {
             if (msg != undefined) {
-              Logger.error(msg);
+              consumerProviderSession.UsedComputeUnits =
+                consumerProviderSession.UsedComputeUnits - cuSum;
+
+              reject(new Error(msg));
             }
           }
         },

@@ -30,12 +30,20 @@ async function run() {
   console.log("BlockResponse: ", dec.decode(blockResponse.getData_asU8()));
 
   setTimeout(async () => {
+    console.log("Same epoch");
+    const statusResponse = await lavaSDK.sendRelay("status", []);
+
+    const dec = new TextDecoder();
+    console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
+  }, 5000);
+
+  setTimeout(async () => {
     console.log("New epoch");
     const statusResponse = await lavaSDK.sendRelay("status", []);
 
     const dec = new TextDecoder();
     console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
-  }, 30000);
+  }, 20000);
 }
 
 run()

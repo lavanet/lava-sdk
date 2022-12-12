@@ -18,7 +18,6 @@ const grpc_web_1 = require("@improbable-eng/grpc-web");
 const relay_pb_1 = require("../proto/relay_pb");
 const relay_pb_service_1 = require("../proto/relay_pb_service");
 const browser_1 = __importDefault(require("../util/browser"));
-const logger_1 = __importDefault(require("../logger/logger"));
 class Relayer {
     constructor(chainID, privKey) {
         this.chainID = chainID;
@@ -30,6 +29,11 @@ class Relayer {
             const stringifyParam = JSON.stringify(params);
             const enc = new TextEncoder();
             const consumerSession = consumerProviderSession.Session;
+            // Required cuSUm
+            const cuSum = 10;
+            // Increase used compute units
+            consumerProviderSession.UsedComputeUnits =
+                consumerProviderSession.UsedComputeUnits + cuSum;
             const data = '{"jsonrpc": "2.0", "id": 1, "method": ' +
                 stringifyMethod +
                 ', "params": ' +
@@ -41,7 +45,7 @@ class Relayer {
             request.setConnectionType("");
             request.setApiUrl("");
             request.setSessionId(consumerSession.getNewSessionId());
-            request.setCuSum(10);
+            request.setCuSum(cuSum);
             request.setSig(new Uint8Array());
             request.setData(data);
             request.setProvider(consumerSession.Account);
@@ -54,7 +58,7 @@ class Relayer {
             // Add signature in the request
             request.setSig(signedMessage);
             request.setData(enc.encode(data));
-            const requestPromise = new Promise((resolve) => {
+            const requestPromise = new Promise((resolve, reject) => {
                 grpc_web_1.grpc.invoke(relay_pb_service_1.Relayer.Relay, {
                     request: request,
                     host: "http://" + consumerSession.Endpoint.Addr,
@@ -65,7 +69,9 @@ class Relayer {
                     onEnd: (code, msg) => {
                         if (code != grpc_web_1.grpc.Code.OK) {
                             if (msg != undefined) {
-                                logger_1.default.error(msg);
+                                consumerProviderSession.UsedComputeUnits =
+                                    consumerProviderSession.UsedComputeUnits - cuSum;
+                                reject(new Error(msg));
                             }
                         }
                     },

@@ -107,6 +107,8 @@ class LavaSDK {
         consumerProviderSession
       );
 
+      console.log(this.activeSession);
+
       return relayResponse;
     } catch (err) {
       throw err;

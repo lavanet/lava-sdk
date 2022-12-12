@@ -73,6 +73,7 @@ class LavaSDK {
                 const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSession.PairingList);
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession);
+                console.log(this.activeSession);
                 return relayResponse;
             }
             catch (err) {

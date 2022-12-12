@@ -38,11 +38,17 @@ function run() {
         console.log("StatusResponse: ", dec.decode(statusResponse.getData_asU8()));
         console.log("BlockResponse: ", dec.decode(blockResponse.getData_asU8()));
         setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+            console.log("Same epoch");
+            const statusResponse = yield lavaSDK.sendRelay("status", []);
+            const dec = new TextDecoder();
+            console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
+        }), 5000);
+        setTimeout(() => __awaiter(this, void 0, void 0, function* () {
             console.log("New epoch");
             const statusResponse = yield lavaSDK.sendRelay("status", []);
             const dec = new TextDecoder();
             console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
-        }), 30000);
+        }), 20000);
     });
 }
 run()
