@@ -71,9 +71,12 @@ class LavaSDK {
                     this.activeSession = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
                 }
                 const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSession.PairingList);
+                const cuSum = this.activeSession.getCuSumFromApi(method);
+                if (cuSum == undefined) {
+                    throw errors_1.default.errMethodNotSupportedNoCuSUM;
+                }
                 // Send relay
-                const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession);
-                console.log(this.activeSession);
+                const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession, cuSum);
                 return relayResponse;
             }
             catch (err) {

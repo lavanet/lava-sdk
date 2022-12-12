@@ -18,7 +18,8 @@ class Relayer {
   async sendRelay(
     method: string,
     params: string[],
-    consumerProviderSession: ConsumerSessionWithProvider
+    consumerProviderSession: ConsumerSessionWithProvider,
+    cuSum: number
   ): Promise<RelayReply> {
     const stringifyMethod = JSON.stringify(method);
     const stringifyParam = JSON.stringify(params);
@@ -26,9 +27,6 @@ class Relayer {
     const enc = new TextEncoder();
 
     const consumerSession = consumerProviderSession.Session;
-
-    // Required cuSUm
-    const cuSum = 10;
 
     // Increase used compute units
     consumerProviderSession.UsedComputeUnits =

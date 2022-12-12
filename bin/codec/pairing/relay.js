@@ -3,11 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RelayerClientImpl = exports.QualityOfServiceReport = exports.VRFData = exports.RelayReply = exports.RelayRequest = exports.protobufPackage = void 0;
+exports.RelayerClientImpl = exports.VRFData = exports.RelayReply = exports.RelayRequest = exports.protobufPackage = void 0;
 /* eslint-disable */
 const long_1 = __importDefault(require("long"));
 const minimal_1 = __importDefault(require("protobufjs/minimal"));
-const operators_1 = require("rxjs/operators");
 exports.protobufPackage = "lavanet.lava.pairing";
 function createBaseRelayRequest() {
     return {
@@ -23,7 +22,6 @@ function createBaseRelayRequest() {
         relayNum: long_1.default.UZERO,
         requestBlock: long_1.default.ZERO,
         DataReliability: undefined,
-        QoSReport: undefined,
         unresponsiveProviders: new Uint8Array(),
     };
 }
@@ -64,9 +62,6 @@ exports.RelayRequest = {
         }
         if (message.DataReliability !== undefined) {
             exports.VRFData.encode(message.DataReliability, writer.uint32(98).fork()).ldelim();
-        }
-        if (message.QoSReport !== undefined) {
-            exports.QualityOfServiceReport.encode(message.QoSReport, writer.uint32(106).fork()).ldelim();
         }
         if (message.unresponsiveProviders.length !== 0) {
             writer.uint32(114).bytes(message.unresponsiveProviders);
@@ -116,9 +111,6 @@ exports.RelayRequest = {
                 case 12:
                     message.DataReliability = exports.VRFData.decode(reader, reader.uint32());
                     break;
-                case 13:
-                    message.QoSReport = exports.QualityOfServiceReport.decode(reader, reader.uint32());
-                    break;
                 case 14:
                     message.unresponsiveProviders = reader.bytes();
                     break;
@@ -143,7 +135,6 @@ exports.RelayRequest = {
             relayNum: isSet(object.relayNum) ? long_1.default.fromValue(object.relayNum) : long_1.default.UZERO,
             requestBlock: isSet(object.requestBlock) ? long_1.default.fromValue(object.requestBlock) : long_1.default.ZERO,
             DataReliability: isSet(object.DataReliability) ? exports.VRFData.fromJSON(object.DataReliability) : undefined,
-            QoSReport: isSet(object.QoSReport) ? exports.QualityOfServiceReport.fromJSON(object.QoSReport) : undefined,
             unresponsiveProviders: isSet(object.unresponsiveProviders)
                 ? bytesFromBase64(object.unresponsiveProviders)
                 : new Uint8Array(),
@@ -166,8 +157,6 @@ exports.RelayRequest = {
         message.requestBlock !== undefined && (obj.requestBlock = (message.requestBlock || long_1.default.ZERO).toString());
         message.DataReliability !== undefined &&
             (obj.DataReliability = message.DataReliability ? exports.VRFData.toJSON(message.DataReliability) : undefined);
-        message.QoSReport !== undefined &&
-            (obj.QoSReport = message.QoSReport ? exports.QualityOfServiceReport.toJSON(message.QoSReport) : undefined);
         message.unresponsiveProviders !== undefined &&
             (obj.unresponsiveProviders = base64FromBytes(message.unresponsiveProviders !== undefined ? message.unresponsiveProviders : new Uint8Array()));
         return obj;
@@ -196,9 +185,6 @@ exports.RelayRequest = {
             : long_1.default.ZERO;
         message.DataReliability = (object.DataReliability !== undefined && object.DataReliability !== null)
             ? exports.VRFData.fromPartial(object.DataReliability)
-            : undefined;
-        message.QoSReport = (object.QoSReport !== undefined && object.QoSReport !== null)
-            ? exports.QualityOfServiceReport.fromPartial(object.QoSReport)
             : undefined;
         message.unresponsiveProviders = (_g = object.unresponsiveProviders) !== null && _g !== void 0 ? _g : new Uint8Array();
         return message;
@@ -420,84 +406,16 @@ exports.VRFData = {
         return message;
     },
 };
-function createBaseQualityOfServiceReport() {
-    return { latency: "", availability: "", sync: "" };
-}
-exports.QualityOfServiceReport = {
-    encode(message, writer = minimal_1.default.Writer.create()) {
-        if (message.latency !== "") {
-            writer.uint32(10).string(message.latency);
-        }
-        if (message.availability !== "") {
-            writer.uint32(18).string(message.availability);
-        }
-        if (message.sync !== "") {
-            writer.uint32(26).string(message.sync);
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseQualityOfServiceReport();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.latency = reader.string();
-                    break;
-                case 2:
-                    message.availability = reader.string();
-                    break;
-                case 3:
-                    message.sync = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return {
-            latency: isSet(object.latency) ? String(object.latency) : "",
-            availability: isSet(object.availability) ? String(object.availability) : "",
-            sync: isSet(object.sync) ? String(object.sync) : "",
-        };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.latency !== undefined && (obj.latency = message.latency);
-        message.availability !== undefined && (obj.availability = message.availability);
-        message.sync !== undefined && (obj.sync = message.sync);
-        return obj;
-    },
-    fromPartial(object) {
-        var _a, _b, _c;
-        const message = createBaseQualityOfServiceReport();
-        message.latency = (_a = object.latency) !== null && _a !== void 0 ? _a : "";
-        message.availability = (_b = object.availability) !== null && _b !== void 0 ? _b : "";
-        message.sync = (_c = object.sync) !== null && _c !== void 0 ? _c : "";
-        return message;
-    },
-};
 class RelayerClientImpl {
     constructor(rpc, opts) {
         this.service = (opts === null || opts === void 0 ? void 0 : opts.service) || "lavanet.lava.pairing.Relayer";
         this.rpc = rpc;
         this.Relay = this.Relay.bind(this);
-        this.RelaySubscribe = this.RelaySubscribe.bind(this);
     }
     Relay(request) {
         const data = exports.RelayRequest.encode(request).finish();
         const promise = this.rpc.request(this.service, "Relay", data);
         return promise.then((data) => exports.RelayReply.decode(new minimal_1.default.Reader(data)));
-    }
-    RelaySubscribe(request) {
-        const data = exports.RelayRequest.encode(request).finish();
-        const result = this.rpc.serverStreamingRequest(this.service, "RelaySubscribe", data);
-        return result.pipe((0, operators_1.map)((data) => exports.RelayReply.decode(new minimal_1.default.Reader(data))));
     }
 }
 exports.RelayerClientImpl = RelayerClientImpl;

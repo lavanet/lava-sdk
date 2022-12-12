@@ -16,12 +16,15 @@ exports.createStateTracker = exports.StateTracker = void 0;
 const stargate_1 = require("@cosmjs/stargate");
 const tendermint_rpc_1 = require("@cosmjs/tendermint-rpc");
 const query_1 = require("../codec/pairing/query");
+const query_2 = require("../codec/spec/query");
 const types_1 = require("../types/types");
 const errors_1 = __importDefault(require("./errors"));
 const errors_2 = __importDefault(require("./errors"));
 class StateTracker {
     constructor() {
-        this.queryService = errors_1.default.errQueryServiceNotInitialized;
+        this.pairingQueryService =
+            errors_1.default.errPairingQueryServiceNotInitialized;
+        this.specQueryService = errors_1.default.errSpecQueryServiceNotInitialized;
         this.tendermintClient =
             errors_1.default.errTendermintClientServiceNotInitialized;
     }
@@ -30,7 +33,8 @@ class StateTracker {
             const tmClient = yield tendermint_rpc_1.Tendermint34Client.connect(endpoint);
             const queryClient = new stargate_1.QueryClient(tmClient);
             const rpcClient = (0, stargate_1.createProtobufRpcClient)(queryClient);
-            this.queryService = new query_1.QueryClientImpl(rpcClient);
+            this.pairingQueryService = new query_1.QueryClientImpl(rpcClient);
+            this.specQueryService = new query_2.QueryClientImpl(rpcClient);
             this.tendermintClient = tmClient;
         });
     }
@@ -41,6 +45,11 @@ class StateTracker {
                 if (this.tendermintClient instanceof Error) {
                     throw errors_1.default.errTendermintClientServiceNotInitialized;
                 }
+                // Create request for getCuSumForChainID method
+                const queryGetSpecRequest = {
+                    ChainID: chainID,
+                };
+                const apis = yield this.getCuSumForChainID(queryGetSpecRequest, rpcInterface);
                 // Create pairing request for getPairing method
                 const pairingRequest = {
                     chainID: chainID,
@@ -89,7 +98,7 @@ class StateTracker {
                     pairing.push(newPairing);
                 }
                 // Create session object
-                const session = new types_1.Session(pairing, nextEpochStart);
+                const session = new types_1.Session(pairing, nextEpochStart, apis);
                 return session;
             }
             catch (err) {
@@ -110,24 +119,54 @@ class StateTracker {
     getPairingFromChain(request) {
         return __awaiter(this, void 0, void 0, function* () {
             // Check if query service was initialized
-            if (this.queryService instanceof Error) {
-                throw errors_1.default.errQueryServiceNotInitialized;
+            if (this.pairingQueryService instanceof Error) {
+                throw errors_1.default.errPairingQueryServiceNotInitialized;
             }
             // Get pairing from the chain
-            const queryResult = yield this.queryService.GetPairing(request);
+            const queryResult = yield this.pairingQueryService.GetPairing(request);
             return queryResult;
         });
     }
     getMaxCuForUser(request) {
         return __awaiter(this, void 0, void 0, function* () {
             // Check if query service was initialized
-            if (this.queryService instanceof Error) {
-                throw errors_1.default.errQueryServiceNotInitialized;
+            if (this.pairingQueryService instanceof Error) {
+                throw errors_1.default.errPairingQueryServiceNotInitialized;
             }
             // Get pairing from the chain
-            const queryResult = yield this.queryService.UserEntry(request);
+            const queryResult = yield this.pairingQueryService.UserEntry(request);
             // return maxCu from userEntry
             return queryResult.maxCU.low;
+        });
+    }
+    getCuSumForChainID(request, rpcInterface) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Check if query service was initialized
+            if (this.specQueryService instanceof Error) {
+                throw errors_1.default.errSpecQueryServiceNotInitialized;
+            }
+            // Get pairing from the chain
+            const queryResult = yield this.specQueryService.Spec(request);
+            if (queryResult.Spec == undefined) {
+                throw errors_1.default.errSpecNotFound;
+            }
+            const apis = new Map();
+            // Extract apis from response
+            for (const element of queryResult.Spec.apis) {
+                for (const apiInterface of element.apiInterfaces) {
+                    // Skip if interface does not match
+                    if (apiInterface.interface != rpcInterface)
+                        continue;
+                    // Currently we do not support rest
+                    if (apiInterface.interface == "rest")
+                        continue;
+                    else {
+                        // Handle RPC apis
+                        apis.set(element.name, element.computeUnits.getLowBits());
+                    }
+                }
+            }
+            return apis;
         });
     }
 }

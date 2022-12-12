@@ -1,13 +1,20 @@
 export class Session {
   PairingList: ConsumerSessionWithProvider[];
   NextEpochStart: Date;
+  Apis: Map<string, number>;
 
   constructor(
     pairingList: ConsumerSessionWithProvider[],
-    nextEpochStart: Date
+    nextEpochStart: Date,
+    apis: Map<string, number>
   ) {
     this.NextEpochStart = nextEpochStart;
     this.PairingList = pairingList;
+    this.Apis = apis;
+  }
+
+  getCuSumFromApi(name: string): number | undefined {
+    return this.Apis.get(name);
   }
 }
 
@@ -63,9 +70,8 @@ export class SingleConsumerSession {
   }
 
   getNewSessionId(): number {
-    // TODO for production need better session generator
-    const min = 100;
-    const max = 10000000000;
+    const min = 1;
+    const max = Number.MAX_SAFE_INTEGER;
     return Math.floor(Math.random() * (max - min) + min);
   }
 }

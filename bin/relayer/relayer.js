@@ -23,14 +23,12 @@ class Relayer {
         this.chainID = chainID;
         this.privKey = privKey;
     }
-    sendRelay(method, params, consumerProviderSession) {
+    sendRelay(method, params, consumerProviderSession, cuSum) {
         return __awaiter(this, void 0, void 0, function* () {
             const stringifyMethod = JSON.stringify(method);
             const stringifyParam = JSON.stringify(params);
             const enc = new TextEncoder();
             const consumerSession = consumerProviderSession.Session;
-            // Required cuSUm
-            const cuSum = 10;
             // Increase used compute units
             consumerProviderSession.UsedComputeUnits =
                 consumerProviderSession.UsedComputeUnits + cuSum;

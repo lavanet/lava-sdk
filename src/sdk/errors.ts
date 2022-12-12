@@ -11,6 +11,9 @@ class SDKErrors {
   static errSessionNotInitialized: Error = new Error(
     "Session was not initialized"
   );
+  static errMethodNotSupportedNoCuSUM: Error = new Error(
+    "Method not supported no compute units found"
+  );
 }
 
 export default SDKErrors;

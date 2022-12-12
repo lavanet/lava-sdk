@@ -2,9 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Endpoint = exports.SingleConsumerSession = exports.ConsumerSessionWithProvider = exports.Session = void 0;
 class Session {
-    constructor(pairingList, nextEpochStart) {
+    constructor(pairingList, nextEpochStart, apis) {
         this.NextEpochStart = nextEpochStart;
         this.PairingList = pairingList;
+        this.Apis = apis;
+    }
+    getCuSumFromApi(name) {
+        return this.Apis.get(name);
     }
 }
 exports.Session = Session;
@@ -30,9 +34,8 @@ class SingleConsumerSession {
         this.Account = account;
     }
     getNewSessionId() {
-        // TODO for production need better session generator
-        const min = 100;
-        const max = 10000000000;
+        const min = 1;
+        const max = Number.MAX_SAFE_INTEGER;
         return Math.floor(Math.random() * (max - min) + min);
     }
 }

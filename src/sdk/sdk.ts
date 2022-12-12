@@ -100,14 +100,19 @@ class LavaSDK {
         this.activeSession.PairingList
       );
 
+      const cuSum = this.activeSession.getCuSumFromApi(method);
+
+      if (cuSum == undefined) {
+        throw SDKErrors.errMethodNotSupportedNoCuSUM;
+      }
+
       // Send relay
       const relayResponse = await this.relayer.sendRelay(
         method,
         params,
-        consumerProviderSession
+        consumerProviderSession,
+        cuSum
       );
-
-      console.log(this.activeSession);
 
       return relayResponse;
     } catch (err) {

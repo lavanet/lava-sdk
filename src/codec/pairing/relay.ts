@@ -1,8 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 
 export const protobufPackage = "lavanet.lava.pairing";
 
@@ -21,7 +19,6 @@ export interface RelayRequest {
   relayNum: Long;
   requestBlock: Long;
   DataReliability?: VRFData;
-  QoSReport?: QualityOfServiceReport;
   unresponsiveProviders: Uint8Array;
 }
 
@@ -47,12 +44,6 @@ export interface VRFData {
   sig: Uint8Array;
 }
 
-export interface QualityOfServiceReport {
-  latency: string;
-  availability: string;
-  sync: string;
-}
-
 function createBaseRelayRequest(): RelayRequest {
   return {
     chainID: "",
@@ -67,7 +58,6 @@ function createBaseRelayRequest(): RelayRequest {
     relayNum: Long.UZERO,
     requestBlock: Long.ZERO,
     DataReliability: undefined,
-    QoSReport: undefined,
     unresponsiveProviders: new Uint8Array(),
   };
 }
@@ -109,9 +99,6 @@ export const RelayRequest = {
     }
     if (message.DataReliability !== undefined) {
       VRFData.encode(message.DataReliability, writer.uint32(98).fork()).ldelim();
-    }
-    if (message.QoSReport !== undefined) {
-      QualityOfServiceReport.encode(message.QoSReport, writer.uint32(106).fork()).ldelim();
     }
     if (message.unresponsiveProviders.length !== 0) {
       writer.uint32(114).bytes(message.unresponsiveProviders);
@@ -162,9 +149,6 @@ export const RelayRequest = {
         case 12:
           message.DataReliability = VRFData.decode(reader, reader.uint32());
           break;
-        case 13:
-          message.QoSReport = QualityOfServiceReport.decode(reader, reader.uint32());
-          break;
         case 14:
           message.unresponsiveProviders = reader.bytes();
           break;
@@ -190,7 +174,6 @@ export const RelayRequest = {
       relayNum: isSet(object.relayNum) ? Long.fromValue(object.relayNum) : Long.UZERO,
       requestBlock: isSet(object.requestBlock) ? Long.fromValue(object.requestBlock) : Long.ZERO,
       DataReliability: isSet(object.DataReliability) ? VRFData.fromJSON(object.DataReliability) : undefined,
-      QoSReport: isSet(object.QoSReport) ? QualityOfServiceReport.fromJSON(object.QoSReport) : undefined,
       unresponsiveProviders: isSet(object.unresponsiveProviders)
         ? bytesFromBase64(object.unresponsiveProviders)
         : new Uint8Array(),
@@ -214,8 +197,6 @@ export const RelayRequest = {
     message.requestBlock !== undefined && (obj.requestBlock = (message.requestBlock || Long.ZERO).toString());
     message.DataReliability !== undefined &&
       (obj.DataReliability = message.DataReliability ? VRFData.toJSON(message.DataReliability) : undefined);
-    message.QoSReport !== undefined &&
-      (obj.QoSReport = message.QoSReport ? QualityOfServiceReport.toJSON(message.QoSReport) : undefined);
     message.unresponsiveProviders !== undefined &&
       (obj.unresponsiveProviders = base64FromBytes(
         message.unresponsiveProviders !== undefined ? message.unresponsiveProviders : new Uint8Array(),
@@ -246,9 +227,6 @@ export const RelayRequest = {
       : Long.ZERO;
     message.DataReliability = (object.DataReliability !== undefined && object.DataReliability !== null)
       ? VRFData.fromPartial(object.DataReliability)
-      : undefined;
-    message.QoSReport = (object.QoSReport !== undefined && object.QoSReport !== null)
-      ? QualityOfServiceReport.fromPartial(object.QoSReport)
       : undefined;
     message.unresponsiveProviders = object.unresponsiveProviders ?? new Uint8Array();
     return message;
@@ -483,76 +461,8 @@ export const VRFData = {
   },
 };
 
-function createBaseQualityOfServiceReport(): QualityOfServiceReport {
-  return { latency: "", availability: "", sync: "" };
-}
-
-export const QualityOfServiceReport = {
-  encode(message: QualityOfServiceReport, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.latency !== "") {
-      writer.uint32(10).string(message.latency);
-    }
-    if (message.availability !== "") {
-      writer.uint32(18).string(message.availability);
-    }
-    if (message.sync !== "") {
-      writer.uint32(26).string(message.sync);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): QualityOfServiceReport {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQualityOfServiceReport();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.latency = reader.string();
-          break;
-        case 2:
-          message.availability = reader.string();
-          break;
-        case 3:
-          message.sync = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QualityOfServiceReport {
-    return {
-      latency: isSet(object.latency) ? String(object.latency) : "",
-      availability: isSet(object.availability) ? String(object.availability) : "",
-      sync: isSet(object.sync) ? String(object.sync) : "",
-    };
-  },
-
-  toJSON(message: QualityOfServiceReport): unknown {
-    const obj: any = {};
-    message.latency !== undefined && (obj.latency = message.latency);
-    message.availability !== undefined && (obj.availability = message.availability);
-    message.sync !== undefined && (obj.sync = message.sync);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<QualityOfServiceReport>, I>>(object: I): QualityOfServiceReport {
-    const message = createBaseQualityOfServiceReport();
-    message.latency = object.latency ?? "";
-    message.availability = object.availability ?? "";
-    message.sync = object.sync ?? "";
-    return message;
-  },
-};
-
 export interface Relayer {
   Relay(request: RelayRequest): Promise<RelayReply>;
-  RelaySubscribe(request: RelayRequest): Observable<RelayReply>;
 }
 
 export class RelayerClientImpl implements Relayer {
@@ -562,26 +472,16 @@ export class RelayerClientImpl implements Relayer {
     this.service = opts?.service || "lavanet.lava.pairing.Relayer";
     this.rpc = rpc;
     this.Relay = this.Relay.bind(this);
-    this.RelaySubscribe = this.RelaySubscribe.bind(this);
   }
   Relay(request: RelayRequest): Promise<RelayReply> {
     const data = RelayRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "Relay", data);
     return promise.then((data) => RelayReply.decode(new _m0.Reader(data)));
   }
-
-  RelaySubscribe(request: RelayRequest): Observable<RelayReply> {
-    const data = RelayRequest.encode(request).finish();
-    const result = this.rpc.serverStreamingRequest(this.service, "RelaySubscribe", data);
-    return result.pipe(map((data) => RelayReply.decode(new _m0.Reader(data))));
-  }
 }
 
 interface Rpc {
   request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
-  clientStreamingRequest(service: string, method: string, data: Observable<Uint8Array>): Promise<Uint8Array>;
-  serverStreamingRequest(service: string, method: string, data: Uint8Array): Observable<Uint8Array>;
-  bidirectionalStreamingRequest(service: string, method: string, data: Observable<Uint8Array>): Observable<Uint8Array>;
 }
 
 declare var self: any | undefined;

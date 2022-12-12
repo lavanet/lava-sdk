@@ -18,7 +18,7 @@ export interface QueryParamsResponse {
 }
 
 export interface QueryGetSpecRequest {
-  index: string;
+  ChainID: string;
 }
 
 export interface QueryGetSpecResponse {
@@ -34,12 +34,26 @@ export interface QueryAllSpecResponse {
   pagination?: PageResponse;
 }
 
-export interface QueryChainRequest {
-  chainID: string;
+export interface QueryShowAllChainsRequest {
 }
 
-export interface QueryChainResponse {
-  spec?: Spec;
+export interface QueryShowAllChainsResponse {
+  chainNames: string[];
+}
+
+export interface QueryShowChainInfoRequest {
+  chainName: string;
+}
+
+export interface apiList {
+  interface: string;
+  supportedApis: string[];
+}
+
+export interface QueryShowChainInfoResponse {
+  chainID: string;
+  interfaces: string[];
+  supportedApisInterfaceList: apiList[];
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -131,13 +145,13 @@ export const QueryParamsResponse = {
 };
 
 function createBaseQueryGetSpecRequest(): QueryGetSpecRequest {
-  return { index: "" };
+  return { ChainID: "" };
 }
 
 export const QueryGetSpecRequest = {
   encode(message: QueryGetSpecRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.index !== "") {
-      writer.uint32(10).string(message.index);
+    if (message.ChainID !== "") {
+      writer.uint32(10).string(message.ChainID);
     }
     return writer;
   },
@@ -150,7 +164,7 @@ export const QueryGetSpecRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.index = reader.string();
+          message.ChainID = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -161,18 +175,18 @@ export const QueryGetSpecRequest = {
   },
 
   fromJSON(object: any): QueryGetSpecRequest {
-    return { index: isSet(object.index) ? String(object.index) : "" };
+    return { ChainID: isSet(object.ChainID) ? String(object.ChainID) : "" };
   },
 
   toJSON(message: QueryGetSpecRequest): unknown {
     const obj: any = {};
-    message.index !== undefined && (obj.index = message.index);
+    message.ChainID !== undefined && (obj.ChainID = message.ChainID);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryGetSpecRequest>, I>>(object: I): QueryGetSpecRequest {
     const message = createBaseQueryGetSpecRequest();
-    message.index = object.index ?? "";
+    message.ChainID = object.ChainID ?? "";
     return message;
   },
 };
@@ -339,28 +353,239 @@ export const QueryAllSpecResponse = {
   },
 };
 
-function createBaseQueryChainRequest(): QueryChainRequest {
-  return { chainID: "" };
+function createBaseQueryShowAllChainsRequest(): QueryShowAllChainsRequest {
+  return {};
 }
 
-export const QueryChainRequest = {
-  encode(message: QueryChainRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.chainID !== "") {
-      writer.uint32(10).string(message.chainID);
+export const QueryShowAllChainsRequest = {
+  encode(_: QueryShowAllChainsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryShowAllChainsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryShowAllChainsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryShowAllChainsRequest {
+    return {};
+  },
+
+  toJSON(_: QueryShowAllChainsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryShowAllChainsRequest>, I>>(_: I): QueryShowAllChainsRequest {
+    const message = createBaseQueryShowAllChainsRequest();
+    return message;
+  },
+};
+
+function createBaseQueryShowAllChainsResponse(): QueryShowAllChainsResponse {
+  return { chainNames: [] };
+}
+
+export const QueryShowAllChainsResponse = {
+  encode(message: QueryShowAllChainsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.chainNames) {
+      writer.uint32(10).string(v!);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryChainRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryShowAllChainsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryChainRequest();
+    const message = createBaseQueryShowAllChainsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.chainNames.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryShowAllChainsResponse {
+    return { chainNames: Array.isArray(object?.chainNames) ? object.chainNames.map((e: any) => String(e)) : [] };
+  },
+
+  toJSON(message: QueryShowAllChainsResponse): unknown {
+    const obj: any = {};
+    if (message.chainNames) {
+      obj.chainNames = message.chainNames.map((e) => e);
+    } else {
+      obj.chainNames = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryShowAllChainsResponse>, I>>(object: I): QueryShowAllChainsResponse {
+    const message = createBaseQueryShowAllChainsResponse();
+    message.chainNames = object.chainNames?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseQueryShowChainInfoRequest(): QueryShowChainInfoRequest {
+  return { chainName: "" };
+}
+
+export const QueryShowChainInfoRequest = {
+  encode(message: QueryShowChainInfoRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.chainName !== "") {
+      writer.uint32(10).string(message.chainName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryShowChainInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryShowChainInfoRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.chainName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryShowChainInfoRequest {
+    return { chainName: isSet(object.chainName) ? String(object.chainName) : "" };
+  },
+
+  toJSON(message: QueryShowChainInfoRequest): unknown {
+    const obj: any = {};
+    message.chainName !== undefined && (obj.chainName = message.chainName);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryShowChainInfoRequest>, I>>(object: I): QueryShowChainInfoRequest {
+    const message = createBaseQueryShowChainInfoRequest();
+    message.chainName = object.chainName ?? "";
+    return message;
+  },
+};
+
+function createBaseapiList(): apiList {
+  return { interface: "", supportedApis: [] };
+}
+
+export const apiList = {
+  encode(message: apiList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.interface !== "") {
+      writer.uint32(34).string(message.interface);
+    }
+    for (const v of message.supportedApis) {
+      writer.uint32(42).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): apiList {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseapiList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 4:
+          message.interface = reader.string();
+          break;
+        case 5:
+          message.supportedApis.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): apiList {
+    return {
+      interface: isSet(object.interface) ? String(object.interface) : "",
+      supportedApis: Array.isArray(object?.supportedApis) ? object.supportedApis.map((e: any) => String(e)) : [],
+    };
+  },
+
+  toJSON(message: apiList): unknown {
+    const obj: any = {};
+    message.interface !== undefined && (obj.interface = message.interface);
+    if (message.supportedApis) {
+      obj.supportedApis = message.supportedApis.map((e) => e);
+    } else {
+      obj.supportedApis = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<apiList>, I>>(object: I): apiList {
+    const message = createBaseapiList();
+    message.interface = object.interface ?? "";
+    message.supportedApis = object.supportedApis?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseQueryShowChainInfoResponse(): QueryShowChainInfoResponse {
+  return { chainID: "", interfaces: [], supportedApisInterfaceList: [] };
+}
+
+export const QueryShowChainInfoResponse = {
+  encode(message: QueryShowChainInfoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.chainID !== "") {
+      writer.uint32(10).string(message.chainID);
+    }
+    for (const v of message.interfaces) {
+      writer.uint32(18).string(v!);
+    }
+    for (const v of message.supportedApisInterfaceList) {
+      apiList.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryShowChainInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryShowChainInfoResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.chainID = reader.string();
           break;
+        case 2:
+          message.interfaces.push(reader.string());
+          break;
+        case 3:
+          message.supportedApisInterfaceList.push(apiList.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -369,66 +594,37 @@ export const QueryChainRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryChainRequest {
-    return { chainID: isSet(object.chainID) ? String(object.chainID) : "" };
+  fromJSON(object: any): QueryShowChainInfoResponse {
+    return {
+      chainID: isSet(object.chainID) ? String(object.chainID) : "",
+      interfaces: Array.isArray(object?.interfaces) ? object.interfaces.map((e: any) => String(e)) : [],
+      supportedApisInterfaceList: Array.isArray(object?.supportedApisInterfaceList)
+        ? object.supportedApisInterfaceList.map((e: any) => apiList.fromJSON(e))
+        : [],
+    };
   },
 
-  toJSON(message: QueryChainRequest): unknown {
+  toJSON(message: QueryShowChainInfoResponse): unknown {
     const obj: any = {};
     message.chainID !== undefined && (obj.chainID = message.chainID);
+    if (message.interfaces) {
+      obj.interfaces = message.interfaces.map((e) => e);
+    } else {
+      obj.interfaces = [];
+    }
+    if (message.supportedApisInterfaceList) {
+      obj.supportedApisInterfaceList = message.supportedApisInterfaceList.map((e) => e ? apiList.toJSON(e) : undefined);
+    } else {
+      obj.supportedApisInterfaceList = [];
+    }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryChainRequest>, I>>(object: I): QueryChainRequest {
-    const message = createBaseQueryChainRequest();
+  fromPartial<I extends Exact<DeepPartial<QueryShowChainInfoResponse>, I>>(object: I): QueryShowChainInfoResponse {
+    const message = createBaseQueryShowChainInfoResponse();
     message.chainID = object.chainID ?? "";
-    return message;
-  },
-};
-
-function createBaseQueryChainResponse(): QueryChainResponse {
-  return { spec: undefined };
-}
-
-export const QueryChainResponse = {
-  encode(message: QueryChainResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.spec !== undefined) {
-      Spec.encode(message.spec, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryChainResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryChainResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.spec = Spec.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryChainResponse {
-    return { spec: isSet(object.spec) ? Spec.fromJSON(object.spec) : undefined };
-  },
-
-  toJSON(message: QueryChainResponse): unknown {
-    const obj: any = {};
-    message.spec !== undefined && (obj.spec = message.spec ? Spec.toJSON(message.spec) : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<QueryChainResponse>, I>>(object: I): QueryChainResponse {
-    const message = createBaseQueryChainResponse();
-    message.spec = (object.spec !== undefined && object.spec !== null) ? Spec.fromPartial(object.spec) : undefined;
+    message.interfaces = object.interfaces?.map((e) => e) || [];
+    message.supportedApisInterfaceList = object.supportedApisInterfaceList?.map((e) => apiList.fromPartial(e)) || [];
     return message;
   },
 };
@@ -441,8 +637,10 @@ export interface Query {
   Spec(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse>;
   /** Queries a list of Spec items. */
   SpecAll(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse>;
-  /** Queries a list of Chain items. */
-  Chain(request: QueryChainRequest): Promise<QueryChainResponse>;
+  /** Queries a list of ShowAllChains items. */
+  ShowAllChains(request: QueryShowAllChainsRequest): Promise<QueryShowAllChainsResponse>;
+  /** Queries a list of ShowChainInfo items. */
+  ShowChainInfo(request: QueryShowChainInfoRequest): Promise<QueryShowChainInfoResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -454,7 +652,8 @@ export class QueryClientImpl implements Query {
     this.Params = this.Params.bind(this);
     this.Spec = this.Spec.bind(this);
     this.SpecAll = this.SpecAll.bind(this);
-    this.Chain = this.Chain.bind(this);
+    this.ShowAllChains = this.ShowAllChains.bind(this);
+    this.ShowChainInfo = this.ShowChainInfo.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -474,10 +673,16 @@ export class QueryClientImpl implements Query {
     return promise.then((data) => QueryAllSpecResponse.decode(new _m0.Reader(data)));
   }
 
-  Chain(request: QueryChainRequest): Promise<QueryChainResponse> {
-    const data = QueryChainRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "Chain", data);
-    return promise.then((data) => QueryChainResponse.decode(new _m0.Reader(data)));
+  ShowAllChains(request: QueryShowAllChainsRequest): Promise<QueryShowAllChainsResponse> {
+    const data = QueryShowAllChainsRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "ShowAllChains", data);
+    return promise.then((data) => QueryShowAllChainsResponse.decode(new _m0.Reader(data)));
+  }
+
+  ShowChainInfo(request: QueryShowChainInfoRequest): Promise<QueryShowChainInfoResponse> {
+    const data = QueryShowChainInfoRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "ShowChainInfo", data);
+    return promise.then((data) => QueryShowChainInfoResponse.decode(new _m0.Reader(data)));
   }
 }
 

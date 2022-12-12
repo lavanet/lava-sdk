@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QueryClientImpl = exports.QueryChainResponse = exports.QueryChainRequest = exports.QueryAllSpecResponse = exports.QueryAllSpecRequest = exports.QueryGetSpecResponse = exports.QueryGetSpecRequest = exports.QueryParamsResponse = exports.QueryParamsRequest = exports.protobufPackage = void 0;
+exports.QueryClientImpl = exports.QueryShowChainInfoResponse = exports.apiList = exports.QueryShowChainInfoRequest = exports.QueryShowAllChainsResponse = exports.QueryShowAllChainsRequest = exports.QueryAllSpecResponse = exports.QueryAllSpecRequest = exports.QueryGetSpecResponse = exports.QueryGetSpecRequest = exports.QueryParamsResponse = exports.QueryParamsRequest = exports.protobufPackage = void 0;
 /* eslint-disable */
 const long_1 = __importDefault(require("long"));
 const minimal_1 = __importDefault(require("protobufjs/minimal"));
@@ -88,12 +88,12 @@ exports.QueryParamsResponse = {
     },
 };
 function createBaseQueryGetSpecRequest() {
-    return { index: "" };
+    return { ChainID: "" };
 }
 exports.QueryGetSpecRequest = {
     encode(message, writer = minimal_1.default.Writer.create()) {
-        if (message.index !== "") {
-            writer.uint32(10).string(message.index);
+        if (message.ChainID !== "") {
+            writer.uint32(10).string(message.ChainID);
         }
         return writer;
     },
@@ -105,7 +105,7 @@ exports.QueryGetSpecRequest = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.index = reader.string();
+                    message.ChainID = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -115,17 +115,17 @@ exports.QueryGetSpecRequest = {
         return message;
     },
     fromJSON(object) {
-        return { index: isSet(object.index) ? String(object.index) : "" };
+        return { ChainID: isSet(object.ChainID) ? String(object.ChainID) : "" };
     },
     toJSON(message) {
         const obj = {};
-        message.index !== undefined && (obj.index = message.index);
+        message.ChainID !== undefined && (obj.ChainID = message.ChainID);
         return obj;
     },
     fromPartial(object) {
         var _a;
         const message = createBaseQueryGetSpecRequest();
-        message.index = (_a = object.index) !== null && _a !== void 0 ? _a : "";
+        message.ChainID = (_a = object.ChainID) !== null && _a !== void 0 ? _a : "";
         return message;
     },
 };
@@ -275,26 +275,218 @@ exports.QueryAllSpecResponse = {
         return message;
     },
 };
-function createBaseQueryChainRequest() {
-    return { chainID: "" };
+function createBaseQueryShowAllChainsRequest() {
+    return {};
 }
-exports.QueryChainRequest = {
+exports.QueryShowAllChainsRequest = {
+    encode(_, writer = minimal_1.default.Writer.create()) {
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryShowAllChainsRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(_) {
+        return {};
+    },
+    toJSON(_) {
+        const obj = {};
+        return obj;
+    },
+    fromPartial(_) {
+        const message = createBaseQueryShowAllChainsRequest();
+        return message;
+    },
+};
+function createBaseQueryShowAllChainsResponse() {
+    return { chainNames: [] };
+}
+exports.QueryShowAllChainsResponse = {
     encode(message, writer = minimal_1.default.Writer.create()) {
-        if (message.chainID !== "") {
-            writer.uint32(10).string(message.chainID);
+        for (const v of message.chainNames) {
+            writer.uint32(10).string(v);
         }
         return writer;
     },
     decode(input, length) {
         const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
         let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseQueryChainRequest();
+        const message = createBaseQueryShowAllChainsResponse();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.chainNames.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return { chainNames: Array.isArray(object === null || object === void 0 ? void 0 : object.chainNames) ? object.chainNames.map((e) => String(e)) : [] };
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.chainNames) {
+            obj.chainNames = message.chainNames.map((e) => e);
+        }
+        else {
+            obj.chainNames = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseQueryShowAllChainsResponse();
+        message.chainNames = ((_a = object.chainNames) === null || _a === void 0 ? void 0 : _a.map((e) => e)) || [];
+        return message;
+    },
+};
+function createBaseQueryShowChainInfoRequest() {
+    return { chainName: "" };
+}
+exports.QueryShowChainInfoRequest = {
+    encode(message, writer = minimal_1.default.Writer.create()) {
+        if (message.chainName !== "") {
+            writer.uint32(10).string(message.chainName);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryShowChainInfoRequest();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.chainName = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return { chainName: isSet(object.chainName) ? String(object.chainName) : "" };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.chainName !== undefined && (obj.chainName = message.chainName);
+        return obj;
+    },
+    fromPartial(object) {
+        var _a;
+        const message = createBaseQueryShowChainInfoRequest();
+        message.chainName = (_a = object.chainName) !== null && _a !== void 0 ? _a : "";
+        return message;
+    },
+};
+function createBaseapiList() {
+    return { interface: "", supportedApis: [] };
+}
+exports.apiList = {
+    encode(message, writer = minimal_1.default.Writer.create()) {
+        if (message.interface !== "") {
+            writer.uint32(34).string(message.interface);
+        }
+        for (const v of message.supportedApis) {
+            writer.uint32(42).string(v);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseapiList();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 4:
+                    message.interface = reader.string();
+                    break;
+                case 5:
+                    message.supportedApis.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            interface: isSet(object.interface) ? String(object.interface) : "",
+            supportedApis: Array.isArray(object === null || object === void 0 ? void 0 : object.supportedApis) ? object.supportedApis.map((e) => String(e)) : [],
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.interface !== undefined && (obj.interface = message.interface);
+        if (message.supportedApis) {
+            obj.supportedApis = message.supportedApis.map((e) => e);
+        }
+        else {
+            obj.supportedApis = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b;
+        const message = createBaseapiList();
+        message.interface = (_a = object.interface) !== null && _a !== void 0 ? _a : "";
+        message.supportedApis = ((_b = object.supportedApis) === null || _b === void 0 ? void 0 : _b.map((e) => e)) || [];
+        return message;
+    },
+};
+function createBaseQueryShowChainInfoResponse() {
+    return { chainID: "", interfaces: [], supportedApisInterfaceList: [] };
+}
+exports.QueryShowChainInfoResponse = {
+    encode(message, writer = minimal_1.default.Writer.create()) {
+        if (message.chainID !== "") {
+            writer.uint32(10).string(message.chainID);
+        }
+        for (const v of message.interfaces) {
+            writer.uint32(18).string(v);
+        }
+        for (const v of message.supportedApisInterfaceList) {
+            exports.apiList.encode(v, writer.uint32(26).fork()).ldelim();
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseQueryShowChainInfoResponse();
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
                     message.chainID = reader.string();
                     break;
+                case 2:
+                    message.interfaces.push(reader.string());
+                    break;
+                case 3:
+                    message.supportedApisInterfaceList.push(exports.apiList.decode(reader, reader.uint32()));
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -303,58 +495,37 @@ exports.QueryChainRequest = {
         return message;
     },
     fromJSON(object) {
-        return { chainID: isSet(object.chainID) ? String(object.chainID) : "" };
+        return {
+            chainID: isSet(object.chainID) ? String(object.chainID) : "",
+            interfaces: Array.isArray(object === null || object === void 0 ? void 0 : object.interfaces) ? object.interfaces.map((e) => String(e)) : [],
+            supportedApisInterfaceList: Array.isArray(object === null || object === void 0 ? void 0 : object.supportedApisInterfaceList)
+                ? object.supportedApisInterfaceList.map((e) => exports.apiList.fromJSON(e))
+                : [],
+        };
     },
     toJSON(message) {
         const obj = {};
         message.chainID !== undefined && (obj.chainID = message.chainID);
+        if (message.interfaces) {
+            obj.interfaces = message.interfaces.map((e) => e);
+        }
+        else {
+            obj.interfaces = [];
+        }
+        if (message.supportedApisInterfaceList) {
+            obj.supportedApisInterfaceList = message.supportedApisInterfaceList.map((e) => e ? exports.apiList.toJSON(e) : undefined);
+        }
+        else {
+            obj.supportedApisInterfaceList = [];
+        }
         return obj;
     },
     fromPartial(object) {
-        var _a;
-        const message = createBaseQueryChainRequest();
+        var _a, _b, _c;
+        const message = createBaseQueryShowChainInfoResponse();
         message.chainID = (_a = object.chainID) !== null && _a !== void 0 ? _a : "";
-        return message;
-    },
-};
-function createBaseQueryChainResponse() {
-    return { spec: undefined };
-}
-exports.QueryChainResponse = {
-    encode(message, writer = minimal_1.default.Writer.create()) {
-        if (message.spec !== undefined) {
-            spec_1.Spec.encode(message.spec, writer.uint32(10).fork()).ldelim();
-        }
-        return writer;
-    },
-    decode(input, length) {
-        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
-        let end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseQueryChainResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1:
-                    message.spec = spec_1.Spec.decode(reader, reader.uint32());
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-            }
-        }
-        return message;
-    },
-    fromJSON(object) {
-        return { spec: isSet(object.spec) ? spec_1.Spec.fromJSON(object.spec) : undefined };
-    },
-    toJSON(message) {
-        const obj = {};
-        message.spec !== undefined && (obj.spec = message.spec ? spec_1.Spec.toJSON(message.spec) : undefined);
-        return obj;
-    },
-    fromPartial(object) {
-        const message = createBaseQueryChainResponse();
-        message.spec = (object.spec !== undefined && object.spec !== null) ? spec_1.Spec.fromPartial(object.spec) : undefined;
+        message.interfaces = ((_b = object.interfaces) === null || _b === void 0 ? void 0 : _b.map((e) => e)) || [];
+        message.supportedApisInterfaceList = ((_c = object.supportedApisInterfaceList) === null || _c === void 0 ? void 0 : _c.map((e) => exports.apiList.fromPartial(e))) || [];
         return message;
     },
 };
@@ -365,7 +536,8 @@ class QueryClientImpl {
         this.Params = this.Params.bind(this);
         this.Spec = this.Spec.bind(this);
         this.SpecAll = this.SpecAll.bind(this);
-        this.Chain = this.Chain.bind(this);
+        this.ShowAllChains = this.ShowAllChains.bind(this);
+        this.ShowChainInfo = this.ShowChainInfo.bind(this);
     }
     Params(request) {
         const data = exports.QueryParamsRequest.encode(request).finish();
@@ -382,10 +554,15 @@ class QueryClientImpl {
         const promise = this.rpc.request(this.service, "SpecAll", data);
         return promise.then((data) => exports.QueryAllSpecResponse.decode(new minimal_1.default.Reader(data)));
     }
-    Chain(request) {
-        const data = exports.QueryChainRequest.encode(request).finish();
-        const promise = this.rpc.request(this.service, "Chain", data);
-        return promise.then((data) => exports.QueryChainResponse.decode(new minimal_1.default.Reader(data)));
+    ShowAllChains(request) {
+        const data = exports.QueryShowAllChainsRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, "ShowAllChains", data);
+        return promise.then((data) => exports.QueryShowAllChainsResponse.decode(new minimal_1.default.Reader(data)));
+    }
+    ShowChainInfo(request) {
+        const data = exports.QueryShowChainInfoRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, "ShowChainInfo", data);
+        return promise.then((data) => exports.QueryShowChainInfoResponse.decode(new minimal_1.default.Reader(data)));
     }
 }
 exports.QueryClientImpl = QueryClientImpl;

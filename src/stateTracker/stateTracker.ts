@@ -1,11 +1,15 @@
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import {
-  QueryClientImpl,
+  QueryClientImpl as PairingQueryClientImpl,
   QueryGetPairingRequest,
   QueryGetPairingResponse,
   QueryUserEntryRequest,
 } from "../codec/pairing/query";
+import {
+  QueryClientImpl as SpecQueryClientImpl,
+  QueryGetSpecRequest,
+} from "../codec/spec/query";
 import {
   ConsumerSessionWithProvider,
   Endpoint,
@@ -17,11 +21,14 @@ import { AccountData } from "@cosmjs/proto-signing";
 import StateTrackerErrors from "./errors";
 
 export class StateTracker {
-  private queryService: QueryClientImpl | Error;
+  private pairingQueryService: PairingQueryClientImpl | Error;
+  private specQueryService: SpecQueryClientImpl | Error;
   private tendermintClient: Tendermint34Client | Error;
 
   constructor() {
-    this.queryService = StateTrackerError.errQueryServiceNotInitialized;
+    this.pairingQueryService =
+      StateTrackerError.errPairingQueryServiceNotInitialized;
+    this.specQueryService = StateTrackerError.errSpecQueryServiceNotInitialized;
     this.tendermintClient =
       StateTrackerError.errTendermintClientServiceNotInitialized;
   }
@@ -31,7 +38,8 @@ export class StateTracker {
     const queryClient = new QueryClient(tmClient);
     const rpcClient = createProtobufRpcClient(queryClient);
 
-    this.queryService = new QueryClientImpl(rpcClient);
+    this.pairingQueryService = new PairingQueryClientImpl(rpcClient);
+    this.specQueryService = new SpecQueryClientImpl(rpcClient);
     this.tendermintClient = tmClient;
   }
 
@@ -45,6 +53,15 @@ export class StateTracker {
       if (this.tendermintClient instanceof Error) {
         throw StateTrackerError.errTendermintClientServiceNotInitialized;
       }
+
+      // Create request for getCuSumForChainID method
+      const queryGetSpecRequest = {
+        ChainID: chainID,
+      };
+      const apis = await this.getServiceApis(
+        queryGetSpecRequest,
+        rpcInterface
+      );
 
       // Create pairing request for getPairing method
       const pairingRequest = {
@@ -123,7 +140,7 @@ export class StateTracker {
       }
 
       // Create session object
-      const session = new Session(pairing, nextEpochStart);
+      const session = new Session(pairing, nextEpochStart, apis);
 
       return session;
     } catch (err) {
@@ -153,12 +170,12 @@ export class StateTracker {
     request: QueryGetPairingRequest
   ): Promise<QueryGetPairingResponse> {
     // Check if query service was initialized
-    if (this.queryService instanceof Error) {
-      throw StateTrackerError.errQueryServiceNotInitialized;
+    if (this.pairingQueryService instanceof Error) {
+      throw StateTrackerError.errPairingQueryServiceNotInitialized;
     }
 
     // Get pairing from the chain
-    const queryResult = await this.queryService.GetPairing(request);
+    const queryResult = await this.pairingQueryService.GetPairing(request);
 
     return queryResult;
   }
@@ -167,15 +184,51 @@ export class StateTracker {
     request: QueryUserEntryRequest
   ): Promise<number> {
     // Check if query service was initialized
-    if (this.queryService instanceof Error) {
-      throw StateTrackerError.errQueryServiceNotInitialized;
+    if (this.pairingQueryService instanceof Error) {
+      throw StateTrackerError.errPairingQueryServiceNotInitialized;
     }
 
     // Get pairing from the chain
-    const queryResult = await this.queryService.UserEntry(request);
+    const queryResult = await this.pairingQueryService.UserEntry(request);
 
     // return maxCu from userEntry
     return queryResult.maxCU.low;
+  }
+
+  private async getServiceApis(
+    request: QueryGetSpecRequest,
+    rpcInterface: string
+  ): Promise<Map<string, number>> {
+    // Check if query service was initialized
+    if (this.specQueryService instanceof Error) {
+      throw StateTrackerError.errSpecQueryServiceNotInitialized;
+    }
+
+    // Get pairing from the chain
+    const queryResult = await this.specQueryService.Spec(request);
+
+    if (queryResult.Spec == undefined) {
+      throw StateTrackerError.errSpecNotFound;
+    }
+
+    const apis = new Map<string, number>();
+
+    // Extract apis from response
+    for (const element of queryResult.Spec.apis) {
+      for (const apiInterface of element.apiInterfaces) {
+        // Skip if interface does not match
+        if (apiInterface.interface != rpcInterface) continue;
+
+        // Currently we do not support rest
+        if (apiInterface.interface == "rest") continue;
+        else {
+          // Handle RPC apis
+          apis.set(element.name, element.computeUnits.getLowBits());
+        }
+      }
+    }
+
+    return apis;
   }
 }
 
