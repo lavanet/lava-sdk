@@ -5,6 +5,7 @@
         1. Recreating account from private key
         2. Fetching paring list
 */
+import { timeInterval } from "rxjs";
 import Logger from "../logger/logger";
 
 // Fetch from package
@@ -12,7 +13,7 @@ import { createLavaSDK } from "../sdk/sdk";
 
 async function run() {
   const privKey =
-    "ee93863449a647024d782be4b2f9c2ad37e1a7615f58e68fdfd88acc3f1127ce";
+    "b25df735e1e6bae69b44c4528a391555eeb78509c13fee3adf13a70328be4339";
   const endpoint = "localhost:26657";
   const chainID = "LAV1";
   const rpcInterface = "tendermintrpc";
@@ -28,6 +29,14 @@ async function run() {
   const dec = new TextDecoder();
   console.log("StatusResponse: ", dec.decode(statusResponse.getData_asU8()));
   console.log("BlockResponse: ", dec.decode(blockResponse.getData_asU8()));
+
+  setTimeout(async () => {
+    console.log("New epoch");
+    const statusResponse = await lavaSDK.sendRelay("status", []);
+
+    const dec = new TextDecoder();
+    console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
+  }, 30000);
 }
 
 run()

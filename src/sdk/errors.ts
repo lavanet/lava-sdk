@@ -8,6 +8,9 @@ class SDKErrors {
   static errStateTrackerServiceNotInitialized: Error = new Error(
     "State Tracker service was not initialized"
   );
+  static errSessionNotInitialized: Error = new Error(
+    "Session was not initialized"
+  );
 }
 
 export default SDKErrors;

@@ -1,15 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Endpoint = exports.SingleConsumerSession = exports.ConsumerSessionWithProvider = void 0;
+exports.Endpoint = exports.SingleConsumerSession = exports.ConsumerSessionWithProvider = exports.Session = void 0;
+class Session {
+    constructor(pairingList, nextEpochStart) {
+        this.NextEpochStart = nextEpochStart;
+        this.PairingList = pairingList;
+    }
+}
+exports.Session = Session;
 class ConsumerSessionWithProvider {
-    constructor(acc, endpoints, session, maxComputeUnits, usedComputeUnits, reliabilitySent, pairingEpoch) {
+    constructor(acc, endpoints, session, maxComputeUnits, usedComputeUnits, reliabilitySent) {
         this.Acc = acc;
         this.Endpoints = endpoints;
         this.Session = session;
         this.MaxComputeUnits = maxComputeUnits;
         this.UsedComputeUnits = usedComputeUnits;
         this.ReliabilitySent = reliabilitySent;
-        this.PairingEpoch = pairingEpoch;
     }
 }
 exports.ConsumerSessionWithProvider = ConsumerSessionWithProvider;
@@ -25,14 +31,13 @@ class SingleConsumerSession {
     }
     getNewSessionId() {
         // TODO for production need better session generator
-        const min = 100000;
-        const max = 1000000000000;
+        const min = 100;
+        const max = 10000000000;
         return Math.floor(Math.random() * (max - min) + min);
     }
 }
 exports.SingleConsumerSession = SingleConsumerSession;
 class Endpoint {
-    // TODO Missing Client attribute
     constructor(addr, enabled, connectionRefusals) {
         this.Addr = addr;
         this.Enabled = enabled;

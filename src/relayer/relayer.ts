@@ -1,40 +1,34 @@
-import { SingleConsumerSession } from "../types/types";
+import {
+  ConsumerSessionWithProvider,
+} from "../types/types";
 import { Secp256k1, sha256 } from "@cosmjs/crypto";
 import { fromHex } from "@cosmjs/encoding";
 import { grpc } from "@improbable-eng/grpc-web";
 import { RelayRequest, RelayReply } from "../proto/relay_pb";
 import { Relayer as RelayerService } from "../proto/relay_pb_service";
 import transport from "../util/browser";
+import Logger from "../logger/logger";
 
 class Relayer {
-  private activeConsumerSession: SingleConsumerSession;
   private chainID: string;
   private privKey: string;
 
-  constructor(
-    consumerSession: SingleConsumerSession,
-    chainID: string,
-    privKey: string
-  ) {
-    this.activeConsumerSession = consumerSession;
+  constructor(chainID: string, privKey: string) {
     this.chainID = chainID;
     this.privKey = privKey;
   }
 
-  setConsumerSession(consumerSession: SingleConsumerSession) {
-    this.activeConsumerSession = consumerSession;
-  }
-
-  async sendRelay(method: string, params: string[]): Promise<RelayReply> {
+  async sendRelay(
+    method: string,
+    params: string[],
+    consumerProviderSession: ConsumerSessionWithProvider
+  ): Promise<RelayReply> {
     const stringifyMethod = JSON.stringify(method);
     const stringifyParam = JSON.stringify(params);
 
-    // Create relay client
-
-    // Get consumer session
-    const consumerSession = this.activeConsumerSession;
-
     const enc = new TextEncoder();
+
+    const consumerSession = consumerProviderSession.Session;
 
     const data =
       '{"jsonrpc": "2.0", "id": 1, "method": ' +
@@ -48,7 +42,7 @@ class Relayer {
     request.setChainid(this.chainID);
     request.setConnectionType("");
     request.setApiUrl("");
-    request.setSessionId(consumerSession.SessionId);
+    request.setSessionId(consumerSession.getNewSessionId());
     request.setCuSum(10);
     request.setSig(new Uint8Array());
     request.setData(data);
@@ -73,8 +67,16 @@ class Relayer {
         onMessage: (message: RelayReply) => {
           resolve(message);
         },
-        onEnd: () => {
-          // Consider printing response status here, it's optional
+        onEnd: (
+          code: grpc.Code,
+          msg: string | undefined,
+          trailers: grpc.Metadata
+        ) => {
+          if (code != grpc.Code.OK) {
+            if (msg != undefined) {
+              Logger.error(msg);
+            }
+          }
         },
       });
     });

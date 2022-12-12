@@ -4,6 +4,7 @@ import { AccountData } from "@cosmjs/proto-signing";
 import Relayer from "../relayer/relayer";
 import { RelayReply } from "../proto/relay_pb";
 import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
+import { Session } from "../types/types";
 
 class LavaSDK {
   private lavaEndpoint: string;
@@ -14,6 +15,8 @@ class LavaSDK {
   private stateTracker: StateTracker | Error;
   private account: AccountData | Error;
   private relayer: Relayer | Error;
+
+  private activeSession: Session | Error;
 
   constructor(
     endpoint: string,
@@ -29,6 +32,7 @@ class LavaSDK {
     this.account = SDKErrors.errAccountNotInitialized;
     this.relayer = SDKErrors.errRelayerServiceNotInitialized;
     this.stateTracker = SDKErrors.errStateTrackerServiceNotInitialized;
+    this.activeSession = SDKErrors.errSessionNotInitialized;
   }
 
   async init() {
@@ -45,20 +49,20 @@ class LavaSDK {
 
     // Initialize state tracker
 
-    // Create state stracker
+    // Create state tracker
     this.stateTracker = await createStateTracker(this.lavaEndpoint);
 
     // Initialize relayer
 
-    // Get current consumer session
-    const consumerSession = await this.stateTracker.getConsumerSession(
+    // Get pairing list for current epoch
+    this.activeSession = await this.stateTracker.getSession(
       this.account,
       this.chainID,
       this.rpcInterface
     );
 
     // Create relayer
-    this.relayer = new Relayer(consumerSession, this.chainID, this.privKey);
+    this.relayer = new Relayer(this.chainID, this.privKey);
   }
 
   async sendRelay(method: string, params: string[]): Promise<RelayReply> {
@@ -77,21 +81,44 @@ class LavaSDK {
       throw SDKErrors.errAccountNotInitialized;
     }
 
-    // For every relay get new current session
-    // Todo in the future do this only on epoch change
-    // And in the relay generate random session_id
-    const consumerSession = await this.stateTracker.getConsumerSession(
-      this.account,
-      this.chainID,
-      this.rpcInterface
+    // Check if activeSession was initialized
+    if (this.activeSession instanceof Error) {
+      throw SDKErrors.errSessionNotInitialized;
+    }
+
+    // Check if new epoch has started
+    if (this.newEpochStarted()) {
+      this.activeSession = await this.stateTracker.getSession(
+        this.account,
+        this.chainID,
+        this.rpcInterface
+      );
+    }
+
+    // TODO check if there are no valid providers for this epoch
+    const consumerProviderSession = this.stateTracker.pickRandomProvider(
+      this.activeSession.PairingList
     );
 
-    this.relayer.setConsumerSession(consumerSession);
-
     // Send relay
-    const relayResponse = await this.relayer.sendRelay(method, params);
+    const relayResponse = await this.relayer.sendRelay(
+      method,
+      params,
+      consumerProviderSession
+    );
 
     return relayResponse;
+  }
+
+  private newEpochStarted(): boolean {
+    // Check if activeSession was initialized
+    if (this.activeSession instanceof Error) {
+      throw SDKErrors.errSessionNotInitialized;
+    }
+
+    const now = new Date();
+
+    return now.getTime() > this.activeSession.NextEpochStart.getTime();
   }
 }
 

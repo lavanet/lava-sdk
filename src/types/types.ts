@@ -1,3 +1,16 @@
+export class Session {
+  PairingList: ConsumerSessionWithProvider[];
+  NextEpochStart: Date;
+
+  constructor(
+    pairingList: ConsumerSessionWithProvider[],
+    nextEpochStart: Date,
+  ){
+    this.NextEpochStart = nextEpochStart
+    this.PairingList = pairingList
+  }
+}
+
 export class ConsumerSessionWithProvider {
   Acc: string;
   Endpoints: Array<Endpoint>;
@@ -5,7 +18,6 @@ export class ConsumerSessionWithProvider {
   MaxComputeUnits: number;
   UsedComputeUnits: number;
   ReliabilitySent: boolean;
-  PairingEpoch: number;
 
   constructor(
     acc: string,
@@ -14,7 +26,6 @@ export class ConsumerSessionWithProvider {
     maxComputeUnits: number,
     usedComputeUnits: number,
     reliabilitySent: boolean,
-    pairingEpoch: number
   ) {
     this.Acc = acc;
     this.Endpoints = endpoints;
@@ -22,7 +33,6 @@ export class ConsumerSessionWithProvider {
     this.MaxComputeUnits = maxComputeUnits;
     this.UsedComputeUnits = usedComputeUnits;
     this.ReliabilitySent = reliabilitySent;
-    this.PairingEpoch = pairingEpoch;
   }
 }
 
@@ -54,8 +64,8 @@ export class SingleConsumerSession {
 
   getNewSessionId(): number {
     // TODO for production need better session generator
-    const min = 100000;
-    const max = 1000000000000;
+    const min = 100;
+    const max = 10000000000;
     return Math.floor(Math.random() * (max - min) + min);
   }
 }
@@ -64,7 +74,6 @@ export class Endpoint {
   Addr: string;
   Enabled: boolean;
   ConnectionRefusals: number;
-  // TODO Missing Client attribute
 
   constructor(addr: string, enabled: boolean, connectionRefusals: number) {
     this.Addr = addr;

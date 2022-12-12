@@ -26,6 +26,7 @@ class LavaSDK {
         this.account = errors_1.default.errAccountNotInitialized;
         this.relayer = errors_1.default.errRelayerServiceNotInitialized;
         this.stateTracker = errors_1.default.errStateTrackerServiceNotInitialized;
+        this.activeSession = errors_1.default.errSessionNotInitialized;
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,13 +38,13 @@ class LavaSDK {
             // print account detail
             wallet.printAccount(this.account);
             // Initialize state tracker
-            // Create state stracker
+            // Create state tracker
             this.stateTracker = yield (0, stateTracker_1.createStateTracker)(this.lavaEndpoint);
             // Initialize relayer
-            // Get current consumer session
-            const consumerSession = yield this.stateTracker.getConsumerSession(this.account, this.chainID, this.rpcInterface);
+            // Get pairing list for current epoch
+            this.activeSession = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
             // Create relayer
-            this.relayer = new relayer_1.default(consumerSession, this.chainID, this.privKey);
+            this.relayer = new relayer_1.default(this.chainID, this.privKey);
         });
     }
     sendRelay(method, params) {
@@ -60,15 +61,29 @@ class LavaSDK {
             if (this.account instanceof Error) {
                 throw errors_1.default.errAccountNotInitialized;
             }
-            // For every relay get new current session
-            // Todo in the future do this only on epoch change
-            // And in the relay generate random session_id
-            const consumerSession = yield this.stateTracker.getConsumerSession(this.account, this.chainID, this.rpcInterface);
-            this.relayer.setConsumerSession(consumerSession);
+            // Check if activeSession was initialized
+            if (this.activeSession instanceof Error) {
+                throw errors_1.default.errSessionNotInitialized;
+            }
+            // Check if new epoch has started
+            if (this.newEpochStarted()) {
+                console.log("USAOO nova epocha");
+                this.activeSession = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
+            }
+            // TODO check if there are no valid providers for this epoch
+            const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSession.PairingList);
             // Send relay
-            const relayResponse = yield this.relayer.sendRelay(method, params);
+            const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession);
             return relayResponse;
         });
+    }
+    newEpochStarted() {
+        // Check if activeSession was initialized
+        if (this.activeSession instanceof Error) {
+            throw errors_1.default.errSessionNotInitialized;
+        }
+        const now = new Date();
+        return now.getTime() > this.activeSession.NextEpochStart.getTime();
     }
 }
 function createLavaSDK(endpoint, chainID, rpcInterface, privKey) {
