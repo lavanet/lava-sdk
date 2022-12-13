@@ -58,10 +58,7 @@ export class StateTracker {
       const queryGetSpecRequest = {
         ChainID: chainID,
       };
-      const apis = await this.getServiceApis(
-        queryGetSpecRequest,
-        rpcInterface
-      );
+      const apis = await this.getServiceApis(queryGetSpecRequest, rpcInterface);
 
       // Create pairing request for getPairing method
       const pairingRequest = {
