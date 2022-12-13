@@ -12,7 +12,7 @@ class SDKErrors {
     "Session was not initialized"
   );
   static errMethodNotSupportedNoCuSUM: Error = new Error(
-    "Method not supported no compute units found"
+    "Method not supported"
   );
 }
 
