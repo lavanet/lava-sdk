@@ -293,7 +293,7 @@ interface SendRelayOptions {
 interface SendRestRelayOptions {
   method: string;
   url: string;
-  data: Record<string, string>;
+  data?: Record<string, string>;
 }
 
 /**

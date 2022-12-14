@@ -31,8 +31,7 @@ function run() {
         // Send rest relay
         const latestBlock = yield lavaSDK.sendRestRelay({
             method: "GET",
-            url: "/blocks/latest",
-            data: {},
+            url: "/blocks/latest"
         });
         console.log("latest block", latestBlock);
         const data = yield lavaSDK.sendRestRelay({

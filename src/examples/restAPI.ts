@@ -21,8 +21,7 @@ async function run() {
   // Send rest relay
   const latestBlock = await lavaSDK.sendRestRelay({
     method: "GET",
-    url: "/blocks/latest",
-    data: {},
+    url: "/blocks/latest"
   });
 
   console.log("latest block", latestBlock);
