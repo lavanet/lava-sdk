@@ -21,7 +21,7 @@ async function run() {
   // Send rest relay
   const latestBlock = await lavaSDK.sendRestRelay({
     method: "GET",
-    url: "/blocks/latest"
+    url: "/blocks/latest",
   });
 
   console.log("latest block", latestBlock);
@@ -30,7 +30,7 @@ async function run() {
     method: "GET",
     url: "/cosmos/bank/v1beta1/denoms_metadata",
     data: {
-      "pagination.count_total": "true",
+      "pagination.count_total": true,
       "pagination.reverse": "true",
     },
   });
