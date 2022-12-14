@@ -7,12 +7,11 @@
   "license": "Apache-2.0",
   "scripts": {
     "tsc": "tsc",
-    "build": "yarn tsc && yarn chmod && webpack --config webpack.config.js",
-    "chmod": "chmod u+x ./bin/main.js",
+    "build": "yarn tsc && webpack --config webpack.config.js",
     "protoc": "./scripts/protoc.sh",
     "server": "http-server dist/ -c-1",
     "test": "jest ./src",
-    "example": "node ./bin/examples/basic.js",
+    "example": "node ./bin/src/examples/basic.js",
     "prettier": "prettier --check .",
     "lint": "eslint '**/*.ts'"
   },

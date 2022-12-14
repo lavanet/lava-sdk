@@ -14,6 +14,9 @@ class SDKErrors {
   static errMethodNotSupportedNoCuSUM: Error = new Error(
     "Method not supported"
   );
+  static errChainIDUnsupported: Error = new Error(
+    "Invalid or unsupported chainID"
+  );
 }
 
 export default SDKErrors;

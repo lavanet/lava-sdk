@@ -1,40 +1,37 @@
-/* 
-                    Basic example
-        This file shows basic usage of the future polygon-sdk library
-        Currently we have implemented:
-        1. Recreating account from private key
-        2. Fetching paring list
-*/
 import Logger from "../logger/logger";
 
-// Fetch from package
-import { createLavaSDK } from "../sdk/sdk";
+// Fetch from lava-sdk package
+import LavaSDK from "../sdk/sdk";
 
 async function run() {
   const privKey =
-    "5d98d25f0230eb3e8bcf2fdf356b5ed63dbf4cdecead19d5d79b0792682ff6ae";
+    "da73b083cb54e797184f756306e4252d50f77061c3e777f03ee2c38a1c4568b1";
   const endpoint = "localhost:26657";
   const chainID = "LAV1";
   const rpcInterface = "tendermintrpc";
 
   // Create lavaSDK
-  const lavaSDK = await createLavaSDK(endpoint, chainID, rpcInterface, privKey);
+  const lavaSDK = await new LavaSDK({
+    privateKey: privKey,
+    chainID: chainID,
+    endpoint: endpoint, // Optional
+    rpcInterface: rpcInterface// Optional
+  });
 
   // Send relay
   const statusResponse = await lavaSDK.sendRelay("status", []);
   const blockResponse = await lavaSDK.sendRelay("block", ["5"]);
 
   // Print relay
-  const dec = new TextDecoder();
-  console.log("StatusResponse: ", dec.decode(statusResponse.getData_asU8()));
-  console.log("BlockResponse: ", dec.decode(blockResponse.getData_asU8()));
+  console.log("statusResponse",statusResponse);
+  console.log("blockResponse",blockResponse);
 
   setTimeout(async () => {
     console.log("Same epoch");
     const statusResponse = await lavaSDK.sendRelay("status", []);
 
     const dec = new TextDecoder();
-    console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
+    console.log("statusResponse",statusResponse);
   }, 5000);
 
   setTimeout(async () => {
@@ -42,7 +39,7 @@ async function run() {
     const statusResponse = await lavaSDK.sendRelay("status", []);
 
     const dec = new TextDecoder();
-    console.log("StatusResponse", dec.decode(statusResponse.getData_asU8()));
+    console.log("statusResponse",statusResponse);
   }, 20000);
 }
 
