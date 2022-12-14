@@ -48,7 +48,7 @@ class LavaSDK {
         this.account = errors_1.default.errAccountNotInitialized;
         this.relayer = errors_1.default.errRelayerServiceNotInitialized;
         this.stateTracker = errors_1.default.errStateTrackerServiceNotInitialized;
-        this.activeSession = errors_1.default.errSessionNotInitialized;
+        this.activeSessionManager = errors_1.default.errSessionNotInitialized;
         return (() => __awaiter(this, void 0, void 0, function* () {
             yield this.init();
             return this;
@@ -65,7 +65,7 @@ class LavaSDK {
             this.stateTracker = yield (0, stateTracker_1.createStateTracker)(this.lavaEndpoint);
             // Initialize relayer
             // Get pairing list for current epoch
-            this.activeSession = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
+            this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
             // Create relayer
             this.relayer = new relayer_1.default(this.chainID, this.privKey);
         });
@@ -96,19 +96,18 @@ class LavaSDK {
                     throw errors_1.default.errAccountNotInitialized;
                 }
                 // Check if activeSession was initialized
-                if (this.activeSession instanceof Error) {
+                if (this.activeSessionManager instanceof Error) {
                     throw errors_1.default.errSessionNotInitialized;
                 }
                 // Check if new epoch has started
                 if (this.newEpochStarted()) {
-                    this.activeSession = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
+                    this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
                 }
-                const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSession.PairingList);
-                const cuSum = this.activeSession.getCuSumFromApi(method);
+                const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSessionManager.PairingList);
+                const cuSum = this.activeSessionManager.getCuSumFromApi(method);
                 if (cuSum == undefined) {
                     throw errors_1.default.errMethodNotSupportedNoCuSUM;
                 }
-                console.log(this.activeSession);
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession, cuSum);
                 // Decode relay response
@@ -124,11 +123,11 @@ class LavaSDK {
     }
     newEpochStarted() {
         // Check if activeSession was initialized
-        if (this.activeSession instanceof Error) {
+        if (this.activeSessionManager instanceof Error) {
             throw errors_1.default.errSessionNotInitialized;
         }
         const now = new Date();
-        return now.getTime() > this.activeSession.NextEpochStart.getTime();
+        return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
     }
 }
 exports.default = LavaSDK;

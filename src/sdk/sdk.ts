@@ -3,7 +3,7 @@ import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
 import Relayer from "../relayer/relayer";
 import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
-import { Session } from "../types/types";
+import { SessionManager } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { DEFAULT_LAVA_ENDPOINT } from "../config/default";
 
@@ -17,7 +17,7 @@ class LavaSDK {
   private account: AccountData | Error;
   private relayer: Relayer | Error;
 
-  private activeSession: Session | Error;
+  private activeSessionManager: SessionManager | Error;
 
   /**
    * Create Lava-SDK instance
@@ -53,7 +53,7 @@ class LavaSDK {
     this.account = SDKErrors.errAccountNotInitialized;
     this.relayer = SDKErrors.errRelayerServiceNotInitialized;
     this.stateTracker = SDKErrors.errStateTrackerServiceNotInitialized;
-    this.activeSession = SDKErrors.errSessionNotInitialized;
+    this.activeSessionManager = SDKErrors.errSessionNotInitialized;
 
     return (async (): Promise<LavaSDK> => {
       await this.init();
@@ -76,7 +76,7 @@ class LavaSDK {
     // Initialize relayer
 
     // Get pairing list for current epoch
-    this.activeSession = await this.stateTracker.getSession(
+    this.activeSessionManager = await this.stateTracker.getSession(
       this.account,
       this.chainID,
       this.rpcInterface
@@ -114,13 +114,13 @@ class LavaSDK {
       }
 
       // Check if activeSession was initialized
-      if (this.activeSession instanceof Error) {
+      if (this.activeSessionManager instanceof Error) {
         throw SDKErrors.errSessionNotInitialized;
       }
 
       // Check if new epoch has started
       if (this.newEpochStarted()) {
-        this.activeSession = await this.stateTracker.getSession(
+        this.activeSessionManager = await this.stateTracker.getSession(
           this.account,
           this.chainID,
           this.rpcInterface
@@ -128,10 +128,10 @@ class LavaSDK {
       }
 
       const consumerProviderSession = this.stateTracker.pickRandomProvider(
-        this.activeSession.PairingList
+        this.activeSessionManager.PairingList
       );
 
-      const cuSum = this.activeSession.getCuSumFromApi(method);
+      const cuSum = this.activeSessionManager.getCuSumFromApi(method);
 
       if (cuSum == undefined) {
         throw SDKErrors.errMethodNotSupportedNoCuSUM;
@@ -158,12 +158,12 @@ class LavaSDK {
 
   private newEpochStarted(): boolean {
     // Check if activeSession was initialized
-    if (this.activeSession instanceof Error) {
+    if (this.activeSessionManager instanceof Error) {
       throw SDKErrors.errSessionNotInitialized;
     }
 
     const now = new Date();
-    return now.getTime() > this.activeSession.NextEpochStart.getTime();
+    return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
   }
 }
 

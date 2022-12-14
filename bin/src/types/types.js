@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Endpoint = exports.SingleConsumerSession = exports.ConsumerSessionWithProvider = exports.Session = void 0;
-class Session {
+exports.Endpoint = exports.SingleConsumerSession = exports.ConsumerSessionWithProvider = exports.SessionManager = void 0;
+class SessionManager {
     constructor(pairingList, nextEpochStart, apis) {
         this.NextEpochStart = nextEpochStart;
         this.PairingList = pairingList;
@@ -11,7 +11,7 @@ class Session {
         return this.Apis.get(name);
     }
 }
-exports.Session = Session;
+exports.SessionManager = SessionManager;
 class ConsumerSessionWithProvider {
     constructor(acc, endpoints, session, maxComputeUnits, usedComputeUnits, reliabilitySent) {
         this.Acc = acc;
@@ -24,14 +24,14 @@ class ConsumerSessionWithProvider {
 }
 exports.ConsumerSessionWithProvider = ConsumerSessionWithProvider;
 class SingleConsumerSession {
-    constructor(cuSum, latestRelayCu, relayNum, endpoint, pairingEpoch, account) {
+    constructor(cuSum, latestRelayCu, relayNum, endpoint, pairingEpoch, providerAddress) {
         this.CuSum = cuSum;
         this.LatestRelayCu = latestRelayCu;
         this.SessionId = this.getNewSessionId();
         this.RelayNum = relayNum;
         this.Endpoint = endpoint;
         this.PairingEpoch = pairingEpoch;
-        this.Account = account;
+        this.ProviderAddress = providerAddress;
     }
     getNewSessionId() {
         const min = 1;

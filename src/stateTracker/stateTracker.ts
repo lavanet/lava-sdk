@@ -14,7 +14,7 @@ import {
   ConsumerSessionWithProvider,
   Endpoint,
   SingleConsumerSession,
-  Session,
+  SessionManager,
 } from "../types/types";
 import StateTrackerError from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
@@ -48,7 +48,7 @@ export class StateTracker {
     account: AccountData,
     chainID: string,
     rpcInterface: string
-  ): Promise<Session> {
+  ): Promise<SessionManager> {
     try {
       if (this.tendermintClient instanceof Error) {
         throw StateTrackerError.errTendermintClientServiceNotInitialized;
@@ -137,9 +137,9 @@ export class StateTracker {
       }
 
       // Create session object
-      const session = new Session(pairing, nextEpochStart, apis);
+      const sessionManager = new SessionManager(pairing, nextEpochStart, apis);
 
-      return session;
+      return sessionManager;
     } catch (err) {
       throw err;
     }

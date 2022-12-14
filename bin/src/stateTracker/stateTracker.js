@@ -98,8 +98,8 @@ class StateTracker {
                     pairing.push(newPairing);
                 }
                 // Create session object
-                const session = new types_1.Session(pairing, nextEpochStart, apis);
-                return session;
+                const sessionManager = new types_1.SessionManager(pairing, nextEpochStart, apis);
+                return sessionManager;
             }
             catch (err) {
                 throw err;

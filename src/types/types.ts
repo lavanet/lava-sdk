@@ -1,4 +1,4 @@
-export class Session {
+export class SessionManager {
   PairingList: ConsumerSessionWithProvider[];
   NextEpochStart: Date;
   Apis: Map<string, number>;
@@ -44,7 +44,7 @@ export class ConsumerSessionWithProvider {
 }
 
 export class SingleConsumerSession {
-  Account: string;
+  ProviderAddress: string;
   CuSum: number;
   LatestRelayCu: number;
   SessionId: number;
@@ -58,7 +58,7 @@ export class SingleConsumerSession {
     relayNum: number,
     endpoint: Endpoint,
     pairingEpoch: number,
-    account: string
+    providerAddress: string
   ) {
     this.CuSum = cuSum;
     this.LatestRelayCu = latestRelayCu;
@@ -66,7 +66,7 @@ export class SingleConsumerSession {
     this.RelayNum = relayNum;
     this.Endpoint = endpoint;
     this.PairingEpoch = pairingEpoch;
-    this.Account = account;
+    this.ProviderAddress = providerAddress;
   }
 
   getNewSessionId(): number {
