@@ -160,7 +160,7 @@ class StateTracker {
                     // Currently we do not support rest
                     if (apiInterface.interface == "rest") {
                         const regex = /\{\s*[^}]+\s*\}/g;
-                        const name = element.name.replace(regex, "[^/\s]+");
+                        const name = element.name.replace(regex, "[^/s]+");
                         apis.set(name, element.computeUnits.getLowBits());
                     }
                     else {

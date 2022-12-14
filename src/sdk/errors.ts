@@ -15,6 +15,12 @@ class SDKErrors {
   static errChainIDUnsupported: Error = new Error(
     "Invalid or unsupported chainID"
   );
+  static errRPCRelayMethodNotSupported: Error = new Error(
+    "SendRelay not supported if the SDK is initialized with rest rpcInterface, use sendRestRelay method"
+  );
+  static errRestRelayMethodNotSupported: Error = new Error(
+    "SendRestRelay not supported if the SDK is initialized with RPC rpcInterface (tendermintRPC/jsonRPC), use sendRelay method"
+  );
 }
 
 export default SDKErrors;

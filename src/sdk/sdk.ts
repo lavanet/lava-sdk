@@ -98,6 +98,9 @@ class LavaSDK {
    */
   async sendRelay(options: SendRelayOptions): Promise<string> {
     try {
+      if (this.rpcInterface === "rest"){
+        throw SDKErrors.errRPCRelayMethodNotSupported
+      }
       // Extract attributes from options
       const { method, params } = options;
 
@@ -146,6 +149,10 @@ class LavaSDK {
    */
   async sendRestRelay(options: SendRestRelayOptions): Promise<string> {
     try {
+      if (this.rpcInterface !== "rest"){
+        throw SDKErrors.errRestRelayMethodNotSupported
+      }
+
       // Extract attributes from options
       const { method, url, data } = options;
 

@@ -17,7 +17,7 @@ const logger_1 = __importDefault(require("../logger/logger"));
 const sdk_1 = __importDefault(require("../sdk/sdk"));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "18edf4dd192baa08c73b66641048cdcdee984c85086ffde1dc38e54731144aab";
+        const privKey = "9deaba87285fdbfc65024731a319bacf49aa12e9147927ce3dac613395420213";
         const endpoint = "localhost:26657";
         const chainID = "LAV1";
         const rpcInterface = "tendermintrpc";
@@ -31,11 +31,11 @@ function run() {
         // Send relay
         const statusResponse = yield lavaSDK.sendRelay({
             method: "status",
-            params: []
+            params: [],
         });
         const blockResponse = yield lavaSDK.sendRelay({
             method: "block",
-            params: ["5"]
+            params: ["5"],
         });
         // Print relay
         console.log("statusResponse", statusResponse);
@@ -44,7 +44,7 @@ function run() {
             console.log("Same epoch");
             const statusResponse = yield lavaSDK.sendRelay({
                 method: "status",
-                params: []
+                params: [],
             });
             console.log("statusResponse", statusResponse);
             return;
@@ -53,7 +53,7 @@ function run() {
             console.log("New epoch");
             const statusResponse = yield lavaSDK.sendRelay({
                 method: "status",
-                params: []
+                params: [],
             });
             console.log("statusResponse", statusResponse);
             return;

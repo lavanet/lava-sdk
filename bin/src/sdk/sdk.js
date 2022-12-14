@@ -82,6 +82,9 @@ class LavaSDK {
     sendRelay(options) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (this.rpcInterface === "rest") {
+                    throw errors_1.default.errRPCRelayMethodNotSupported;
+                }
                 // Extract attributes from options
                 const { method, params } = options;
                 // get consumerProvider session
@@ -97,7 +100,7 @@ class LavaSDK {
                 const sendRelayOptions = {
                     data: data,
                     url: "",
-                    connectionType: ""
+                    connectionType: "",
                 };
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
@@ -121,6 +124,9 @@ class LavaSDK {
     sendRestRelay(options) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (this.rpcInterface !== "rest") {
+                    throw errors_1.default.errRestRelayMethodNotSupported;
+                }
                 // Extract attributes from options
                 const { method, url, data } = options;
                 // get consumerProvider session
@@ -140,7 +146,7 @@ class LavaSDK {
                 const sendRelayOptions = {
                     data: query,
                     url: url,
-                    connectionType: method
+                    connectionType: method,
                 };
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);

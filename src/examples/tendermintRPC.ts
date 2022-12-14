@@ -5,7 +5,7 @@ import LavaSDK from "../sdk/sdk";
 
 async function run() {
   const privKey =
-    "18edf4dd192baa08c73b66641048cdcdee984c85086ffde1dc38e54731144aab";
+    "9deaba87285fdbfc65024731a319bacf49aa12e9147927ce3dac613395420213";
   const endpoint = "localhost:26657";
   const chainID = "LAV1";
   const rpcInterface = "tendermintrpc";
