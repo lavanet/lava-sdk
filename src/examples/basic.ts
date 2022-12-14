@@ -15,7 +15,7 @@ async function run() {
     privateKey: privKey,
     chainID: chainID,
     endpoint: endpoint, // Optional
-    rpcInterface: rpcInterface// Optional
+    rpcInterface: rpcInterface, // Optional
   });
 
   // Send relay
@@ -23,23 +23,21 @@ async function run() {
   const blockResponse = await lavaSDK.sendRelay("block", ["5"]);
 
   // Print relay
-  console.log("statusResponse",statusResponse);
-  console.log("blockResponse",blockResponse);
+  console.log("statusResponse", statusResponse);
+  console.log("blockResponse", blockResponse);
 
   setTimeout(async () => {
     console.log("Same epoch");
     const statusResponse = await lavaSDK.sendRelay("status", []);
 
-    const dec = new TextDecoder();
-    console.log("statusResponse",statusResponse);
+    console.log("statusResponse", statusResponse);
   }, 5000);
 
   setTimeout(async () => {
     console.log("New epoch");
     const statusResponse = await lavaSDK.sendRelay("status", []);
 
-    const dec = new TextDecoder();
-    console.log("statusResponse",statusResponse);
+    console.log("statusResponse", statusResponse);
   }, 20000);
 }
 
