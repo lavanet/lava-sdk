@@ -17,7 +17,7 @@ const logger_1 = __importDefault(require("../logger/logger"));
 const sdk_1 = __importDefault(require("../sdk/sdk"));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "da73b083cb54e797184f756306e4252d50f77061c3e777f03ee2c38a1c4568b1";
+        const privKey = "18edf4dd192baa08c73b66641048cdcdee984c85086ffde1dc38e54731144aab";
         const endpoint = "localhost:26657";
         const chainID = "LAV1";
         const rpcInterface = "tendermintrpc";
@@ -25,26 +25,38 @@ function run() {
         const lavaSDK = yield new sdk_1.default({
             privateKey: privKey,
             chainID: chainID,
-            endpoint: endpoint,
-            rpcInterface: rpcInterface // Optional
+            lavaEndpoint: endpoint,
+            rpcInterface: rpcInterface, // Optional
         });
         // Send relay
-        const statusResponse = yield lavaSDK.sendRelay("status", []);
-        const blockResponse = yield lavaSDK.sendRelay("block", ["5"]);
+        const statusResponse = yield lavaSDK.sendRelay({
+            method: "status",
+            params: []
+        });
+        const blockResponse = yield lavaSDK.sendRelay({
+            method: "block",
+            params: ["5"]
+        });
         // Print relay
         console.log("statusResponse", statusResponse);
         console.log("blockResponse", blockResponse);
         setTimeout(() => __awaiter(this, void 0, void 0, function* () {
             console.log("Same epoch");
-            const statusResponse = yield lavaSDK.sendRelay("status", []);
-            const dec = new TextDecoder();
+            const statusResponse = yield lavaSDK.sendRelay({
+                method: "status",
+                params: []
+            });
             console.log("statusResponse", statusResponse);
+            return;
         }), 5000);
         setTimeout(() => __awaiter(this, void 0, void 0, function* () {
             console.log("New epoch");
-            const statusResponse = yield lavaSDK.sendRelay("status", []);
-            const dec = new TextDecoder();
+            const statusResponse = yield lavaSDK.sendRelay({
+                method: "status",
+                params: []
+            });
             console.log("statusResponse", statusResponse);
+            return;
         }), 20000);
     });
 }

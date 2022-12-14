@@ -11,7 +11,8 @@
     "protoc": "./scripts/protoc.sh",
     "server": "http-server dist/ -c-1",
     "test": "jest ./src",
-    "example": "node ./bin/src/examples/basic.js",
+    "tendermintRPC": "node ./bin/src/examples/tendermintRPC.js",
+    "restAPI": "node ./bin/src/examples/restAPI.js",
     "prettier": "prettier --check .",
     "lint": "eslint '**/*.ts'"
   },

@@ -32,9 +32,9 @@ class LavaSDK {
     constructor(options) {
         // Extract attributes from options
         const { privateKey, chainID } = options;
-        let { endpoint, rpcInterface } = options;
+        let { lavaEndpoint, rpcInterface } = options;
         // If lava endpoint is not set, use default
-        endpoint = endpoint || default_1.DEFAULT_LAVA_ENDPOINT;
+        lavaEndpoint = lavaEndpoint || default_1.DEFAULT_LAVA_ENDPOINT;
         // Validate chainID
         if (!(0, chains_1.isValidChainID)(chainID)) {
             throw errors_1.default.errChainIDUnsupported;
@@ -44,7 +44,7 @@ class LavaSDK {
         this.chainID = chainID;
         this.rpcInterface = rpcInterface;
         this.privKey = privateKey;
-        this.lavaEndpoint = endpoint;
+        this.lavaEndpoint = lavaEndpoint;
         this.account = errors_1.default.errAccountNotInitialized;
         this.relayer = errors_1.default.errRelayerServiceNotInitialized;
         this.stateTracker = errors_1.default.errStateTrackerServiceNotInitialized;
@@ -71,54 +71,135 @@ class LavaSDK {
         });
     }
     /**
-     * Send relay to network through providers
+     * Send relay to network through providers using RPC API.
      *
      * @async
-     * @param {string} method - A string representing the RPC method name
-     * @param {string[]} params - An array of strings representing the RPC parameters
+     * @param {SendRelayOptions} options The options to use for sending relay with RPC API.
      *
      * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
      *
      */
-    sendRelay(method, params) {
+    sendRelay(options) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Check if account was initialized
+                // Extract attributes from options
+                const { method, params } = options;
+                // get consumerProvider session
+                const consumerProviderSession = yield this.getConsumerProviderSession();
+                // get cuSum for specified method
+                const cuSum = this.getCuSumForMethod(method);
+                const data = this.generateRPCData(method, params);
+                // Check if relay was initialized
                 if (this.relayer instanceof Error) {
                     throw errors_1.default.errRelayerServiceNotInitialized;
                 }
-                // Check if state tracker was initialized
-                if (this.stateTracker instanceof Error) {
-                    throw errors_1.default.errStateTrackerServiceNotInitialized;
-                }
-                // Check if state tracker was initialized
-                if (this.account instanceof Error) {
-                    throw errors_1.default.errAccountNotInitialized;
-                }
-                // Check if activeSession was initialized
-                if (this.activeSessionManager instanceof Error) {
-                    throw errors_1.default.errSessionNotInitialized;
-                }
-                // Check if new epoch has started
-                if (this.newEpochStarted()) {
-                    this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
-                }
-                const consumerProviderSession = this.stateTracker.pickRandomProvider(this.activeSessionManager.PairingList);
-                const cuSum = this.activeSessionManager.getCuSumFromApi(method);
-                if (cuSum == undefined) {
-                    throw errors_1.default.errMethodNotSupportedNoCuSUM;
-                }
+                // Construct send relay options
+                const sendRelayOptions = {
+                    data: data,
+                    url: "",
+                    connectionType: ""
+                };
                 // Send relay
-                const relayResponse = yield this.relayer.sendRelay(method, params, consumerProviderSession, cuSum);
-                // Decode relay response
-                const dec = new TextDecoder();
-                const decodedResponse = dec.decode(relayResponse.getData_asU8());
+                const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
                 // Return relay in json format
-                return decodedResponse;
+                return this.decodeRelayResponse(relayResponse);
             }
             catch (err) {
                 throw err;
             }
+        });
+    }
+    /**
+     * Send relay to network through providers using RPC API.
+     *
+     * @async
+     * @param {SendRestRelayOptions} options The options to use for sending relay with RPC API.
+     *
+     * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
+     *
+     */
+    sendRestRelay(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Extract attributes from options
+                const { method, url, data } = options;
+                // get consumerProvider session
+                const consumerProviderSession = yield this.getConsumerProviderSession();
+                // get cuSum for specified method
+                const cuSum = this.getCuSumForMethod(url);
+                // Check if relay was initialized
+                if (this.relayer instanceof Error) {
+                    throw errors_1.default.errRelayerServiceNotInitialized;
+                }
+                // TODO contruct from data
+                let query = "?";
+                for (const key in data) {
+                    query = query + key + "=" + data[key] + "&";
+                }
+                // Construct send relay options
+                const sendRelayOptions = {
+                    data: query,
+                    url: url,
+                    connectionType: method
+                };
+                // Send relay
+                const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
+                // Return relay in json format
+                return this.decodeRelayResponse(relayResponse);
+            }
+            catch (err) {
+                throw err;
+            }
+        });
+    }
+    generateRPCData(method, params) {
+        const stringifyMethod = JSON.stringify(method);
+        const stringifyParam = JSON.stringify(params);
+        return ('{"jsonrpc": "2.0", "id": 1, "method": ' +
+            stringifyMethod +
+            ', "params": ' +
+            stringifyParam +
+            "}");
+    }
+    decodeRelayResponse(relayResponse) {
+        // Decode relay response
+        const dec = new TextDecoder();
+        const decodedResponse = dec.decode(relayResponse.getData_asU8());
+        return decodedResponse;
+    }
+    getCuSumForMethod(method) {
+        // Check if activeSession was initialized
+        if (this.activeSessionManager instanceof Error) {
+            throw errors_1.default.errSessionNotInitialized;
+        }
+        // get cuSum for specified method
+        const cuSum = this.activeSessionManager.getCuSumFromApi(method, this.chainID);
+        // if cuSum is undefiend method does not exists in spec
+        if (cuSum == undefined) {
+            throw errors_1.default.errMethodNotSupported;
+        }
+        return cuSum;
+    }
+    getConsumerProviderSession() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Check if state tracker was initialized
+            if (this.stateTracker instanceof Error) {
+                throw errors_1.default.errStateTrackerServiceNotInitialized;
+            }
+            // Check if state tracker was initialized
+            if (this.account instanceof Error) {
+                throw errors_1.default.errAccountNotInitialized;
+            }
+            // Check if activeSessionManager was initialized
+            if (this.activeSessionManager instanceof Error) {
+                throw errors_1.default.errSessionNotInitialized;
+            }
+            // Check if new epoch has started
+            if (this.newEpochStarted()) {
+                this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
+            }
+            // Pick random provider and return
+            return this.stateTracker.pickRandomProvider(this.activeSessionManager.PairingList);
         });
     }
     newEpochStarted() {
@@ -126,7 +207,9 @@ class LavaSDK {
         if (this.activeSessionManager instanceof Error) {
             throw errors_1.default.errSessionNotInitialized;
         }
+        // Get current date and time
         const now = new Date();
+        // Return if new epoch has started
         return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
     }
 }

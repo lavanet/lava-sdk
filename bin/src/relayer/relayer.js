@@ -23,25 +23,20 @@ class Relayer {
         this.chainID = chainID;
         this.privKey = privKey;
     }
-    sendRelay(method, params, consumerProviderSession, cuSum) {
+    sendRelay(options, consumerProviderSession, cuSum) {
         return __awaiter(this, void 0, void 0, function* () {
-            const stringifyMethod = JSON.stringify(method);
-            const stringifyParam = JSON.stringify(params);
+            // Extract attributes from options
+            const { data, url, connectionType } = options;
             const enc = new TextEncoder();
             const consumerSession = consumerProviderSession.Session;
             // Increase used compute units
             consumerProviderSession.UsedComputeUnits =
                 consumerProviderSession.UsedComputeUnits + cuSum;
-            const data = '{"jsonrpc": "2.0", "id": 1, "method": ' +
-                stringifyMethod +
-                ', "params": ' +
-                stringifyParam +
-                "}";
             // Create request
             const request = new relay_pb_1.RelayRequest();
             request.setChainid(this.chainID);
-            request.setConnectionType("");
-            request.setApiUrl("");
+            request.setConnectionType(connectionType);
+            request.setApiUrl(url);
             request.setSessionId(consumerSession.getNewSessionId());
             request.setCuSum(cuSum);
             request.setSig(new Uint8Array());

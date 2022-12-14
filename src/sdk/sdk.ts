@@ -2,8 +2,9 @@ import { createWallet } from "../wallet/wallet";
 import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
 import Relayer from "../relayer/relayer";
+import { RelayReply } from "../proto/relay_pb";
 import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
-import { SessionManager } from "../types/types";
+import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { DEFAULT_LAVA_ENDPOINT } from "../config/default";
 
@@ -32,10 +33,10 @@ class LavaSDK {
   constructor(options: LavaSDKOptions) {
     // Extract attributes from options
     const { privateKey, chainID } = options;
-    let { endpoint, rpcInterface } = options;
+    let { lavaEndpoint, rpcInterface } = options;
 
     // If lava endpoint is not set, use default
-    endpoint = endpoint || DEFAULT_LAVA_ENDPOINT;
+    lavaEndpoint = lavaEndpoint || DEFAULT_LAVA_ENDPOINT;
 
     // Validate chainID
     if (!isValidChainID(chainID)) {
@@ -48,7 +49,7 @@ class LavaSDK {
     this.chainID = chainID;
     this.rpcInterface = rpcInterface;
     this.privKey = privateKey;
-    this.lavaEndpoint = endpoint;
+    this.lavaEndpoint = lavaEndpoint;
 
     this.account = SDKErrors.errAccountNotInitialized;
     this.relayer = SDKErrors.errRelayerServiceNotInitialized;
@@ -87,73 +88,174 @@ class LavaSDK {
   }
 
   /**
-   * Send relay to network through providers
+   * Send relay to network through providers using RPC API.
    *
    * @async
-   * @param {string} method - A string representing the RPC method name
-   * @param {string[]} params - An array of strings representing the RPC parameters
+   * @param {SendRelayOptions} options The options to use for sending relay with RPC API.
    *
    * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
    *
    */
-  async sendRelay(method: string, params: string[]): Promise<string> {
+  async sendRelay(options: SendRelayOptions): Promise<string> {
     try {
-      // Check if account was initialized
+      // Extract attributes from options
+      const { method, params } = options;
+
+      // get consumerProvider session
+      const consumerProviderSession = await this.getConsumerProviderSession();
+
+      // get cuSum for specified method
+      const cuSum = this.getCuSumForMethod(method);
+
+      const data = this.generateRPCData(method, params);
+
+      // Check if relay was initialized
       if (this.relayer instanceof Error) {
         throw SDKErrors.errRelayerServiceNotInitialized;
       }
 
-      // Check if state tracker was initialized
-      if (this.stateTracker instanceof Error) {
-        throw SDKErrors.errStateTrackerServiceNotInitialized;
-      }
-
-      // Check if state tracker was initialized
-      if (this.account instanceof Error) {
-        throw SDKErrors.errAccountNotInitialized;
-      }
-
-      // Check if activeSession was initialized
-      if (this.activeSessionManager instanceof Error) {
-        throw SDKErrors.errSessionNotInitialized;
-      }
-
-      // Check if new epoch has started
-      if (this.newEpochStarted()) {
-        this.activeSessionManager = await this.stateTracker.getSession(
-          this.account,
-          this.chainID,
-          this.rpcInterface
-        );
-      }
-
-      const consumerProviderSession = this.stateTracker.pickRandomProvider(
-        this.activeSessionManager.PairingList
-      );
-
-      const cuSum = this.activeSessionManager.getCuSumFromApi(method);
-
-      if (cuSum == undefined) {
-        throw SDKErrors.errMethodNotSupportedNoCuSUM;
-      }
+      // Construct send relay options
+      const sendRelayOptions = {
+        data: data,
+        url: "",
+        connectionType: "",
+      };
 
       // Send relay
       const relayResponse = await this.relayer.sendRelay(
-        method,
-        params,
+        sendRelayOptions,
         consumerProviderSession,
         cuSum
       );
 
-      // Decode relay response
-      const dec = new TextDecoder();
-      const decodedResponse = dec.decode(relayResponse.getData_asU8());
-
       // Return relay in json format
-      return decodedResponse;
+      return this.decodeRelayResponse(relayResponse);
     } catch (err) {
       throw err;
     }
+  }
+
+  /**
+   * Send relay to network through providers using RPC API.
+   *
+   * @async
+   * @param {SendRestRelayOptions} options The options to use for sending relay with RPC API.
+   *
+   * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
+   *
+   */
+  async sendRestRelay(options: SendRestRelayOptions): Promise<string> {
+    try {
+      // Extract attributes from options
+      const { method, url, data } = options;
+
+      // get consumerProvider session
+      const consumerProviderSession = await this.getConsumerProviderSession();
+
+      // get cuSum for specified method
+      const cuSum = this.getCuSumForMethod(url);
+
+      // Check if relay was initialized
+      if (this.relayer instanceof Error) {
+        throw SDKErrors.errRelayerServiceNotInitialized;
+      }
+
+      // TODO contruct from data
+      let query = "?";
+      for (const key in data) {
+        query = query + key + "=" + data[key] + "&";
+      }
+
+      // Construct send relay options
+      const sendRelayOptions = {
+        data: query,
+        url: url,
+        connectionType: method,
+      };
+
+      // Send relay
+      const relayResponse = await this.relayer.sendRelay(
+        sendRelayOptions,
+        consumerProviderSession,
+        cuSum
+      );
+
+      // Return relay in json format
+      return this.decodeRelayResponse(relayResponse);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  private generateRPCData(method: string, params: Array<string>): string {
+    const stringifyMethod = JSON.stringify(method);
+    const stringifyParam = JSON.stringify(params);
+
+    return (
+      '{"jsonrpc": "2.0", "id": 1, "method": ' +
+      stringifyMethod +
+      ', "params": ' +
+      stringifyParam +
+      "}"
+    );
+  }
+
+  private decodeRelayResponse(relayResponse: RelayReply): string {
+    // Decode relay response
+    const dec = new TextDecoder();
+    const decodedResponse = dec.decode(relayResponse.getData_asU8());
+
+    return decodedResponse;
+  }
+
+  private getCuSumForMethod(method: string): number {
+    // Check if activeSession was initialized
+    if (this.activeSessionManager instanceof Error) {
+      throw SDKErrors.errSessionNotInitialized;
+    }
+    // get cuSum for specified method
+    const cuSum = this.activeSessionManager.getCuSumFromApi(
+      method,
+      this.chainID
+    );
+
+    // if cuSum is undefiend method does not exists in spec
+    if (cuSum == undefined) {
+      throw SDKErrors.errMethodNotSupported;
+    }
+
+    return cuSum;
+  }
+
+  private async getConsumerProviderSession(): Promise<ConsumerSessionWithProvider> {
+    // Check if state tracker was initialized
+    if (this.stateTracker instanceof Error) {
+      throw SDKErrors.errStateTrackerServiceNotInitialized;
+    }
+
+    // Check if state tracker was initialized
+    if (this.account instanceof Error) {
+      throw SDKErrors.errAccountNotInitialized;
+    }
+
+    // Check if activeSessionManager was initialized
+    if (this.activeSessionManager instanceof Error) {
+      throw SDKErrors.errSessionNotInitialized;
+    }
+
+    // Check if new epoch has started
+    if (this.newEpochStarted()) {
+      this.activeSessionManager = await this.stateTracker.getSession(
+        this.account,
+        this.chainID,
+        this.rpcInterface
+      );
+    }
+
+    // Pick random provider and return
+    return this.stateTracker.pickRandomProvider(
+      this.activeSessionManager.PairingList
+    );
   }
 
   private newEpochStarted(): boolean {
@@ -162,9 +264,29 @@ class LavaSDK {
       throw SDKErrors.errSessionNotInitialized;
     }
 
+    // Get current date and time
     const now = new Date();
+
+    // Return if new epoch has started
     return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
   }
+}
+
+/**
+ * Options for sending RPC relay.
+ */
+interface SendRelayOptions {
+  method: string;
+  params: Array<string>;
+}
+
+/**
+ * Options for sending Rest relay.
+ */
+interface SendRestRelayOptions {
+  method: string;
+  url: string;
+  data: Record<string, string>;
 }
 
 /**
@@ -173,7 +295,7 @@ class LavaSDK {
 interface LavaSDKOptions {
   privateKey: string;
   chainID: string;
-  endpoint?: string;
+  lavaEndpoint?: string;
   rpcInterface?: string;
 }
 

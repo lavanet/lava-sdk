@@ -13,7 +13,14 @@ export class SessionManager {
     this.Apis = apis;
   }
 
-  getCuSumFromApi(name: string): number | undefined {
+  getCuSumFromApi(name: string, chainID: string): number | undefined {
+    if (chainID === "rest") {
+      this.Apis.forEach((value: number, key: string) => {
+        if (name.match(key)) {
+          return value;
+        }
+      });
+    }
     return this.Apis.get(name);
   }
 }

@@ -158,8 +158,11 @@ class StateTracker {
                     if (apiInterface.interface != rpcInterface)
                         continue;
                     // Currently we do not support rest
-                    if (apiInterface.interface == "rest")
-                        continue;
+                    if (apiInterface.interface == "rest") {
+                        const regex = /\{\s*[^}]+\s*\}/g;
+                        const name = element.name.replace(regex, "[^/\s]+");
+                        apis.set(name, element.computeUnits.getLowBits());
+                    }
                     else {
                         // Handle RPC apis
                         apis.set(element.name, element.computeUnits.getLowBits());

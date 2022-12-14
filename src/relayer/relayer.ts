@@ -16,13 +16,12 @@ class Relayer {
   }
 
   async sendRelay(
-    method: string,
-    params: string[],
+    options: SendRelayOptions,
     consumerProviderSession: ConsumerSessionWithProvider,
     cuSum: number
   ): Promise<RelayReply> {
-    const stringifyMethod = JSON.stringify(method);
-    const stringifyParam = JSON.stringify(params);
+    // Extract attributes from options
+    const { data, url, connectionType } = options;
 
     const enc = new TextEncoder();
 
@@ -32,18 +31,11 @@ class Relayer {
     consumerProviderSession.UsedComputeUnits =
       consumerProviderSession.UsedComputeUnits + cuSum;
 
-    const data =
-      '{"jsonrpc": "2.0", "id": 1, "method": ' +
-      stringifyMethod +
-      ', "params": ' +
-      stringifyParam +
-      "}";
-
     // Create request
     const request = new RelayRequest();
     request.setChainid(this.chainID);
-    request.setConnectionType("");
-    request.setApiUrl("");
+    request.setConnectionType(connectionType);
+    request.setApiUrl(url);
     request.setSessionId(consumerSession.getNewSessionId());
     request.setCuSum(cuSum);
     request.setSig(new Uint8Array());
@@ -121,6 +113,15 @@ class Relayer {
 
     return hash;
   }
+}
+
+/**
+ * Options for send relay method.
+ */
+interface SendRelayOptions {
+  data: string;
+  url: string;
+  connectionType: string;
 }
 
 export default Relayer;

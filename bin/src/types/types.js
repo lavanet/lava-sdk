@@ -7,7 +7,14 @@ class SessionManager {
         this.PairingList = pairingList;
         this.Apis = apis;
     }
-    getCuSumFromApi(name) {
+    getCuSumFromApi(name, chainID) {
+        if (chainID === "rest") {
+            this.Apis.forEach((value, key) => {
+                if (name.match(key)) {
+                    return value;
+                }
+            });
+        }
         return this.Apis.get(name);
     }
 }

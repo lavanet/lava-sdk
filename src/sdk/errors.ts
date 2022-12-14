@@ -11,9 +11,7 @@ class SDKErrors {
   static errSessionNotInitialized: Error = new Error(
     "Session was not initialized"
   );
-  static errMethodNotSupportedNoCuSUM: Error = new Error(
-    "Method not supported"
-  );
+  static errMethodNotSupported: Error = new Error("Method not supported");
   static errChainIDUnsupported: Error = new Error(
     "Invalid or unsupported chainID"
   );

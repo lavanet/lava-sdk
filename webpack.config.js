@@ -3,7 +3,7 @@ const webpack = require('webpack')
 
 module.exports = [
     {
-  entry: './bin/src/examples/basic.js',
+  entry: './bin/src/examples/tendermintRPC.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
