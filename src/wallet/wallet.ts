@@ -40,8 +40,8 @@ class LavaWallet {
       const account = await this.wallet.getAccounts();
 
       // Check if zero account exists
-      if (account[0]== undefined){
-        throw WalletErrors.errZeroAccountDoesNotExists
+      if (account[0] == undefined) {
+        throw WalletErrors.errZeroAccountDoesNotExists;
       }
 
       // Return zero account from wallet

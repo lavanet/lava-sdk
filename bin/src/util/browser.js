@@ -7,7 +7,7 @@ if (typeof window !== "undefined") {
     // We are running in a browser
     transport = grpc_web_1.grpc.CrossBrowserHttpTransport({ withCredentials: false });
 }
-else if (typeof process !== 'undefined') {
+else if (typeof process !== "undefined") {
     // We are running in Node.js
     transport = (0, grpc_web_node_http_transport_1.NodeHttpTransport)();
 }

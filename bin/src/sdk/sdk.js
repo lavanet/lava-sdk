@@ -41,6 +41,10 @@ class LavaSDK {
         }
         // If the rpc is not defined used the default for specified chainID
         rpcInterface = rpcInterface || (0, chains_1.fetchRpcInterface)(chainID);
+        // Validate rpcInterface
+        if (rpcInterface === "") {
+            throw errors_1.default.errChainIDUnsupported;
+        }
         this.chainID = chainID;
         this.rpcInterface = rpcInterface;
         this.privKey = privateKey;
