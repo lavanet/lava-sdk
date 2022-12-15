@@ -18,6 +18,7 @@ const relayer_1 = __importDefault(require("../relayer/relayer"));
 const stateTracker_1 = require("../stateTracker/stateTracker");
 const chains_1 = require("../util/chains");
 const default_1 = require("../config/default");
+const logger_1 = __importDefault(require("../logger/logger"));
 class LavaSDK {
     /**
      * Create Lava-SDK instance
@@ -72,7 +73,22 @@ class LavaSDK {
             this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
             // Create relayer
             this.relayer = new relayer_1.default(this.chainID, this.privKey);
+            logger_1.default.info("                               Lava SDK                      ");
+            logger_1.default.emptyLine();
+            logger_1.default.emptyLine();
+            logger_1.default.info("1. Creating decentralized access to Cosmos Hub");
+            this.sleep(500);
+            logger_1.default.success("You now have decentralized and accountable access to Cosmos Hub");
+            logger_1.default.emptyLine();
+            logger_1.default.emptyLine();
         });
+    }
+    sleep(milliseconds) {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+            currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
     }
     /**
      * Send relay to network through providers using RPC API.
@@ -106,8 +122,13 @@ class LavaSDK {
                     url: "",
                     connectionType: "",
                 };
+                this.sleep(700);
+                logger_1.default.info('2. Sending relay: {"jsonrpc": "2.0", "id": 1, "method": "health", "params": [] }');
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
+                this.sleep(1500);
+                logger_1.default.success("Relay response received");
+                this.sleep(700);
                 // Return relay in json format
                 return this.decodeRelayResponse(relayResponse);
             }

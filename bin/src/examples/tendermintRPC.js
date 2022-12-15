@@ -17,7 +17,7 @@ const logger_1 = __importDefault(require("../logger/logger"));
 const sdk_1 = __importDefault(require("../sdk/sdk"));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "86619315425492e3e1f5bda7c06a0875d1d19618eed52631c11ab5b4754c652a";
+        const privKey = "5c1b89b5196a0b961851f72352a087006283c73410ad890676270fa088f86af2";
         const endpoint = "localhost:26657";
         const chainID = "LAV1";
         const rpcInterface = "tendermintrpc";
@@ -33,31 +33,39 @@ function run() {
             method: "status",
             params: [],
         });
-        const blockResponse = yield lavaSDK.sendRelay({
-            method: "block",
-            params: ["5"],
+        console.log(statusResponse);
+        /*
+      const blockResponse = await lavaSDK.sendRelay({
+        method: "block",
+        params: ["5"],
+      });
+    
+      // Print relay
+      console.log("statusResponse", statusResponse);
+      console.log("blockResponse", blockResponse);
+    
+      setTimeout(async () => {
+        console.log("Same epoch");
+        const statusResponse = await lavaSDK.sendRelay({
+          method: "status",
+          params: [],
         });
-        // Print relay
+    
         console.log("statusResponse", statusResponse);
-        console.log("blockResponse", blockResponse);
-        setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-            console.log("Same epoch");
-            const statusResponse = yield lavaSDK.sendRelay({
-                method: "status",
-                params: [],
-            });
-            console.log("statusResponse", statusResponse);
-            return;
-        }), 5000);
-        setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-            console.log("New epoch");
-            const statusResponse = yield lavaSDK.sendRelay({
-                method: "status",
-                params: [],
-            });
-            console.log("statusResponse", statusResponse);
-            return;
-        }), 20000);
+        return;
+      }, 5000);
+    
+      setTimeout(async () => {
+        console.log("New epoch");
+        const statusResponse = await lavaSDK.sendRelay({
+          method: "status",
+          params: [],
+        });
+    
+        console.log("statusResponse", statusResponse);
+        return;
+      }, 20000);
+      */
     });
 }
 run()

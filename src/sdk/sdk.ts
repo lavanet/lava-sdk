@@ -7,6 +7,7 @@ import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
 import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { DEFAULT_LAVA_ENDPOINT } from "../config/default";
+import Logger from "../logger/logger"
 
 class LavaSDK {
   private lavaEndpoint: string;
@@ -90,6 +91,24 @@ class LavaSDK {
 
     // Create relayer
     this.relayer = new Relayer(this.chainID, this.privKey);
+
+    Logger.info("                               Lava SDK                      ")
+    Logger.emptyLine();
+    Logger.emptyLine();
+
+    Logger.info("1. Creating decentralized access to Cosmos Hub")
+    this.sleep(500)
+    Logger.success("You now have decentralized and accountable access to Cosmos Hub")
+    Logger.emptyLine();
+    Logger.emptyLine();
+  }
+
+   sleep(milliseconds: number) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
   }
 
   /**
@@ -129,13 +148,18 @@ class LavaSDK {
         connectionType: "",
       };
 
+      this.sleep(700)
+      Logger.info('2. Sending relay: {"jsonrpc": "2.0", "id": 1, "method": "health", "params": [] }')
+
       // Send relay
       const relayResponse = await this.relayer.sendRelay(
         sendRelayOptions,
         consumerProviderSession,
         cuSum
       );
-
+      this.sleep(1500)
+      Logger.success("Relay response received")
+      this.sleep(700)
       // Return relay in json format
       return this.decodeRelayResponse(relayResponse);
     } catch (err) {

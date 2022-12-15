@@ -19,7 +19,7 @@ class Logger {
         console.log(chalk_1.default.yellow(s));
     }
     static success(s) {
-        console.log(chalk_1.default.green(s));
+        console.log(chalk_1.default.green(`✅ ${s}`));
     }
     static error(s) {
         console.log(chalk_1.default.red(s));

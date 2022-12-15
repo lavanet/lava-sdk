@@ -5,10 +5,11 @@ import LavaSDK from "../sdk/sdk";
 
 async function run() {
   const privKey =
-    "86619315425492e3e1f5bda7c06a0875d1d19618eed52631c11ab5b4754c652a";
+    "5c1b89b5196a0b961851f72352a087006283c73410ad890676270fa088f86af2";
   const endpoint = "localhost:26657";
   const chainID = "LAV1";
   const rpcInterface = "tendermintrpc";
+
 
   // Create lavaSDK
   const lavaSDK = await new LavaSDK({
@@ -23,6 +24,9 @@ async function run() {
     method: "status",
     params: [],
   });
+
+  console.log(statusResponse)
+    /*
   const blockResponse = await lavaSDK.sendRelay({
     method: "block",
     params: ["5"],
@@ -53,6 +57,7 @@ async function run() {
     console.log("statusResponse", statusResponse);
     return;
   }, 20000);
+  */
 }
 
 run()
