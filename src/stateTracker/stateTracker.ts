@@ -54,7 +54,7 @@ export class StateTracker {
         throw StateTrackerError.errTendermintClientServiceNotInitialized;
       }
 
-      // Create request for getCuSumForChainID method
+      // Create request for getServiceApis method
       const queryGetSpecRequest = {
         ChainID: chainID,
       };
@@ -115,20 +115,22 @@ export class StateTracker {
           continue;
         }
 
+        const singleConsumerSession = new SingleConsumerSession(
+          0, // cuSum
+          0, // latestRelayCuSum
+          1, // relayNumber
+          relevantEndpoints[0],
+          pairingResponse.currentEpoch.getLowBits(),
+          provider.address
+        )
+
         // Create a new pairing object
         const newPairing = new ConsumerSessionWithProvider(
           account.address,
           relevantEndpoints,
-          new SingleConsumerSession(
-            0,
-            0,
-            1,
-            relevantEndpoints[0],
-            pairingResponse.currentEpoch.getLowBits(),
-            provider.address
-          ),
+          singleConsumerSession,
           maxcu,
-          0,
+          0, // used compute units
           false
         );
 
@@ -201,7 +203,7 @@ export class StateTracker {
       throw StateTrackerError.errSpecQueryServiceNotInitialized;
     }
 
-    // Get pairing from the chain
+    // Get spec from the chain
     const queryResult = await this.specQueryService.Spec(request);
 
     if (queryResult.Spec == undefined) {
@@ -213,13 +215,12 @@ export class StateTracker {
     // Extract apis from response
     for (const element of queryResult.Spec.apis) {
       for (const apiInterface of element.apiInterfaces) {
-        // Skip if interface does not match
+        // Skip if interface which does not match
         if (apiInterface.interface != rpcInterface) continue;
 
-        // Currently we do not support rest
         if (apiInterface.interface == "rest") {
-          const regex = /\{\s*[^}]+\s*\}/g;
-          const name = element.name.replace(regex, "[^/s]+");
+          // handle REST apis
+          const name = this.convertRestApiName(element.name);
           apis.set(name, element.computeUnits.getLowBits());
         } else {
           // Handle RPC apis
@@ -229,6 +230,11 @@ export class StateTracker {
     }
 
     return apis;
+  }
+
+  convertRestApiName(name: string): string {
+    const regex = /\{\s*[^}]+\s*\}/g;
+    return name.replace(regex, "[^/s]+");
   }
 }
 

@@ -3,7 +3,7 @@ class StateTrackerErrors {
     "Pairing query service was not initialized"
   );
   static errSpecQueryServiceNotInitialized: Error = new Error(
-    "Pairing query service was not initialized"
+    "Spec query service was not initialized"
   );
   static errEpochQueryServiceNotInitialized: Error = new Error(
     "Epoch query service was not initialized"
