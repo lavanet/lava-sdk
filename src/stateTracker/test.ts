@@ -5,7 +5,7 @@ import {
   SingleConsumerSession,
 } from "../types/types";
 
-it("Validate convertRestApiName method", () => {
+it("Test convertRestApiName method", () => {
   const testCasses: { name: string; output: string }[] = [
     {
       name: "/lavanet/lava/spec/params",
@@ -38,7 +38,7 @@ it("Validate convertRestApiName method", () => {
   });
 });
 
-it("Validate pickRandomProvider method", () => {
+it("Test pickRandomProvider method", () => {
   const testCasses: {
     maxComputeUnits: number;
     UsedComputeUnits: number;

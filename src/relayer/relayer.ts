@@ -77,10 +77,7 @@ class Relayer {
   }
 
   // Sign relay request using priv key
-  private async signRelay(
-    request: RelayRequest,
-    privKey: string
-  ): Promise<Uint8Array> {
+  async signRelay(request: RelayRequest, privKey: string): Promise<Uint8Array> {
     const message = this.prepareRequest(request);
 
     const sig = await Secp256k1.createSignature(message, fromHex(privKey));
@@ -95,7 +92,7 @@ class Relayer {
     return Uint8Array.from([27 + recovery, ...r, ...s]);
   }
 
-  private prepareRequest(request: RelayRequest): Uint8Array {
+  prepareRequest(request: RelayRequest): Uint8Array {
     const enc = new TextEncoder();
 
     const jsonMessage = JSON.stringify(request.toObject(), (key, value) => {

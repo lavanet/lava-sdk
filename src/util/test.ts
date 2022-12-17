@@ -33,7 +33,7 @@ describe("Make sure supportedChains.json is valid", () => {
   });
 });
 
-describe("Validate isValidChainID method", () => {
+describe("Test isValidChainID method", () => {
   it("Entity with specified chainID exists", async () => {
     supportedChains.filter((item) => {
       // For each chainID expect true
@@ -45,7 +45,7 @@ describe("Validate isValidChainID method", () => {
   });
 });
 
-describe("Validate fetchRpcInterface method", () => {
+describe("Test fetchRpcInterface method", () => {
   it("Return correct rpc interface for all entities", async () => {
     supportedChains.filter((item) => {
       expect(fetchRpcInterface(item.chainID)).toBe(item.defaultRPC);

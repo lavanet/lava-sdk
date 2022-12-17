@@ -38,7 +38,7 @@ describe("Make sure supportedChains.json is valid", () => {
         expect(uniquechainIDs.length).toBe(supportedChains_json_1.default.length);
     }));
 });
-describe("Validate isValidChainID method", () => {
+describe("Test isValidChainID method", () => {
     it("Entity with specified chainID exists", () => __awaiter(void 0, void 0, void 0, function* () {
         supportedChains_json_1.default.filter((item) => {
             // For each chainID expect true
@@ -49,7 +49,7 @@ describe("Validate isValidChainID method", () => {
         expect((0, chains_1.isValidChainID)("InvalidChainID")).toBe(false);
     }));
 });
-describe("Validate fetchRpcInterface method", () => {
+describe("Test fetchRpcInterface method", () => {
     it("Return correct rpc interface for all entities", () => __awaiter(void 0, void 0, void 0, function* () {
         supportedChains_json_1.default.filter((item) => {
             expect((0, chains_1.fetchRpcInterface)(item.chainID)).toBe(item.defaultRPC);

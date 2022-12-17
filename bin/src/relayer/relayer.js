@@ -97,6 +97,7 @@ class Relayer {
             .replace(/,"/g, ' "')
             .replace(/"(\w+)"\s*:/g, "$1:")
             .slice(1, -1);
+        console.log(messageReplaced);
         const encodedMessage = enc.encode(messageReplaced + " ");
         const hash = (0, crypto_1.sha256)(encodedMessage);
         return hash;
