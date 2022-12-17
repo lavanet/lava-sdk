@@ -122,7 +122,7 @@ export class StateTracker {
           relevantEndpoints[0],
           pairingResponse.currentEpoch.getLowBits(),
           provider.address
-        )
+        );
 
         // Create a new pairing object
         const newPairing = new ConsumerSessionWithProvider(
