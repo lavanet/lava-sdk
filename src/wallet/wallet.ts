@@ -30,15 +30,25 @@ class LavaWallet {
 
   // Get consumer account from the wallet
   async getConsumerAccount(): Promise<AccountData> {
-    // check if wallet was initialized
-    if (this.wallet instanceof Error) {
-      throw new Error(this.wallet.message);
+    try {
+      // Check if wallet was initialized
+      if (this.wallet instanceof Error) {
+        throw WalletErrors.errWalletNotInitialized;
+      }
+
+      // Fetch account
+      const account = await this.wallet.getAccounts();
+
+      // Check if zero account exists
+      if (account[0] == undefined) {
+        throw WalletErrors.errZeroAccountDoesNotExists;
+      }
+
+      // Return zero account from wallet
+      return account[0];
+    } catch (err) {
+      throw err;
     }
-
-    // Return zero account from wallet
-    const accountZero = (await this.wallet.getAccounts())[0];
-
-    return accountZero;
   }
 
   // Print account details

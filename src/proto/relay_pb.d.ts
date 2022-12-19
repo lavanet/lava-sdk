@@ -63,7 +63,7 @@ export class RelayRequest extends jspb.Message {
 
 export namespace RelayRequest {
   export type AsObject = {
-    chainid: string,
+    chainID: string,
     connectionType: string,
     apiUrl: string,
     sessionId: number,

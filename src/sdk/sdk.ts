@@ -46,6 +46,11 @@ class LavaSDK {
     // If the rpc is not defined used the default for specified chainID
     rpcInterface = rpcInterface || fetchRpcInterface(chainID);
 
+    // Validate rpcInterface
+    if (rpcInterface === "") {
+      throw SDKErrors.errChainIDUnsupported;
+    }
+
     this.chainID = chainID;
     this.rpcInterface = rpcInterface;
     this.privKey = privateKey;
@@ -58,6 +63,7 @@ class LavaSDK {
 
     return (async (): Promise<LavaSDK> => {
       await this.init();
+
       return this;
     })() as unknown as LavaSDK;
   }
@@ -87,21 +93,13 @@ class LavaSDK {
     this.relayer = new Relayer(this.chainID, this.privKey);
   }
 
-  /**
-   * Send relay to network through providers using RPC API.
-   *
-   * @async
-   * @param {SendRelayOptions} options The options to use for sending relay with RPC API.
-   *
-   * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
-   *
-   */
-  async sendRelay(options: SendRelayOptions): Promise<string> {
+  private async handleRpcRelay(options: SendRelayOptions): Promise<string> {
     try {
       if (this.rpcInterface === "rest") {
         throw SDKErrors.errRPCRelayMethodNotSupported;
       }
       // Extract attributes from options
+      // TODO change naming for optiosn atribute method both in RPC and REST
       const { method, params } = options;
 
       // get consumerProvider session
@@ -138,16 +136,9 @@ class LavaSDK {
     }
   }
 
-  /**
-   * Send relay to network through providers using RPC API.
-   *
-   * @async
-   * @param {SendRestRelayOptions} options The options to use for sending relay with RPC API.
-   *
-   * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
-   *
-   */
-  async sendRestRelay(options: SendRestRelayOptions): Promise<string> {
+  private async handleRestRelay(
+    options: SendRestRelayOptions
+  ): Promise<string> {
     try {
       if (this.rpcInterface !== "rest") {
         throw SDKErrors.errRestRelayMethodNotSupported;
@@ -167,7 +158,6 @@ class LavaSDK {
         throw SDKErrors.errRelayerServiceNotInitialized;
       }
 
-      // TODO contruct from data
       let query = "?";
       for (const key in data) {
         query = query + key + "=" + data[key] + "&";
@@ -194,10 +184,26 @@ class LavaSDK {
     }
   }
 
+  /**
+   * Send relay to network through providers.
+   *
+   * @async
+   * @param options The options to use for sending relay.
+   *
+   * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
+   *
+   */
+  async sendRelay(
+    options: SendRelayOptions | SendRestRelayOptions
+  ): Promise<string> {
+    if (isRest(options)) return await this.handleRestRelay(options);
+    return await this.handleRpcRelay(options);
+  }
+
   private generateRPCData(method: string, params: Array<string>): string {
     const stringifyMethod = JSON.stringify(method);
     const stringifyParam = JSON.stringify(params);
-
+    // TODO make id changable
     return (
       '{"jsonrpc": "2.0", "id": 1, "method": ' +
       stringifyMethod +
@@ -295,6 +301,12 @@ interface SendRestRelayOptions {
   url: string;
   // eslint-disable-next-line
   data?: Record<string, any>;
+}
+
+function isRest(
+  options: SendRelayOptions | SendRestRelayOptions
+): options is SendRestRelayOptions {
+  return (options as SendRestRelayOptions).url !== undefined;
 }
 
 /**

@@ -38,13 +38,23 @@ class LavaWallet {
     // Get consumer account from the wallet
     getConsumerAccount() {
         return __awaiter(this, void 0, void 0, function* () {
-            // check if wallet was initialized
-            if (this.wallet instanceof Error) {
-                throw new Error(this.wallet.message);
+            try {
+                // Check if wallet was initialized
+                if (this.wallet instanceof Error) {
+                    throw errors_1.default.errWalletNotInitialized;
+                }
+                // Fetch account
+                const account = yield this.wallet.getAccounts();
+                // Check if zero account exists
+                if (account[0] == undefined) {
+                    throw errors_1.default.errZeroAccountDoesNotExists;
+                }
+                // Return zero account from wallet
+                return account[0];
             }
-            // Return zero account from wallet
-            const accountZero = (yield this.wallet.getAccounts())[0];
-            return accountZero;
+            catch (err) {
+                throw err;
+            }
         });
     }
     // Print account details

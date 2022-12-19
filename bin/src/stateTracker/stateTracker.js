@@ -45,7 +45,7 @@ class StateTracker {
                 if (this.tendermintClient instanceof Error) {
                     throw errors_1.default.errTendermintClientServiceNotInitialized;
                 }
-                // Create request for getCuSumForChainID method
+                // Create request for getServiceApis method
                 const queryGetSpecRequest = {
                     ChainID: chainID,
                 };
@@ -92,8 +92,13 @@ class StateTracker {
                     if (relevantEndpoints.length == 0) {
                         continue;
                     }
+                    const singleConsumerSession = new types_1.SingleConsumerSession(0, // cuSum
+                    0, // latestRelayCuSum
+                    1, // relayNumber
+                    relevantEndpoints[0], pairingResponse.currentEpoch.getLowBits(), provider.address);
                     // Create a new pairing object
-                    const newPairing = new types_1.ConsumerSessionWithProvider(account.address, relevantEndpoints, new types_1.SingleConsumerSession(0, 0, 1, relevantEndpoints[0], pairingResponse.currentEpoch.getLowBits(), provider.address), maxcu, 0, false);
+                    const newPairing = new types_1.ConsumerSessionWithProvider(account.address, relevantEndpoints, singleConsumerSession, maxcu, 0, // used compute units
+                    false);
                     // Add newly created pairing in the pairing list
                     pairing.push(newPairing);
                 }
@@ -145,7 +150,7 @@ class StateTracker {
             if (this.specQueryService instanceof Error) {
                 throw errors_1.default.errSpecQueryServiceNotInitialized;
             }
-            // Get pairing from the chain
+            // Get spec from the chain
             const queryResult = yield this.specQueryService.Spec(request);
             if (queryResult.Spec == undefined) {
                 throw errors_1.default.errSpecNotFound;
@@ -154,13 +159,12 @@ class StateTracker {
             // Extract apis from response
             for (const element of queryResult.Spec.apis) {
                 for (const apiInterface of element.apiInterfaces) {
-                    // Skip if interface does not match
+                    // Skip if interface which does not match
                     if (apiInterface.interface != rpcInterface)
                         continue;
-                    // Currently we do not support rest
                     if (apiInterface.interface == "rest") {
-                        const regex = /\{\s*[^}]+\s*\}/g;
-                        const name = element.name.replace(regex, "[^/s]+");
+                        // handle REST apis
+                        const name = this.convertRestApiName(element.name);
                         apis.set(name, element.computeUnits.getLowBits());
                     }
                     else {
@@ -171,6 +175,10 @@ class StateTracker {
             }
             return apis;
         });
+    }
+    convertRestApiName(name) {
+        const regex = /\{\s*[^}]+\s*\}/g;
+        return name.replace(regex, "[^/s]+");
     }
 }
 exports.StateTracker = StateTracker;

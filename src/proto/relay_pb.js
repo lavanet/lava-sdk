@@ -112,19 +112,19 @@ proto.lavanet.lava.pairing.RelayRequest.prototype.toObject = function(opt_includ
  */
 proto.lavanet.lava.pairing.RelayRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    chainid: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    connectionType: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    apiUrl: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    sessionId: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    cuSum: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    chainID: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    connection_type: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    api_url: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    session_id: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    cu_sum: jspb.Message.getFieldWithDefault(msg, 5, 0),
     data: msg.getData_asB64(),
     sig: msg.getSig_asB64(),
     provider: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    blockHeight: jspb.Message.getFieldWithDefault(msg, 9, 0),
-    relayNum: jspb.Message.getFieldWithDefault(msg, 10, 0),
-    requestBlock: jspb.Message.getFieldWithDefault(msg, 11, 0),
+    block_height: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    relay_num: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    request_block: jspb.Message.getFieldWithDefault(msg, 11, 0),
     datareliability: (f = msg.getDatareliability()) && proto.lavanet.lava.pairing.VRFData.toObject(includeInstance, f),
-    unresponsiveProviders: msg.getUnresponsiveProviders_asB64()
+    unresponsive_providers: msg.getUnresponsiveProviders_asB64()
   };
 
   if (includeInstance) {
