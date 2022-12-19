@@ -74,22 +74,14 @@ class LavaSDK {
             this.relayer = new relayer_1.default(this.chainID, this.privKey);
         });
     }
-    /**
-     * Send relay to network through providers using RPC API.
-     *
-     * @async
-     * @param {SendRelayOptions} options The options to use for sending relay with RPC API.
-     *
-     * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
-     *
-     */
-    sendRelay(options) {
+    handleRpcRelay(options) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (this.rpcInterface === "rest") {
                     throw errors_1.default.errRPCRelayMethodNotSupported;
                 }
                 // Extract attributes from options
+                // TODO change naming for optiosn atribute method both in RPC and REST
                 const { method, params } = options;
                 // get consumerProvider session
                 const consumerProviderSession = yield this.getConsumerProviderSession();
@@ -116,16 +108,7 @@ class LavaSDK {
             }
         });
     }
-    /**
-     * Send relay to network through providers using RPC API.
-     *
-     * @async
-     * @param {SendRestRelayOptions} options The options to use for sending relay with RPC API.
-     *
-     * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
-     *
-     */
-    sendRestRelay(options) {
+    handleRestRelay(options) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (this.rpcInterface !== "rest") {
@@ -141,7 +124,6 @@ class LavaSDK {
                 if (this.relayer instanceof Error) {
                     throw errors_1.default.errRelayerServiceNotInitialized;
                 }
-                // TODO contruct from data
                 let query = "?";
                 for (const key in data) {
                     query = query + key + "=" + data[key] + "&";
@@ -162,9 +144,26 @@ class LavaSDK {
             }
         });
     }
+    /**
+     * Send relay to network through providers.
+     *
+     * @async
+     * @param options The options to use for sending relay.
+     *
+     * @returns A promise that resolves when the relay response has been returned, and returns a JSON string
+     *
+     */
+    sendRelay(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (isRest(options))
+                return yield this.handleRestRelay(options);
+            return yield this.handleRpcRelay(options);
+        });
+    }
     generateRPCData(method, params) {
         const stringifyMethod = JSON.stringify(method);
         const stringifyParam = JSON.stringify(params);
+        // TODO make id changable
         return ('{"jsonrpc": "2.0", "id": 1, "method": ' +
             stringifyMethod +
             ', "params": ' +
@@ -222,5 +221,8 @@ class LavaSDK {
         // Return if new epoch has started
         return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
     }
+}
+function isRest(options) {
+    return options.url !== undefined;
 }
 exports.default = LavaSDK;
