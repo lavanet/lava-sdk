@@ -1,86 +1,162 @@
-<h1 align="center">Welcome to Lava SDK!</h1>
+<a name="readme-top"></a>
 
-A Lava SDK is a complete Lava Network client written in Typescript
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="./.github/logo.png" alt="Logo" width="200" height="80">
+  </a>
+
+  <h3 align="center">Lava SDK</h3>
+
+  <p align="center">
+    A decentralized access library which enables developers and end users to get access to their nodes directly without going through a centralized endpoint.
+    <br />
+    <a href="https://github.com/lavanet/lava-sdk/issues"><strong>Request feature or report bug</strong></a>
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+[![Product Name Screen Shot][product-screenshot]](https://example.com)
+
+There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+
+Here's why:
+* Your time should be focused on creating something amazing. A project that solves a problem and helps others
+* You shouldn't be doing the same tasks over and over like creating a README from scratch
+* You should implement DRY principles to the rest of your life :smile:
+
+Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+
+Use the `BLANK_README.md` to get started.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
-1. [Docker](https://docs.docker.com/engine/install/ubuntu/) installed locally
-2. [Node version 16.](https://github.com/nvm-sh/nvm) installed locally
 
-## Want to try it locally?
+This is an example of how to list things you need to use the software and how to install them.
+* npm
+  ```sh
+  npm install npm@latest -g
+  ```
 
-1. clone the directory. 
-    
-    ```bash
-    git clone git@github com:lavanet/lava-sdk.git
-    ```
+### Installation
 
-2. Install dependencies
-    
-    ```bash
-    yarn install
-    ```
+_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-3. Start the proxy
+1. Get a free API Key at [https://example.com](https://example.com)
+2. Clone the repo
+   ```sh
+   git clone https://github.com/your_username_/Project-Name.git
+   ```
+3. Install NPM packages
+   ```sh
+   npm install
+   ```
+4. Enter your API in `config.js`
+   ```js
+   const API_KEY = 'ENTER YOUR API';
+   ```
 
-    ```bash
-    # Build envoy proxy image
-    docker build -t envoy:v1 .
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-    # Run envoy proxy image
-    docker run -d --name envoy -p 9901:9901 -p 8081:8081 envoy:v1
-    ```
 
-4. Start lava network + provider
 
-    ```bash
-    # Clone lava
-    git clone git@github.com:lavanet/lava.git
+<!-- USAGE EXAMPLES -->
+## Usage
 
-    # Go to lava folder
-    cd lava
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-    # Run network
-    ignite chain serve -v -r 2>&1 | grep -e lava_ -e ERR_ -e STARPORT] -e !
+_For more examples, please refer to the [Documentation](https://example.com)_
 
-    # Init chain commands
-    # Copy init_one_provider_lava.sh in lava/scripts
-    ./scripts/init_one_provider_lava.sh
-    ```
-4. Get staked account
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-    ```bash
-    # Fetch private key for staked user
-    lavad keys export user4 --unsafe --unarmored-hex
 
-    # Copy private key in the:
-    # examples/basic.ts -> privKey
-    ```
+<!-- CONTRIBUTING -->
+## Contributing
 
-5. Build lava-sdk
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-    ```bash
-    yarn build
-    ```
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-6. Start lava-sdk
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-    ```bash
-    # Fetch private key for staked user
-    yarn server
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-    # Check the consol you should see 2 responses:
-    ```
 
-### Work in progress
 
-1. Remove Proxy
+<!-- LICENSE -->
+## License
 
-    This version of the sdk depend on the external proxy, which means that you need to pre-input provider address. Currently we are working on moving proxy logic in the provider but till then you must use init_one_provider_lava.sh or it will not work
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-2. NodeJs version
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-    There is an issue with latest nodejs version, we are investigating what it is not working, till then please use node 16.
 
-3. Node support
-
-    This version support only Browser usage, we are working on enabling sdk to work both on Browser and Node
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+[contributors-url]: https://github.com/lavanet/lava-sdk/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-url]: https://github.com/lavanet/lava-sdk/network/members
+[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-url]: https://github.com/lavanet/lava-sdk/stargazers
+[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-url]: https://github.com/lavanet/lava-sdk/issues
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-url]: https://github.com/lavanet/lava-sdk/blob/main/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://www.linkedin.com/company/lava-network/
