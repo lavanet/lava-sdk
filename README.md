@@ -61,8 +61,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
 
 Here's why:
@@ -83,35 +81,34 @@ Use the `BLANK_README.md` to get started.
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
-### Prerequisites
+## Installation
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+You can install the Lava SDk either using [Yarn](https://yarnpkg.com/package/web3) or using [NPM](https://www.npmjs.com/package/web3)
 
-### Installation
+### Yarn
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+```bash
+yarn add lava-sdk
+```
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+### Using NPM
+
+```bash
+npm install lava-sdk
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- Troubleshooting -->
+## Troubleshooting
 
+### <b> Webpack >= 5 </b>
+If you are using <i>create-react-app</i> version 5 or higher, or <i>Angular</i> version 11 or higher, you may encounter build issues. This is because these versions use <i>webpack </i> version 5, which does not include Node.js polyfills.
+
+#### <b> Create-react-app solution </b>
+#### <b> Angular solution </b>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -126,10 +123,9 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+If you have an idea for improving this project, you can create a pull request by forking the repository. 
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+Your support and involvement are greatly appreciated. Feel free to give the project a star to show your support. <b>Thank you for your contribution! </b>
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -144,7 +140,19 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Copyright 2022 Lava Network
+
+Licensed under the Apache License, Version 2.0 (the “License”); you may not use this file except in compliance with the
+License. You may obtain a copy of the License at
+
+
+```
+http://www.apache.org/licenses/LICENSE-2.0
+```
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “
+AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
+language governing permissions and limitations under the License.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
