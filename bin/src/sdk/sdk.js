@@ -78,7 +78,7 @@ class LavaSDK {
             logger_1.default.emptyLine();
             logger_1.default.info("1. Creating decentralized access to Cosmos Hub");
             this.sleep(500);
-            logger_1.default.success("You now have decentralized and accountable access to Cosmos Hub");
+            logger_1.default.success("You now have accountable and decentralized access to Cosmos Hub");
             logger_1.default.emptyLine();
             logger_1.default.emptyLine();
         });
@@ -126,9 +126,7 @@ class LavaSDK {
                 logger_1.default.info('2. Sending relay: {"jsonrpc": "2.0", "id": 1, "method": "health", "params": [] }');
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
-                this.sleep(1500);
                 logger_1.default.success("Relay response received");
-                this.sleep(700);
                 // Return relay in json format
                 return this.decodeRelayResponse(relayResponse);
             }

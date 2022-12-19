@@ -98,7 +98,7 @@ class LavaSDK {
 
     Logger.info("1. Creating decentralized access to Cosmos Hub")
     this.sleep(500)
-    Logger.success("You now have decentralized and accountable access to Cosmos Hub")
+    Logger.success("You now have accountable and decentralized access to Cosmos Hub")
     Logger.emptyLine();
     Logger.emptyLine();
   }
@@ -157,9 +157,7 @@ class LavaSDK {
         consumerProviderSession,
         cuSum
       );
-      this.sleep(1500)
       Logger.success("Relay response received")
-      this.sleep(700)
       // Return relay in json format
       return this.decodeRelayResponse(relayResponse);
     } catch (err) {
