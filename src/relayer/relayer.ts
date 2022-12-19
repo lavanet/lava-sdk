@@ -62,14 +62,18 @@ class Relayer {
           resolve(message);
         },
         onEnd: (code: grpc.Code, msg: string | undefined) => {
-          if (code != grpc.Code.OK) {
-            if (msg != undefined) {
-              consumerProviderSession.UsedComputeUnits =
-                consumerProviderSession.UsedComputeUnits - cuSum;
-
-              reject(new Error(msg));
-            }
+          if (code == grpc.Code.OK || msg == undefined) {
+            return;
           }
+          // underflow guard
+          if (consumerProviderSession.UsedComputeUnits > cuSum) {
+            consumerProviderSession.UsedComputeUnits =
+              consumerProviderSession.UsedComputeUnits - cuSum;
+          } else {
+            consumerProviderSession.UsedComputeUnits = 0;
+          }
+
+          reject(new Error(msg));
         },
       });
     });

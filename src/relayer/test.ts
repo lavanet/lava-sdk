@@ -89,5 +89,6 @@ function getRestRelayRequest(): RelayRequest {
   tendermintRpcRequest.setBlockHeight(780);
   tendermintRpcRequest.setRelayNum(1);
   tendermintRpcRequest.setUnresponsiveProviders(new Uint8Array());
+
   return tendermintRpcRequest;
 }

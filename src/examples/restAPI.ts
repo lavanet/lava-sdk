@@ -19,14 +19,14 @@ async function run() {
   });
 
   // Send rest relay
-  const latestBlock = await lavaSDK.sendRestRelay({
+  const latestBlock = await lavaSDK.sendRelay({
     method: "GET",
     url: "/blocks/latest",
   });
 
   console.log("latest block", latestBlock);
 
-  const data = await lavaSDK.sendRestRelay({
+  const data = await lavaSDK.sendRelay({
     method: "GET",
     url: "/cosmos/bank/v1beta1/denoms_metadata",
     data: {
