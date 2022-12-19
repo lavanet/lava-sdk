@@ -28,7 +28,7 @@ const sdk_1 = __importDefault(require("../src/sdk/sdk"));
 */
 function runTendermintRPCExample() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "<private key from Cosmos Hub staked account>";
+        const privKey = "<private key from Cosmos Hub staked client>";
         const chainID = "COS5"; // chainID for Cosmos Hub
         // Create dAccess for Cosmos Hub
         // Default rpcInterface for Cosmos Hub is tendermintRPC

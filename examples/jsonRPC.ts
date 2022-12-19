@@ -14,7 +14,7 @@ import LavaSDK from "../src/sdk/sdk";
   {"jsonrpc": "2.0", "method": "subtract", "params": {"subtrahend": 23, "minuend": 42}, "id": 3}
 */
 async function runJsonRPCExample() {
-  const privKey = "<private key from Ethereum staked account>";
+  const privKey = "<private key from Ethereum Mainnet staked client>";
   const chainID = "ETH1"; // chainID for Ethereum Mainnet
 
   // Create dAccess for Ethereum Mainnet

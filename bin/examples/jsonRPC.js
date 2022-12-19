@@ -28,7 +28,7 @@ const sdk_1 = __importDefault(require("../src/sdk/sdk"));
 */
 function runJsonRPCExample() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "<private key from Ethereum staked account>";
+        const privKey = "<private key from Ethereum Mainnet staked client>";
         const chainID = "ETH1"; // chainID for Ethereum Mainnet
         // Create dAccess for Ethereum Mainnet
         // Default rpcInterface for Ethereum Mainnet is jsonRPC

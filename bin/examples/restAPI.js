@@ -23,7 +23,7 @@ const sdk_1 = __importDefault(require("../src/sdk/sdk"));
 */
 function runRestApiExample() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "09af45c8f60b96f7142136d3b08213d98e8288ebca20ca11cb002633c5bd805d";
+        const privKey = "private key from Juno Mainnet staked client";
         const chainID = "JUN1"; // chainID for Juno Mainnet
         // Create dAccess for Juno Mainnet
         // Default rpcInterface for Juno Mainnet is tendermintRPC

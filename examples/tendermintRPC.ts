@@ -14,7 +14,7 @@ import LavaSDK from "../src/sdk/sdk";
   {"jsonrpc": "2.0", "method": "subtract", "params": {"subtrahend": 23, "minuend": 42}, "id": 3}
 */
 async function runTendermintRPCExample() {
-  const privKey = "<private key from Cosmos Hub staked account>";
+  const privKey = "<private key from Cosmos Hub staked client>";
   const chainID = "COS5"; // chainID for Cosmos Hub
 
   // Create dAccess for Cosmos Hub
