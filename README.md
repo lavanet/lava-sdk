@@ -122,11 +122,7 @@ const lavaSDK = await new LavaSDK({
 
 ---
 
-To send a query using the LavaSDK, you can use the `sendRelay` method. The parameters for this method depend on the rpcInterface that you initialized. If you try to use wrong options you will get an error 
-
-**Error:** SendRelay not supported if the SDK is initialized with X rpcInterface
-
-<b> For the tendermintRPC/jsonRPC interface: </b>
+### TendermintRPC / JSON-RPC interface:
 ```typescript
   const blockResponse = await lavaSDK.sendRelay({
     method: "block",
@@ -137,7 +133,7 @@ Here, `method` is the RPC method and `params` is an array of string representing
 
 You can find more examples for tendermintRPC sendRelay calls [TendermintRPC examples](https://github.com/lavanet/lava-sdk/blob/PRT-108-readme-addons/src/examples/tendermintRPC.ts)
 
-<b> For the rest interface: </b>
+### Rest API interface:
 ```typescript
 const data = await lavaSDK.sendRelay({
   method: "GET",
