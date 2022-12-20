@@ -99,7 +99,7 @@ npm install lava-sdk
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-A single instance of the LavaSDK is designed to establish a connection with a specific blockchain network, using a single RPC interface. This means that each instance of the `LavaSDK` can only communicate with one chain, using a single rpcInterface for sending relays (such as `tendermintRPC/jsonRPC` or `rest`). If you need to communicate with multiple chains or use multiple RPC interfaces, you will need to create separate instances of the LavaSDK for each connection. 
+A single instance of the LavaSDK establishes a connection with a specific blockchain network using a single RPC interface. _Need multiple chains or use multiple RPC interfaces? Create multiple instances._ 
 
 To use the LavaSDK library, you will first need to initialize it.
 
