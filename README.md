@@ -161,24 +161,6 @@ If you are using `create-react-app` version 5 or higher, or `Angular` version 11
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-If you have an idea for improving this project, you can create a pull request by forking the repository. 
-
-Your support and involvement are greatly appreciated. Feel free to give the project a star to show your support. <b>Thank you for your contribution! </b>
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- LICENSE -->
 ## License
 
