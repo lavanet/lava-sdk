@@ -66,11 +66,13 @@ This allows developers to focus on building their applications, while Lava SDK t
 
 <!-- Prerequisites -->
 ## Prerequisites
-In order to use the LavaSDK, you must first determine which blockchain network you want to query. You can find all supported chains with their IDs here [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json). Once you have chosen a chain, you will need to stake on the Lava network as a client for that chain. 
+- Determine which blockchain network you want to query
+  - Check the list of supported chains and their IDs at [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
+- Stake on the Lava network as a client for the chosen chain (more details in [Docs](https://docs.lavanet.xyz/))
 
-By staking as a client, you will be responsible for paying for each successful relay. This payment is made at the end of each epoch, and is based on the number of successful relays that were sent during that epoch. 
+ℹ️ Successful relays will be deducted from your stake
 
-You can find the guide for how to stake as a client on our official doc [How to stake]()
+🛟 Need help staking or initial setup? We got you covered 😻 Head over to our [Discord](https://discord.gg/5VcqgwMmkA) and we'll provide testnet tokens and further support
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
