@@ -57,9 +57,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The SDK is a typescript implementation of Lava Protocol. So behind the scenes, the SDK performs all the operations required by the protocol to directly communicate with the providers via peer to peer connection. A user only needs to import the SDK to their code and use it as any other library.
+Lava SDK is a TypeScript implementation of the Lava Protocol, which enables direct communication between developers and providers via peer-to-peer connections. 
 
-
+With Lava SDK, you can easily integrate decentralized access into your projects by importing the library and using it like any other library. Behind the scenes, Lava SDK handles all the necessary operations to implement the Lava Protocol and establishs a p2p connection with providers. 
+This allows developers to focus on building their applications, while Lava SDK takes care of the underlying communication and connection management.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
