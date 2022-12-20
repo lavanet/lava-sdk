@@ -15,9 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // TODO when we publish package we will import latest stable version and not using relative path
 const sdk_1 = __importDefault(require("../src/sdk/sdk"));
 /*
-  In this example you will see how to use LavaSDK for sending jsonRPC calls to the Ethereum Mainnet.
-  Because the jsonRPC is the default rpc interface for Ethereum Mainnet, we don't need to set it
-  explicitly when initializing LavaSDK decentralize access
+  Demonstrates how to use LavaSDK to send jsonRPC calls to the Ethereum Mainnet.
 
   You can find a list with all supported chains (https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
   
@@ -26,15 +24,13 @@ const sdk_1 = __importDefault(require("../src/sdk/sdk"));
   But not rpc calls with named parameters
   {"jsonrpc": "2.0", "method": "subtract", "params": {"subtrahend": 23, "minuend": 42}, "id": 3}
 */
-function runJsonRPCExample() {
+function getLatestBlock() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "<private key from Ethereum Mainnet staked client>";
-        const chainID = "ETH1"; // chainID for Ethereum Mainnet
         // Create dAccess for Ethereum Mainnet
         // Default rpcInterface for Ethereum Mainnet is jsonRPC
         const ethereum = yield new sdk_1.default({
-            privateKey: privKey,
-            chainID: chainID,
+            privateKey: "<private key from Ethereum Mainnet staked client>",
+            chainID: "ETH1", // chainID for Ethereum Mainnet
         });
         // Get latest block number
         const blockNumberResponse = yield ethereum.sendRelay({
@@ -50,19 +46,18 @@ function runJsonRPCExample() {
             method: "eth_getBlockByNumber",
             params: [latestBlockNumber, true],
         });
-        // Print latest block
-        console.log(latestBlock);
+        return latestBlock;
     });
 }
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield runJsonRPCExample();
-            console.log("Exiting program");
+            const latestBlock = yield getLatestBlock();
+            console.log("Latest block:", latestBlock);
             process.exit(0);
         }
-        catch (e) {
-            console.log("ERROR", e);
+        catch (error) {
+            console.error("Error getting latest block:", error);
         }
     });
 })();

@@ -2,22 +2,17 @@
 import LavaSDK from "../src/sdk/sdk";
 
 /*
-  In this example you will see how to use LavaSDK for sending rest API calls to the Juno Mainnet.
-  Because the rest is not the default rpc interface for Juno Mainnet, we need to set it 
-  explicitly when initializing LavaSDK decentralize access
+  Demonstrates how to use LavaSDK to send rest API calls to the Juno Mainnet.
 
   You can find a list with all supported chains (https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
 */
-async function runRestApiExample() {
-  const privKey = "private key from Juno Mainnet staked client";
-  const chainID = "JUN1"; // chainID for Juno Mainnet
-
+async function getLatestBlockAndValidators(): Promise<[string, string]> {
   // Create dAccess for Juno Mainnet
   // Default rpcInterface for Juno Mainnet is tendermintRPC
   // If you want to use rest it needs to be explicitly defined
   const lavaSDK = await new LavaSDK({
-    privateKey: privKey,
-    chainID: chainID,
+    privateKey: "private key from Juno Mainnet staked client",
+    chainID: "JUN1", // chainID for Juno Mainnet
     rpcInterface: "rest",
   });
 
@@ -26,9 +21,6 @@ async function runRestApiExample() {
     method: "GET",
     url: "/blocks/latest",
   });
-
-  // Print latest block
-  console.log(latestBlock);
 
   // Get latest validator-set
   const validators = await lavaSDK.sendRelay({
@@ -40,16 +32,16 @@ async function runRestApiExample() {
     },
   });
 
-  // Print latest validator-set
-  console.log(validators);
+  return [latestBlock, validators];
 }
 
 (async function () {
   try {
-    await runRestApiExample();
-    console.log("Exiting program");
+    const [latestBlock, validators] = await getLatestBlockAndValidators();
+    console.log("Latest block:", latestBlock);
+    console.log("Latest validators:", validators);
     process.exit(0);
-  } catch (e) {
-    console.log("ERROR", e);
+  } catch (error) {
+    console.error("Error getting latest block:", error);
   }
 })();

@@ -2,9 +2,7 @@
 import LavaSDK from "../src/sdk/sdk";
 
 /*
-  In this example you will see how to use LavaSDK for sending tendermintRPC calls to the Cosmos Hub.
-  Because the tendermintRPC is the default rpc interface for Cosmos Hub, we don't need to set it 
-  explicitly when initializing LavaSDK decentralize access
+  Demonstrates how to use LavaSDK to send tendermintRPC calls to the Cosmos Hub.
 
   You can find a list with all supported chains (https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
   
@@ -13,15 +11,12 @@ import LavaSDK from "../src/sdk/sdk";
   But not rpc calls with named parameters
   {"jsonrpc": "2.0", "method": "subtract", "params": {"subtrahend": 23, "minuend": 42}, "id": 3}
 */
-async function runTendermintRPCExample() {
-  const privKey = "<private key from Cosmos Hub staked client>";
-  const chainID = "COS5"; // chainID for Cosmos Hub
-
+async function getLatestBlock(): Promise<string> {
   // Create dAccess for Cosmos Hub
   // Default rpcInterface for Cosmos Hub is tendermintRPC
   const cosmosHub = await new LavaSDK({
-    privateKey: privKey,
-    chainID: chainID,
+    privateKey: "<private key from Cosmos Hub staked client>",
+    chainID: "COS5", // chainID for Cosmos Hub
   });
 
   // Get abci_info
@@ -36,25 +31,21 @@ async function runTendermintRPCExample() {
   // Extract latest block number
   const latestBlockNumber = parsedInfo.last_block_height;
 
-  // Print latest block
-  console.log("Latest block: ", latestBlockNumber);
-
   // Fetch latest block
-  const latestblock = await cosmosHub.sendRelay({
+  const latestBlock = await cosmosHub.sendRelay({
     method: "block",
     params: [latestBlockNumber],
   });
 
-  // Print latest block
-  console.log(latestblock);
+  return latestBlock;
 }
 
 (async function () {
   try {
-    await runTendermintRPCExample();
-    console.log("Exiting program");
+    const latestBlock = await getLatestBlock();
+    console.log("Latest block:", latestBlock);
     process.exit(0);
-  } catch (e) {
-    console.log("ERROR", e);
+  } catch (error) {
+    console.error("Error getting latest block:", error);
   }
 })();

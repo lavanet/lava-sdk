@@ -15,22 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // TODO when we publish package we will import latest stable version and not using relative path
 const sdk_1 = __importDefault(require("../src/sdk/sdk"));
 /*
-  In this example you will see how to use LavaSDK for sending rest API calls to the Juno Mainnet.
-  Because the rest is not the default rpc interface for Juno Mainnet, we need to set it
-  explicitly when initializing LavaSDK decentralize access
+  Demonstrates how to use LavaSDK to send rest API calls to the Juno Mainnet.
 
   You can find a list with all supported chains (https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
 */
-function runRestApiExample() {
+function getLatestBlockAndValidators() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privKey = "private key from Juno Mainnet staked client";
-        const chainID = "JUN1"; // chainID for Juno Mainnet
         // Create dAccess for Juno Mainnet
         // Default rpcInterface for Juno Mainnet is tendermintRPC
         // If you want to use rest it needs to be explicitly defined
         const lavaSDK = yield new sdk_1.default({
-            privateKey: privKey,
-            chainID: chainID,
+            privateKey: "private key from Juno Mainnet staked client",
+            chainID: "JUN1",
             rpcInterface: "rest",
         });
         // Get latest block
@@ -38,8 +34,6 @@ function runRestApiExample() {
             method: "GET",
             url: "/blocks/latest",
         });
-        // Print latest block
-        console.log(latestBlock);
         // Get latest validator-set
         const validators = yield lavaSDK.sendRelay({
             method: "GET",
@@ -49,19 +43,19 @@ function runRestApiExample() {
                 "pagination.reverse": "true",
             },
         });
-        // Print latest validator-set
-        console.log(validators);
+        return [latestBlock, validators];
     });
 }
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield runRestApiExample();
-            console.log("Exiting program");
+            const [latestBlock, validators] = yield getLatestBlockAndValidators();
+            console.log("Latest block:", latestBlock);
+            console.log("Latest validators:", validators);
             process.exit(0);
         }
-        catch (e) {
-            console.log("ERROR", e);
+        catch (error) {
+            console.error("Error getting latest block:", error);
         }
     });
 })();
