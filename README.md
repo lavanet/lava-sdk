@@ -23,7 +23,7 @@
     A decentralized access library which enables developers and end users to get access to their nodes directly without going through a centralized endpoint.
     <br />
     <br />
-    <a href="https://github.com/lavanet/lava-sdk/issues"><strong>Request feature or report bug</strong></a>
+    <a href="https://github.com/lavanet/lava-sdk/issues"><strong>Issue tracking</strong></a>
     <br />
     <br />
   </p>
