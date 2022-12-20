@@ -23,7 +23,7 @@
     A decentralized access library which enables developers and end users to get access to their nodes directly without going through a centralized endpoint.
     <br />
     <br />
-    <a href="https://github.com/lavanet/lava-sdk/issues"><strong>Request feature or report bug</strong></a>
+    <a href="https://github.com/lavanet/lava-sdk/issues"><strong>Issue tracking</strong></a>
     <br />
     <br />
   </p>
@@ -57,19 +57,22 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The SDK is a typescript implementation of Lava Protocol. So behind the scenes, the SDK performs all the operations required by the protocol to directly communicate with the providers via peer to peer connection. A user only needs to import the SDK to their code and use it as any other library.
+Lava SDK is a TypeScript implementation of the Lava Protocol, which enables direct communication between developers and providers via peer-to-peer connections. 
 
-
+With Lava SDK, you can easily integrate decentralized access into your projects by importing the library and using it like any other library. Behind the scenes, Lava SDK handles all the necessary operations to implement the Lava Protocol and establishs a p2p connection with providers. 
+This allows developers to focus on building their applications, while Lava SDK takes care of the underlying communication and connection management.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Prerequisites -->
 ## Prerequisites
-In order to use the LavaSDK, you must first determine which blockchain network you want to query. You can find all supported chains with their IDs here [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json). Once you have chosen a chain, you will need to stake on the Lava network as a client for that chain. 
+- Determine which blockchain network you want to query
+  - Check the list of supported chains and their IDs at [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
+- Stake on the Lava network as a client for the chosen chain (more details in [Docs](https://docs.lavanet.xyz/))
 
-By staking as a client, you will be responsible for paying for each successful relay. This payment is made at the end of each epoch, and is based on the number of successful relays that were sent during that epoch. 
+ℹ️ Successful relays will be deducted from your stake
 
-You can find the guide for how to stake as a client on our official doc [How to stake]()
+🛟 Need help staking or initial setup? We got you covered 😻 Head over to our [Discord](https://discord.gg/5VcqgwMmkA) and we'll provide testnet tokens and further support
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -96,7 +99,7 @@ npm install lava-sdk
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-A single instance of the LavaSDK is designed to establish a connection with a specific blockchain network, using a single RPC interface. This means that each instance of the `LavaSDK` can only communicate with one chain, using a single rpcInterface for sending relays (such as `tendermintRPC/jsonRPC` or `rest`). If you need to communicate with multiple chains or use multiple RPC interfaces, you will need to create separate instances of the LavaSDK for each connection. 
+A single instance of the LavaSDK establishes a connection with a specific blockchain network using a single RPC interface. _Need multiple chains or use multiple RPC interfaces? Create multiple instances._ 
 
 To use the LavaSDK library, you will first need to initialize it.
 
@@ -109,21 +112,17 @@ const lavaSDK = await new LavaSDK({
 });
 ```
 
-The `privateKey` parameter is required and should be the private key of the staked Lava client for the specified `chainID`.
+- `privateKey` parameter is required and should be the private key of the staked Lava client for the specified `chainID`.
 
-The `chainID` parameter is required and should be the ID of the chain you want to query. You can find all supported chains with their IDs [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
+- `chainID` parameter is required and should be the ID of the chain you want to query. You can find all supported chains with their IDs [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
 
-The `lavaEndpoint` is an optional field that specifies the RPC endpoint of the Lava network node. It is used to fetch list of the providers for specified `chainID` and `rpcInterface`. You can check the [default lava rpc endpoint](https://github.com/lavanet/lava-sdk/blob/PRT-108-readme-addons/src/config/default.ts#L1)
+- `lavaEndpoint` is an optional field that specifies the RPC endpoint of the Lava network node. It is used to fetch list of the providers for specified `chainID` and `rpcInterface`. You can check the [default lava rpc endpoint](https://github.com/lavanet/lava-sdk/blob/PRT-108-readme-addons/src/config/default.ts#L1)
 
-The `rpcInterface` is an optional field representing the interface that will be used for sending relays. For cosmos chains it can be `tendermintRPC` or `rest`. For evm compatible chains `jsonRPC` or `rest`. You can find the list of all default rpc interfaces [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
+- `rpcInterface` is an optional field representing the interface that will be used for sending relays. For cosmos chains it can be `tendermintRPC` or `rest`. For evm compatible chains `jsonRPC` or `rest`. You can find the list of all default rpc interfaces [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
 
 ---
 
-To send a query using the LavaSDK, you can use the `sendRelay` method. The parameters for this method depend on the rpcInterface that you initialized. If you try to use wrong options you will get an error 
-
-**Error:** SendRelay not supported if the SDK is initialized with X rpcInterface
-
-<b> For the tendermintRPC/jsonRPC interface: </b>
+### TendermintRPC / JSON-RPC interface:
 ```typescript
   const blockResponse = await lavaSDK.sendRelay({
     method: "block",
@@ -134,7 +133,7 @@ Here, `method` is the RPC method and `params` is an array of string representing
 
 You can find more examples for tendermintRPC sendRelay calls [TendermintRPC examples](https://github.com/lavanet/lava-sdk/blob/PRT-108-readme-addons/src/examples/tendermintRPC.ts)
 
-<b> For the rest interface: </b>
+### Rest API interface:
 ```typescript
 const data = await lavaSDK.sendRelay({
   method: "GET",
@@ -161,24 +160,6 @@ If you are using `create-react-app` version 5 or higher, or `Angular` version 11
 #### <b> Angular solution </b>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-If you have an idea for improving this project, you can create a pull request by forking the repository. 
-
-Your support and involvement are greatly appreciated. Feel free to give the project a star to show your support. <b>Thank you for your contribution! </b>
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- LICENSE -->
 ## License
