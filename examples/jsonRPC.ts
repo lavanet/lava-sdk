@@ -1,5 +1,5 @@
 // TODO when we publish package we will import latest stable version and not using relative path
-import {LavaSDK} from "../src/sdk/sdk";
+import { LavaSDK } from "../src/sdk/sdk";
 
 /*
   Demonstrates how to use LavaSDK to send jsonRPC calls to the Ethereum Mainnet.
