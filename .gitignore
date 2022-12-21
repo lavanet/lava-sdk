@@ -8,3 +8,5 @@ dist/src/*
 dist/ts/*
 dist/utils/*
 .dccache
+.idea
+.vscode
