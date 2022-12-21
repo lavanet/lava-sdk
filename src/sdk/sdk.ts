@@ -8,7 +8,7 @@ import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { DEFAULT_LAVA_ENDPOINT } from "../config/default";
 
-class LavaSDK {
+export class LavaSDK {
   private lavaEndpoint: string;
   private privKey: string;
   private chainID: string;
@@ -318,5 +318,3 @@ interface LavaSDKOptions {
   lavaEndpoint?: string;
   rpcInterface?: string;
 }
-
-export default LavaSDK;

@@ -8,12 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 // TODO when we publish package we will import latest stable version and not using relative path
-const sdk_1 = __importDefault(require("../src/sdk/sdk"));
+const sdk_1 = require("../src/sdk/sdk");
 /*
   Demonstrates how to use LavaSDK to send rest API calls to the Juno Mainnet.
 
@@ -24,7 +21,7 @@ function getLatestBlockAndValidators() {
         // Create dAccess for Juno Mainnet
         // Default rpcInterface for Juno Mainnet is tendermintRPC
         // If you want to use rest it needs to be explicitly defined
-        const lavaSDK = yield new sdk_1.default({
+        const lavaSDK = yield new sdk_1.LavaSDK({
             privateKey: "private key from Juno Mainnet staked client",
             chainID: "JUN1",
             rpcInterface: "rest",

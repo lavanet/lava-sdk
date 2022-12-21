@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LavaSDK = void 0;
 const wallet_1 = require("../wallet/wallet");
 const errors_1 = __importDefault(require("./errors"));
 const relayer_1 = __importDefault(require("../relayer/relayer"));
@@ -222,7 +223,7 @@ class LavaSDK {
         return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
     }
 }
+exports.LavaSDK = LavaSDK;
 function isRest(options) {
     return options.url !== undefined;
 }
-exports.default = LavaSDK;
