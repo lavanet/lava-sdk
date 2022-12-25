@@ -288,7 +288,7 @@ export class LavaSDK {
 /**
  * Options for sending RPC relay.
  */
-interface SendRelayOptions {
+export interface SendRelayOptions {
   method: string;
   params: Array<string>;
 }
@@ -296,7 +296,7 @@ interface SendRelayOptions {
 /**
  * Options for sending Rest relay.
  */
-interface SendRestRelayOptions {
+export interface SendRestRelayOptions {
   method: string;
   url: string;
   // eslint-disable-next-line
@@ -312,7 +312,7 @@ function isRest(
 /**
  * Options for initializing the LavaSDK.
  */
-interface LavaSDKOptions {
+export interface LavaSDKOptions {
   privateKey: string;
   chainID: string;
   lavaEndpoint?: string;
