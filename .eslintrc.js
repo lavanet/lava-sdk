@@ -5,4 +5,5 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended',
     ],
+    ignorePatterns: ["*.d.ts"]
 };
