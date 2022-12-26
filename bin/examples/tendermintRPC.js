@@ -26,7 +26,7 @@ function getLatestBlock() {
         // Create dAccess for Cosmos Hub
         // Default rpcInterface for Cosmos Hub is tendermintRPC
         const cosmosHub = yield new sdk_1.LavaSDK({
-            privateKey: "959b7e8c2826911a8647146a49ee0c879d4a2d32ea57c1cd3e76d9fa22149691",
+            privateKey: "<private key from Cosmos Hub staked client>",
             chainID: "COS5", // chainID for Cosmos Hub
         });
         // Get abci_info

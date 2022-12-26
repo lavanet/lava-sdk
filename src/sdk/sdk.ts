@@ -119,7 +119,7 @@ export class LavaSDK {
       const sendRelayOptions = {
         data: data,
         url: "",
-        connectionType: "",
+        connectionType: "GET", // temporary solution to spec changes - remove this when PRT-216 is fixed. 
       };
 
       // Send relay
@@ -169,6 +169,7 @@ export class LavaSDK {
         url: url,
         connectionType: method,
       };
+      console.log("Connection type:", method)
 
       // Send relay
       const relayResponse = await this.relayer.sendRelay(
