@@ -135,7 +135,6 @@ class LavaSDK {
                     url: url,
                     connectionType: method,
                 };
-                console.log("Connection type:", method);
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
                 // Return relay in json format

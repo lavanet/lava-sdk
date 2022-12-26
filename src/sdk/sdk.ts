@@ -169,7 +169,6 @@ export class LavaSDK {
         url: url,
         connectionType: method,
       };
-      console.log("Connection type:", method)
 
       // Send relay
       const relayResponse = await this.relayer.sendRelay(
