@@ -7,6 +7,7 @@ import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
 import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { DEFAULT_LAVA_ENDPOINT } from "../config/default";
+import Logger from "../logger/logger"
 
 export class LavaSDK {
   private lavaEndpoint: string;
@@ -91,6 +92,24 @@ export class LavaSDK {
 
     // Create relayer
     this.relayer = new Relayer(this.chainID, this.privKey);
+
+    Logger.info("                               Lava SDK                      ")
+    Logger.emptyLine();
+    Logger.emptyLine();
+
+    Logger.info("1. Creating decentralized access to Celo")
+    this.sleep(500)
+    Logger.success("You now have accountable and decentralized access to Celo")
+    Logger.emptyLine();
+    Logger.emptyLine();
+  }
+
+  sleep(milliseconds: number) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
   }
 
   private async handleRpcRelay(options: SendRelayOptions): Promise<string> {
@@ -121,6 +140,9 @@ export class LavaSDK {
         url: "",
         connectionType: "GET", // temporary solution to spec changes - remove this when PRT-216 is fixed
       };
+
+      this.sleep(700)
+      Logger.info('2. Sending relay: {"jsonrpc": "2.0", "id": 1, "method": '+ method+', "params": ['+params+'] }')
 
       // Send relay
       const relayResponse = await this.relayer.sendRelay(

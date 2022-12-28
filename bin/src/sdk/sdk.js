@@ -19,6 +19,7 @@ const relayer_1 = __importDefault(require("../relayer/relayer"));
 const stateTracker_1 = require("../stateTracker/stateTracker");
 const chains_1 = require("../util/chains");
 const default_1 = require("../config/default");
+const logger_1 = __importDefault(require("../logger/logger"));
 class LavaSDK {
     /**
      * Create Lava-SDK instance
@@ -73,7 +74,22 @@ class LavaSDK {
             this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
             // Create relayer
             this.relayer = new relayer_1.default(this.chainID, this.privKey);
+            logger_1.default.info("                               Lava SDK                      ");
+            logger_1.default.emptyLine();
+            logger_1.default.emptyLine();
+            logger_1.default.info("1. Creating decentralized access to Celo");
+            this.sleep(500);
+            logger_1.default.success("You now have accountable and decentralized access to Celo");
+            logger_1.default.emptyLine();
+            logger_1.default.emptyLine();
         });
+    }
+    sleep(milliseconds) {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+            currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
     }
     handleRpcRelay(options) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -99,6 +115,8 @@ class LavaSDK {
                     url: "",
                     connectionType: "GET", // temporary solution to spec changes - remove this when PRT-216 is fixed
                 };
+                this.sleep(700);
+                logger_1.default.info('2. Sending relay: {"jsonrpc": "2.0", "id": 1, "method": ' + method + ', "params": [' + params + '] }');
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
                 // Return relay in json format

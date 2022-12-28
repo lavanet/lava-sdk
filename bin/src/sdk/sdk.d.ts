@@ -19,6 +19,7 @@ export declare class LavaSDK {
      */
     constructor(options: LavaSDKOptions);
     private init;
+    sleep(milliseconds: number): void;
     private handleRpcRelay;
     private handleRestRelay;
     /**
