@@ -87,8 +87,8 @@ class Relayer {
     const sig = await Secp256k1.createSignature(message, fromHex(privKey));
 
     const recovery = sig.recovery;
-    const r = sig.r();
-    const s = sig.s();
+    const r = sig.r(32); // if r is not 32 bytes, add padding
+    const s = sig.s(32); // if s is not 32 bytes, add padding
 
     // TODO consider adding compression in the signing
     // construct signature
