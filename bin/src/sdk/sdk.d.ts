@@ -1,5 +1,4 @@
 export declare class LavaSDK {
-    private lavaEndpoint;
     private privKey;
     private chainID;
     private rpcInterface;
@@ -58,6 +57,5 @@ export interface SendRestRelayOptions {
 export interface LavaSDKOptions {
     privateKey: string;
     chainID: string;
-    lavaEndpoint?: string;
     rpcInterface?: string;
 }

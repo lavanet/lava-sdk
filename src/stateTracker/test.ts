@@ -31,7 +31,7 @@ it("Test convertRestApiName method", () => {
     },
   ];
 
-  const stateTracker = new StateTracker();
+  const stateTracker = new StateTracker(null, null);
 
   testCasses.map((test) => {
     expect(stateTracker.convertRestApiName(test.name)).toBe(test.output);
@@ -61,7 +61,7 @@ it("Test pickRandomProvider method", () => {
     },
   ];
 
-  const stateTracker = new StateTracker();
+  const stateTracker = new StateTracker(null, null);
 
   testCasses.map((test) => {
     const consumerSessionWithProviderArr = [

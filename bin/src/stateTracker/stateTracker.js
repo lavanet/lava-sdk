@@ -12,55 +12,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createStateTracker = exports.StateTracker = void 0;
-const stargate_1 = require("@cosmjs/stargate");
-const tendermint_rpc_1 = require("@cosmjs/tendermint-rpc");
-const query_1 = require("../codec/pairing/query");
-const query_2 = require("../codec/spec/query");
+exports.StateTracker = void 0;
 const types_1 = require("../types/types");
 const errors_1 = __importDefault(require("./errors"));
 const errors_2 = __importDefault(require("./errors"));
 class StateTracker {
-    constructor() {
+    constructor(lavaProviders, relayer) {
         this.pairingQueryService =
             errors_1.default.errPairingQueryServiceNotInitialized;
-        this.specQueryService = errors_1.default.errSpecQueryServiceNotInitialized;
-        this.tendermintClient =
-            errors_1.default.errTendermintClientServiceNotInitialized;
-    }
-    init(endpoint) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tmClient = yield tendermint_rpc_1.Tendermint34Client.connect(endpoint);
-            const queryClient = new stargate_1.QueryClient(tmClient);
-            const rpcClient = (0, stargate_1.createProtobufRpcClient)(queryClient);
-            this.pairingQueryService = new query_1.QueryClientImpl(rpcClient);
-            this.specQueryService = new query_2.QueryClientImpl(rpcClient);
-            this.tendermintClient = tmClient;
-        });
+        this.lavaProviders = lavaProviders;
+        this.relayer = relayer;
     }
     // Get session return providers for current epoch
     getSession(account, chainID, rpcInterface) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (this.tendermintClient instanceof Error) {
-                    throw errors_1.default.errTendermintClientServiceNotInitialized;
+                if (this.lavaProviders == null) {
+                    throw errors_1.default.errLavaProvidersNotInitialized;
                 }
+                const lavaRPCEndpoint = this.lavaProviders.getNextProvider();
                 // Create request for getServiceApis method
-                const queryGetSpecRequest = {
-                    ChainID: chainID,
-                };
-                const apis = yield this.getServiceApis(queryGetSpecRequest, rpcInterface);
+                const apis = yield this.getServiceApis(lavaRPCEndpoint, chainID, rpcInterface);
                 // Create pairing request for getPairing method
                 const pairingRequest = {
                     chainID: chainID,
                     client: account.address,
                 };
                 // Get pairing from the chain
-                const pairingResponse = yield this.getPairingFromChain(pairingRequest);
+                const pairingResponse = yield this.getPairingFromChain(lavaRPCEndpoint, pairingRequest);
                 // Set when will next epoch start
                 const nextEpochStart = new Date();
                 nextEpochStart.setSeconds(nextEpochStart.getSeconds() +
-                    pairingResponse.timeLeftToNextPairing.getLowBits());
+                    parseInt(pairingResponse.timeLeftToNextPairing));
                 // Extract providers from pairing response
                 const providers = pairingResponse.providers;
                 // Initialize ConsumerSessionWithProvider array
@@ -72,7 +55,7 @@ class StateTracker {
                     block: pairingResponse.currentEpoch,
                 };
                 // fetch max compute units
-                const maxcu = yield this.getMaxCuForUser(userEntityRequest);
+                const maxcu = yield this.getMaxCuForUser(lavaRPCEndpoint, userEntityRequest);
                 //Iterate over providers to populate pairing list
                 for (const provider of providers) {
                     // Skip providers with no endpoints
@@ -95,7 +78,7 @@ class StateTracker {
                     const singleConsumerSession = new types_1.SingleConsumerSession(0, // cuSum
                     0, // latestRelayCuSum
                     1, // relayNumber
-                    relevantEndpoints[0], pairingResponse.currentEpoch.getLowBits(), provider.address);
+                    relevantEndpoints[0], parseInt(pairingResponse.currentEpoch), provider.address);
                     // Create a new pairing object
                     const newPairing = new types_1.ConsumerSessionWithProvider(account.address, relevantEndpoints, singleConsumerSession, maxcu, 0, // used compute units
                     false);
@@ -121,55 +104,61 @@ class StateTracker {
         const random = Math.floor(Math.random() * validProviders.length);
         return validProviders[random];
     }
-    getPairingFromChain(request) {
+    getPairingFromChain(lavaRPCEndpoint, request) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Check if query service was initialized
-            if (this.pairingQueryService instanceof Error) {
-                throw errors_1.default.errPairingQueryServiceNotInitialized;
-            }
-            // Get pairing from the chain
-            const queryResult = yield this.pairingQueryService.GetPairing(request);
-            return queryResult;
+            const options = {
+                connectionType: "GET",
+                url: "/lavanet/lava/pairing/get_pairing/" +
+                    request.chainID +
+                    "/" +
+                    request.client,
+                data: "",
+            };
+            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            return jsonResponse;
         });
     }
-    getMaxCuForUser(request) {
+    getMaxCuForUser(lavaRPCEndpoint, request) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Check if query service was initialized
-            if (this.pairingQueryService instanceof Error) {
-                throw errors_1.default.errPairingQueryServiceNotInitialized;
-            }
-            // Get pairing from the chain
-            const queryResult = yield this.pairingQueryService.UserEntry(request);
+            const options = {
+                connectionType: "GET",
+                url: "/lavanet/lava/pairing/user_entry/" +
+                    request.address +
+                    "/" +
+                    request.chainID,
+                data: "?block=" + request.block,
+            };
+            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
             // return maxCu from userEntry
-            return queryResult.maxCU.low;
+            return parseInt(jsonResponse.maxCU);
         });
     }
-    getServiceApis(request, rpcInterface) {
+    getServiceApis(lavaRPCEndpoint, chainID, rpcInterface) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Check if query service was initialized
-            if (this.specQueryService instanceof Error) {
-                throw errors_1.default.errSpecQueryServiceNotInitialized;
-            }
-            // Get spec from the chain
-            const queryResult = yield this.specQueryService.Spec(request);
-            if (queryResult.Spec == undefined) {
+            const options = {
+                connectionType: "GET",
+                url: "/lavanet/lava/spec/spec/" + chainID,
+                data: "",
+            };
+            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            if (jsonResponse.Spec == undefined) {
                 throw errors_1.default.errSpecNotFound;
             }
             const apis = new Map();
             // Extract apis from response
-            for (const element of queryResult.Spec.apis) {
-                for (const apiInterface of element.apiInterfaces) {
+            for (const element of jsonResponse.Spec.apis) {
+                for (const apiInterface of element.api_interfaces) {
                     // Skip if interface which does not match
                     if (apiInterface.interface != rpcInterface)
                         continue;
                     if (apiInterface.interface == "rest") {
                         // handle REST apis
                         const name = this.convertRestApiName(element.name);
-                        apis.set(name, element.computeUnits.getLowBits());
+                        apis.set(name, parseInt(element.compute_units));
                     }
                     else {
                         // Handle RPC apis
-                        apis.set(element.name, element.computeUnits.getLowBits());
+                        apis.set(element.name, parseInt(element.compute_units));
                     }
                 }
             }
@@ -180,13 +169,42 @@ class StateTracker {
         const regex = /\{\s*[^}]+\s*\}/g;
         return name.replace(regex, "[^/s]+");
     }
+    sendRelayWithRetry(options, // TODO add type
+    lavaRPCEndpoint) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            var response;
+            // TODO make sure relayer is not null
+            try {
+                response = yield ((_a = this.relayer) === null || _a === void 0 ? void 0 : _a.sendRelay(options, lavaRPCEndpoint, 10));
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    if (error.message.startsWith("user reported very old lava block height")) {
+                        const currentBlockHeightRegex = /current epoch block:(\d+)/;
+                        const match = error.message.match(currentBlockHeightRegex);
+                        const currentBlockHeight = match ? match[1] : null;
+                        if (currentBlockHeight != null) {
+                            lavaRPCEndpoint.Session.PairingEpoch = parseInt(currentBlockHeight);
+                            response = yield ((_b = this.relayer) === null || _b === void 0 ? void 0 : _b.sendRelay(options, lavaRPCEndpoint, 10));
+                        }
+                    }
+                    else {
+                        throw error;
+                    }
+                }
+                else {
+                    throw error;
+                }
+            }
+            if (response == undefined) {
+                return "";
+            }
+            const dec = new TextDecoder();
+            const decodedResponse = dec.decode(response.getData_asU8());
+            const jsonResponse = JSON.parse(decodedResponse);
+            return jsonResponse;
+        });
+    }
 }
 exports.StateTracker = StateTracker;
-function createStateTracker(endpoint) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const stateTracker = new StateTracker();
-        yield stateTracker.init(endpoint);
-        return stateTracker;
-    });
-}
-exports.createStateTracker = createStateTracker;

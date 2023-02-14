@@ -1,15 +1,6 @@
 class StateTrackerErrors {
-  static errPairingQueryServiceNotInitialized: Error = new Error(
-    "Pairing query service was not initialized"
-  );
-  static errSpecQueryServiceNotInitialized: Error = new Error(
-    "Spec query service was not initialized"
-  );
-  static errEpochQueryServiceNotInitialized: Error = new Error(
-    "Epoch query service was not initialized"
-  );
-  static errTendermintClientServiceNotInitialized: Error = new Error(
-    "Tendermint client service was not initialized"
+  static errLavaProvidersNotInitialized: Error = new Error(
+    "Lava providers not initialized"
   );
   static errRelayerServiceNotInitialized: Error = new Error(
     "Relayer service was not initialized"

@@ -1,1 +1,1 @@
-export declare const DEFAULT_LAVA_ENDPOINT = "localhost:26657";
+export declare const DEFAULT_LAVA_PAIRING_LIST = "https://raw.githubusercontent.com/lavanet/lava-providers/main/pairingList.json";

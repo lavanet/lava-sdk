@@ -84,8 +84,8 @@ class Relayer {
             const message = this.prepareRequest(request);
             const sig = yield crypto_1.Secp256k1.createSignature(message, (0, encoding_1.fromHex)(privKey));
             const recovery = sig.recovery;
-            const r = sig.r();
-            const s = sig.s();
+            const r = sig.r(32); // if r is not 32 bytes, add padding
+            const s = sig.s(32); // if s is not 32 bytes, add padding
             // TODO consider adding compression in the signing
             // construct signature
             // <(byte of 27+public key solution)>< padded bytes for signature R><padded bytes for signature S>

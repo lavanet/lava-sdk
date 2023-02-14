@@ -25,7 +25,7 @@ it("Test convertRestApiName method", () => {
             output: "/lavanet/lava/pairing/verify_pairing/[^/s]+/[^/s]+/[^/s]+/[^/s]+",
         },
     ];
-    const stateTracker = new stateTracker_1.StateTracker();
+    const stateTracker = new stateTracker_1.StateTracker(null, null);
     testCasses.map((test) => {
         expect(stateTracker.convertRestApiName(test.name)).toBe(test.output);
     });
@@ -48,7 +48,7 @@ it("Test pickRandomProvider method", () => {
             shouldFail: true,
         },
     ];
-    const stateTracker = new stateTracker_1.StateTracker();
+    const stateTracker = new stateTracker_1.StateTracker(null, null);
     testCasses.map((test) => {
         const consumerSessionWithProviderArr = [
             // default consumer session with provider with only compute units set

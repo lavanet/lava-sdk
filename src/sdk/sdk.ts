@@ -3,13 +3,12 @@ import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
 import Relayer from "../relayer/relayer";
 import { RelayReply } from "../proto/relay_pb";
-import { StateTracker, createStateTracker } from "../stateTracker/stateTracker";
+import { StateTracker } from "../stateTracker/stateTracker";
 import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
-import { DEFAULT_LAVA_ENDPOINT } from "../config/default";
+import { LavaProviders } from "../lavaOverLava/providers";
 
 export class LavaSDK {
-  private lavaEndpoint: string;
   private privKey: string;
   private chainID: string;
   private rpcInterface: string;
@@ -33,10 +32,7 @@ export class LavaSDK {
   constructor(options: LavaSDKOptions) {
     // Extract attributes from options
     const { privateKey, chainID } = options;
-    let { lavaEndpoint, rpcInterface } = options;
-
-    // If lava endpoint is not set, use default
-    lavaEndpoint = lavaEndpoint || DEFAULT_LAVA_ENDPOINT;
+    let { rpcInterface } = options;
 
     // Validate chainID
     if (!isValidChainID(chainID)) {
@@ -54,7 +50,6 @@ export class LavaSDK {
     this.chainID = chainID;
     this.rpcInterface = rpcInterface;
     this.privKey = privateKey;
-    this.lavaEndpoint = lavaEndpoint;
 
     this.account = SDKErrors.errAccountNotInitialized;
     this.relayer = SDKErrors.errRelayerServiceNotInitialized;
@@ -75,10 +70,16 @@ export class LavaSDK {
     // Get account from wallet
     this.account = await wallet.getConsumerAccount();
 
+    // Init lava providers
+    const lavaProviders = await new LavaProviders(this.account.address);
+    await lavaProviders.init();
+
+    const lavaRelayer = new Relayer("LAV1", this.privKey);
+
     // Initialize state tracker
 
     // Create state tracker
-    this.stateTracker = await createStateTracker(this.lavaEndpoint);
+    this.stateTracker = new StateTracker(lavaProviders, lavaRelayer);
 
     // Initialize relayer
 
@@ -315,6 +316,5 @@ function isRest(
 export interface LavaSDKOptions {
   privateKey: string;
   chainID: string;
-  lavaEndpoint?: string;
   rpcInterface?: string;
 }
