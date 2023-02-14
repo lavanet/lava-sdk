@@ -12,23 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LavaProviders = void 0;
 const default_1 = require("../config/default");
 const types_1 = require("../types/types");
+const lavaPairing_1 = require("../util/lavaPairing");
 class LavaProviders {
-    constructor(accountAddress) {
+    constructor(accountAddress, network) {
         this.index = 0;
         this.providers = [];
-        this.network = "mainnet";
+        this.network = network;
         this.accountAddress = accountAddress;
     }
-    init() {
+    init(pairingListConfig) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(default_1.DEFAULT_LAVA_PAIRING_LIST);
-            if (!response.ok) {
-                throw new Error(`Unable to fetch pairing list: ${response.statusText}`);
+            var data;
+            // if no pairing list config use default
+            if (pairingListConfig == "") {
+                data = yield this.initDefaultConfig();
             }
-            const data = yield response.json();
+            else {
+                data = yield this.initLocalConfig(pairingListConfig);
+            }
             // Initialize ConsumerSessionWithProvider array
             const pairing = [];
-            for (const provider of data[this.network]) {
+            for (const provider of data) {
                 const singleConsumerSession = new types_1.SingleConsumerSession(0, // cuSum
                 0, // latestRelayCuSum
                 1, // relayNumber
@@ -42,6 +46,22 @@ class LavaProviders {
                 pairing.push(newPairing);
             }
             this.providers = pairing;
+        });
+    }
+    initDefaultConfig() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(default_1.DEFAULT_LAVA_PAIRING_LIST);
+            if (!response.ok) {
+                throw new Error(`Unable to fetch pairing list: ${response.statusText}`);
+            }
+            const data = yield response.json();
+            return data[this.network];
+        });
+    }
+    initLocalConfig(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield (0, lavaPairing_1.fetchLavaPairing)(path);
+            return data[this.network];
         });
     }
     getNextProvider() {

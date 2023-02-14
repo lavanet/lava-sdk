@@ -18,8 +18,6 @@ const errors_1 = __importDefault(require("./errors"));
 const errors_2 = __importDefault(require("./errors"));
 class StateTracker {
     constructor(lavaProviders, relayer) {
-        this.pairingQueryService =
-            errors_1.default.errPairingQueryServiceNotInitialized;
         this.lavaProviders = lavaProviders;
         this.relayer = relayer;
     }

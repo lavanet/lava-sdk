@@ -19,7 +19,8 @@ module.exports = [
       string_decoder: false,
       http: false,
       https:false,
-      url: false
+      url: false,
+      fs:false
     },
   }, 
   plugins: [

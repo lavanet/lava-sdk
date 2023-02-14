@@ -2,6 +2,8 @@ export declare class LavaSDK {
     private privKey;
     private chainID;
     private rpcInterface;
+    private network;
+    private pairingListConfig;
     private stateTracker;
     private account;
     private relayer;
@@ -58,4 +60,6 @@ export interface LavaSDKOptions {
     privateKey: string;
     chainID: string;
     rpcInterface?: string;
+    pairingListConfig?: string;
+    network?: string;
 }

@@ -4,7 +4,9 @@ export declare class LavaProviders {
     private network;
     private index;
     private accountAddress;
-    constructor(accountAddress: string);
-    init(): Promise<void>;
+    constructor(accountAddress: string, network: string);
+    init(pairingListConfig: string): Promise<void>;
+    initDefaultConfig(): Promise<any>;
+    initLocalConfig(path: string): Promise<any>;
     getNextProvider(): ConsumerSessionWithProvider;
 }

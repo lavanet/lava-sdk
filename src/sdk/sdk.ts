@@ -7,11 +7,14 @@ import { StateTracker } from "../stateTracker/stateTracker";
 import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { LavaProviders } from "../lavaOverLava/providers";
+import { LAVA_CHAIN_ID, DEFAULT_LAVA_PAIRING_NETWORK } from "../config/default";
 
 export class LavaSDK {
   private privKey: string;
   private chainID: string;
   private rpcInterface: string;
+  private network: string;
+  private pairingListConfig: string;
 
   private stateTracker: StateTracker | Error;
   private account: AccountData | Error;
@@ -32,14 +35,14 @@ export class LavaSDK {
   constructor(options: LavaSDKOptions) {
     // Extract attributes from options
     const { privateKey, chainID } = options;
-    let { rpcInterface } = options;
+    let { rpcInterface, pairingListConfig, network } = options;
 
     // Validate chainID
     if (!isValidChainID(chainID)) {
       throw SDKErrors.errChainIDUnsupported;
     }
 
-    // If the rpc is not defined used the default for specified chainID
+    // If rpc is not defined use default for specified chainID
     rpcInterface = rpcInterface || fetchRpcInterface(chainID);
 
     // Validate rpcInterface
@@ -47,9 +50,18 @@ export class LavaSDK {
       throw SDKErrors.errChainIDUnsupported;
     }
 
+    // If network is not defined use default network
+    network = network || DEFAULT_LAVA_PAIRING_NETWORK;
+
+    // If lava pairing config not defined set as empty
+    pairingListConfig = pairingListConfig || "";
+
+    // Initialize local attributes
     this.chainID = chainID;
     this.rpcInterface = rpcInterface;
     this.privKey = privateKey;
+    this.network = network;
+    this.pairingListConfig = pairingListConfig;
 
     this.account = SDKErrors.errAccountNotInitialized;
     this.relayer = SDKErrors.errRelayerServiceNotInitialized;
@@ -71,12 +83,14 @@ export class LavaSDK {
     this.account = await wallet.getConsumerAccount();
 
     // Init lava providers
-    const lavaProviders = await new LavaProviders(this.account.address);
-    await lavaProviders.init();
+    const lavaProviders = await new LavaProviders(
+      this.account.address,
+      this.network
+    );
+    await lavaProviders.init(this.pairingListConfig);
 
-    const lavaRelayer = new Relayer("LAV1", this.privKey);
-
-    // Initialize state tracker
+    // Init relayer for lava providers
+    const lavaRelayer = new Relayer(LAVA_CHAIN_ID, this.privKey);
 
     // Create state tracker
     this.stateTracker = new StateTracker(lavaProviders, lavaRelayer);
@@ -90,7 +104,7 @@ export class LavaSDK {
       this.rpcInterface
     );
 
-    // Create relayer
+    // Create relayer for querying network
     this.relayer = new Relayer(this.chainID, this.privKey);
   }
 
@@ -317,4 +331,6 @@ export interface LavaSDKOptions {
   privateKey: string;
   chainID: string;
   rpcInterface?: string;
+  pairingListConfig?: string;
+  network?: string;
 }

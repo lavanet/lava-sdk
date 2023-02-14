@@ -3,7 +3,6 @@ import { AccountData } from "@cosmjs/proto-signing";
 import { LavaProviders } from "../lavaOverLava/providers";
 import Relayer from "../relayer/relayer";
 export declare class StateTracker {
-    private pairingQueryService;
     private lavaProviders;
     private relayer;
     constructor(lavaProviders: LavaProviders | null, relayer: Relayer | null);
