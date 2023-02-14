@@ -29,6 +29,7 @@ class StateTracker {
                     throw errors_1.default.errLavaProvidersNotInitialized;
                 }
                 const lavaRPCEndpoint = this.lavaProviders.getNextProvider();
+                console.log("Fetching pairing list from ", lavaRPCEndpoint.Session.Endpoint);
                 // Create request for getServiceApis method
                 const apis = yield this.getServiceApis(lavaRPCEndpoint, chainID, rpcInterface);
                 // Create pairing request for getPairing method

@@ -37,6 +37,10 @@ export class StateTracker {
 
       const lavaRPCEndpoint = this.lavaProviders.getNextProvider();
 
+      console.log(
+        "Fetching pairing list from ",
+        lavaRPCEndpoint.Session.Endpoint
+      );
       // Create request for getServiceApis method
       const apis = await this.getServiceApis(
         lavaRPCEndpoint,
