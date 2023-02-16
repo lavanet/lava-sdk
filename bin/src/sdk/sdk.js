@@ -16,7 +16,6 @@ exports.LavaSDK = void 0;
 const wallet_1 = require("../wallet/wallet");
 const errors_1 = __importDefault(require("./errors"));
 const relayer_1 = __importDefault(require("../relayer/relayer"));
-const stateTracker_1 = require("../stateTracker/stateTracker");
 const chains_1 = require("../util/chains");
 const providers_1 = require("../lavaOverLava/providers");
 const default_1 = require("../config/default");
@@ -57,7 +56,7 @@ class LavaSDK {
         this.pairingListConfig = pairingListConfig;
         this.account = errors_1.default.errAccountNotInitialized;
         this.relayer = errors_1.default.errRelayerServiceNotInitialized;
-        this.stateTracker = errors_1.default.errStateTrackerServiceNotInitialized;
+        this.lavaProviders = errors_1.default.errLavaProvidersNotInitialized;
         this.activeSessionManager = errors_1.default.errSessionNotInitialized;
         return (() => __awaiter(this, void 0, void 0, function* () {
             yield this.init();
@@ -70,16 +69,14 @@ class LavaSDK {
             const wallet = yield (0, wallet_1.createWallet)(this.privKey);
             // Get account from wallet
             this.account = yield wallet.getConsumerAccount();
-            // Init lava providers
-            const lavaProviders = yield new providers_1.LavaProviders(this.account.address, this.network);
-            yield lavaProviders.init(this.pairingListConfig);
             // Init relayer for lava providers
             const lavaRelayer = new relayer_1.default(default_1.LAVA_CHAIN_ID, this.privKey);
-            // Create state tracker
-            this.stateTracker = new stateTracker_1.StateTracker(lavaProviders, lavaRelayer);
-            // Initialize relayer
+            // Init lava providers
+            const lavaProviders = yield new providers_1.LavaProviders(this.account.address, this.network, lavaRelayer);
+            yield lavaProviders.init(this.pairingListConfig);
+            this.lavaProviders = lavaProviders;
             // Get pairing list for current epoch
-            this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
+            this.activeSessionManager = yield this.lavaProviders.getSession(this.chainID, this.rpcInterface);
             // Create relayer for querying network
             this.relayer = new relayer_1.default(this.chainID, this.privKey);
         });
@@ -201,9 +198,9 @@ class LavaSDK {
     }
     getConsumerProviderSession() {
         return __awaiter(this, void 0, void 0, function* () {
-            // Check if state tracker was initialized
-            if (this.stateTracker instanceof Error) {
-                throw errors_1.default.errStateTrackerServiceNotInitialized;
+            // Check if lava providers were initialized
+            if (this.lavaProviders instanceof Error) {
+                throw errors_1.default.errLavaProvidersNotInitialized;
             }
             // Check if state tracker was initialized
             if (this.account instanceof Error) {
@@ -215,10 +212,10 @@ class LavaSDK {
             }
             // Check if new epoch has started
             if (this.newEpochStarted()) {
-                this.activeSessionManager = yield this.stateTracker.getSession(this.account, this.chainID, this.rpcInterface);
+                this.activeSessionManager = yield this.lavaProviders.getSession(this.chainID, this.rpcInterface);
             }
             // Pick random provider and return
-            return this.stateTracker.pickRandomProvider(this.activeSessionManager.PairingList);
+            return this.lavaProviders.pickRandomProvider(this.activeSessionManager.PairingList);
         });
     }
     newEpochStarted() {

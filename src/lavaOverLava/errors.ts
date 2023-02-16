@@ -1,4 +1,4 @@
-class StateTrackerErrors {
+class ProvidersErrors {
   static errLavaProvidersNotInitialized: Error = new Error(
     "Lava providers not initialized"
   );
@@ -11,4 +11,4 @@ class StateTrackerErrors {
   static errSpecNotFound: Error = new Error("Spec not found");
 }
 
-export default StateTrackerErrors;
+export default ProvidersErrors;

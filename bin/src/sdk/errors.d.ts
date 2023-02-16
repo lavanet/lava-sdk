@@ -1,7 +1,7 @@
 declare class SDKErrors {
     static errAccountNotInitialized: Error;
     static errRelayerServiceNotInitialized: Error;
-    static errStateTrackerServiceNotInitialized: Error;
+    static errLavaProvidersNotInitialized: Error;
     static errSessionNotInitialized: Error;
     static errMethodNotSupported: Error;
     static errChainIDUnsupported: Error;

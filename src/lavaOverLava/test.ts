@@ -1,4 +1,4 @@
-import { StateTracker } from "./stateTracker";
+import { LavaProviders } from "./providers";
 import {
   ConsumerSessionWithProvider,
   Endpoint,
@@ -31,10 +31,10 @@ it("Test convertRestApiName method", () => {
     },
   ];
 
-  const stateTracker = new StateTracker(null, null);
+  const lavaProviders = new LavaProviders("", "", null);
 
   testCasses.map((test) => {
-    expect(stateTracker.convertRestApiName(test.name)).toBe(test.output);
+    expect(lavaProviders.convertRestApiName(test.name)).toBe(test.output);
   });
 });
 
@@ -61,7 +61,7 @@ it("Test pickRandomProvider method", () => {
     },
   ];
 
-  const stateTracker = new StateTracker(null, null);
+  const lavaProviders = new LavaProviders("", "", null);
 
   testCasses.map((test) => {
     const consumerSessionWithProviderArr = [
@@ -77,11 +77,11 @@ it("Test pickRandomProvider method", () => {
     ];
     if (test.shouldFail) {
       expect(() => {
-        stateTracker.pickRandomProvider(consumerSessionWithProviderArr);
+        lavaProviders.pickRandomProvider(consumerSessionWithProviderArr);
       }).toThrowError();
     } else {
       expect(() => {
-        stateTracker.pickRandomProvider(consumerSessionWithProviderArr);
+        lavaProviders.pickRandomProvider(consumerSessionWithProviderArr);
       }).not.toThrowError();
     }
   });

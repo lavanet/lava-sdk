@@ -3,7 +3,6 @@ import SDKErrors from "./errors";
 import { AccountData } from "@cosmjs/proto-signing";
 import Relayer from "../relayer/relayer";
 import { RelayReply } from "../proto/relay_pb";
-import { StateTracker } from "../stateTracker/stateTracker";
 import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { LavaProviders } from "../lavaOverLava/providers";
@@ -16,7 +15,7 @@ export class LavaSDK {
   private network: string;
   private pairingListConfig: string;
 
-  private stateTracker: StateTracker | Error;
+  private lavaProviders: LavaProviders | Error;
   private account: AccountData | Error;
   private relayer: Relayer | Error;
 
@@ -65,7 +64,7 @@ export class LavaSDK {
 
     this.account = SDKErrors.errAccountNotInitialized;
     this.relayer = SDKErrors.errRelayerServiceNotInitialized;
-    this.stateTracker = SDKErrors.errStateTrackerServiceNotInitialized;
+    this.lavaProviders = SDKErrors.errLavaProvidersNotInitialized;
     this.activeSessionManager = SDKErrors.errSessionNotInitialized;
 
     return (async (): Promise<LavaSDK> => {
@@ -82,24 +81,21 @@ export class LavaSDK {
     // Get account from wallet
     this.account = await wallet.getConsumerAccount();
 
-    // Init lava providers
-    const lavaProviders = await new LavaProviders(
-      this.account.address,
-      this.network
-    );
-    await lavaProviders.init(this.pairingListConfig);
-
     // Init relayer for lava providers
     const lavaRelayer = new Relayer(LAVA_CHAIN_ID, this.privKey);
 
-    // Create state tracker
-    this.stateTracker = new StateTracker(lavaProviders, lavaRelayer);
+    // Init lava providers
+    const lavaProviders = await new LavaProviders(
+      this.account.address,
+      this.network,
+      lavaRelayer
+    );
+    await lavaProviders.init(this.pairingListConfig);
 
-    // Initialize relayer
+    this.lavaProviders = lavaProviders;
 
     // Get pairing list for current epoch
-    this.activeSessionManager = await this.stateTracker.getSession(
-      this.account,
+    this.activeSessionManager = await this.lavaProviders.getSession(
       this.chainID,
       this.rpcInterface
     );
@@ -256,9 +252,9 @@ export class LavaSDK {
   }
 
   private async getConsumerProviderSession(): Promise<ConsumerSessionWithProvider> {
-    // Check if state tracker was initialized
-    if (this.stateTracker instanceof Error) {
-      throw SDKErrors.errStateTrackerServiceNotInitialized;
+    // Check if lava providers were initialized
+    if (this.lavaProviders instanceof Error) {
+      throw SDKErrors.errLavaProvidersNotInitialized;
     }
 
     // Check if state tracker was initialized
@@ -273,15 +269,14 @@ export class LavaSDK {
 
     // Check if new epoch has started
     if (this.newEpochStarted()) {
-      this.activeSessionManager = await this.stateTracker.getSession(
-        this.account,
+      this.activeSessionManager = await this.lavaProviders.getSession(
         this.chainID,
         this.rpcInterface
       );
     }
 
     // Pick random provider and return
-    return this.stateTracker.pickRandomProvider(
+    return this.lavaProviders.pickRandomProvider(
       this.activeSessionManager.PairingList
     );
   }

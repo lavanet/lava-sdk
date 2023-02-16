@@ -4,7 +4,7 @@ export declare class LavaSDK {
     private rpcInterface;
     private network;
     private pairingListConfig;
-    private stateTracker;
+    private lavaProviders;
     private account;
     private relayer;
     private activeSessionManager;
