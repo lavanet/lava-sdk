@@ -1,0 +1,30 @@
+{
+  "testnet": [
+    {
+      "rpcAddress": "127.0.0.1:2271",
+      "publicAddress": "lava@1nyukm4w7vvavct6qsa4lq2y5y2ljlj99jkx2tf"
+    },
+    {
+      "rpcAddress": "127.0.0.1:2272",
+      "publicAddress": "lava@1wsvqnyt3fkd7csfl62j2gjymsvyjy5257k08zr"
+    },
+    {
+      "rpcAddress": "127.0.0.1:2273",
+      "publicAddress": "lava@190mqtzr7k8llpqdp8j6wxqng93e50ek6yacg8p"
+    }
+  ],
+  "mainnet": [
+    {
+      "rpcAddress": "127.0.0.1:2271",
+      "publicAddress": "lava@1nyukm4w7vvavct6qsa4lq2y5y2ljlj99jkx2tf"
+    },
+    {
+      "rpcAddress": "127.0.0.1:2272",
+      "publicAddress": "lava@1wsvqnyt3fkd7csfl62j2gjymsvyjy5257k08zr"
+    },
+    {
+      "rpcAddress": "127.0.0.1:2273",
+      "publicAddress": "lava@190mqtzr7k8llpqdp8j6wxqng93e50ek6yacg8p"
+    }
+  ]
+}

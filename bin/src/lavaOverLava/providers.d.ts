@@ -6,7 +6,8 @@ export declare class LavaProviders {
     private index;
     private accountAddress;
     private relayer;
-    constructor(accountAddress: string, network: string, relayer: Relayer | null);
+    private geolocation;
+    constructor(accountAddress: string, network: string, relayer: Relayer | null, geolocation: string);
     init(pairingListConfig: string): Promise<void>;
     initDefaultConfig(): Promise<any>;
     initLocalConfig(path: string): Promise<any>;

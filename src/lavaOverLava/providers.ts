@@ -19,16 +19,19 @@ export class LavaProviders {
   private index = 0;
   private accountAddress: string;
   private relayer: Relayer | null;
+  private geolocation: string;
 
   constructor(
     accountAddress: string,
     network: string,
-    relayer: Relayer | null
+    relayer: Relayer | null,
+    geolocation: string
   ) {
     this.providers = [];
     this.network = network;
     this.accountAddress = accountAddress;
     this.relayer = relayer;
+    this.geolocation = geolocation;
   }
 
   async init(pairingListConfig: string) {
@@ -174,7 +177,10 @@ export class LavaProviders {
 
         //only take into account endpoints that use the same api interface
         for (const endpoint of provider.endpoints) {
-          if (endpoint.useType == rpcInterface) {
+          if (
+            endpoint.useType == rpcInterface &&
+            endpoint.geolocation == this.geolocation
+          ) {
             const convertedEndpoint = new Endpoint(endpoint.iPPORT, true, 0);
             relevantEndpoints.push(convertedEndpoint);
           }

@@ -33,7 +33,7 @@ class LavaSDK {
     constructor(options) {
         // Extract attributes from options
         const { privateKey, chainID } = options;
-        let { rpcInterface, pairingListConfig, network } = options;
+        let { rpcInterface, pairingListConfig, network, geolocation } = options;
         // Validate chainID
         if (!(0, chains_1.isValidChainID)(chainID)) {
             throw errors_1.default.errChainIDUnsupported;
@@ -46,6 +46,8 @@ class LavaSDK {
         }
         // If network is not defined use default network
         network = network || default_1.DEFAULT_LAVA_PAIRING_NETWORK;
+        // if geolocation is not defined use default geolocation
+        geolocation = geolocation || default_1.DEFAULT_GEOLOCATION;
         // If lava pairing config not defined set as empty
         pairingListConfig = pairingListConfig || "";
         // Initialize local attributes
@@ -53,6 +55,7 @@ class LavaSDK {
         this.rpcInterface = rpcInterface;
         this.privKey = privateKey;
         this.network = network;
+        this.geolocation = geolocation;
         this.pairingListConfig = pairingListConfig;
         this.account = errors_1.default.errAccountNotInitialized;
         this.relayer = errors_1.default.errRelayerServiceNotInitialized;
@@ -72,7 +75,7 @@ class LavaSDK {
             // Init relayer for lava providers
             const lavaRelayer = new relayer_1.default(default_1.LAVA_CHAIN_ID, this.privKey);
             // Init lava providers
-            const lavaProviders = yield new providers_1.LavaProviders(this.account.address, this.network, lavaRelayer);
+            const lavaProviders = yield new providers_1.LavaProviders(this.account.address, this.network, lavaRelayer, this.geolocation);
             yield lavaProviders.init(this.pairingListConfig);
             this.lavaProviders = lavaProviders;
             console.log("SDK initialized");

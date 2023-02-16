@@ -4,6 +4,7 @@ export declare class LavaSDK {
     private rpcInterface;
     private network;
     private pairingListConfig;
+    private geolocation;
     private lavaProviders;
     private account;
     private relayer;
@@ -62,4 +63,5 @@ export interface LavaSDKOptions {
     rpcInterface?: string;
     pairingListConfig?: string;
     network?: string;
+    geolocation?: string;
 }

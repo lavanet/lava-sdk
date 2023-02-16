@@ -6,7 +6,11 @@ import { RelayReply } from "../proto/relay_pb";
 import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
 import { isValidChainID, fetchRpcInterface } from "../util/chains";
 import { LavaProviders } from "../lavaOverLava/providers";
-import { LAVA_CHAIN_ID, DEFAULT_LAVA_PAIRING_NETWORK } from "../config/default";
+import {
+  LAVA_CHAIN_ID,
+  DEFAULT_LAVA_PAIRING_NETWORK,
+  DEFAULT_GEOLOCATION,
+} from "../config/default";
 
 export class LavaSDK {
   private privKey: string;
@@ -14,6 +18,7 @@ export class LavaSDK {
   private rpcInterface: string;
   private network: string;
   private pairingListConfig: string;
+  private geolocation: string;
 
   private lavaProviders: LavaProviders | Error;
   private account: AccountData | Error;
@@ -34,7 +39,7 @@ export class LavaSDK {
   constructor(options: LavaSDKOptions) {
     // Extract attributes from options
     const { privateKey, chainID } = options;
-    let { rpcInterface, pairingListConfig, network } = options;
+    let { rpcInterface, pairingListConfig, network, geolocation } = options;
 
     // Validate chainID
     if (!isValidChainID(chainID)) {
@@ -52,6 +57,9 @@ export class LavaSDK {
     // If network is not defined use default network
     network = network || DEFAULT_LAVA_PAIRING_NETWORK;
 
+    // if geolocation is not defined use default geolocation
+    geolocation = geolocation || DEFAULT_GEOLOCATION;
+
     // If lava pairing config not defined set as empty
     pairingListConfig = pairingListConfig || "";
 
@@ -60,8 +68,8 @@ export class LavaSDK {
     this.rpcInterface = rpcInterface;
     this.privKey = privateKey;
     this.network = network;
+    this.geolocation = geolocation;
     this.pairingListConfig = pairingListConfig;
-
     this.account = SDKErrors.errAccountNotInitialized;
     this.relayer = SDKErrors.errRelayerServiceNotInitialized;
     this.lavaProviders = SDKErrors.errLavaProvidersNotInitialized;
@@ -88,7 +96,8 @@ export class LavaSDK {
     const lavaProviders = await new LavaProviders(
       this.account.address,
       this.network,
-      lavaRelayer
+      lavaRelayer,
+      this.geolocation
     );
     await lavaProviders.init(this.pairingListConfig);
 
@@ -341,4 +350,5 @@ export interface LavaSDKOptions {
   rpcInterface?: string;
   pairingListConfig?: string;
   network?: string;
+  geolocation?: string;
 }

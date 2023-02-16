@@ -18,12 +18,13 @@ const types_1 = require("../types/types");
 const lavaPairing_1 = require("../util/lavaPairing");
 const errors_1 = __importDefault(require("./errors"));
 class LavaProviders {
-    constructor(accountAddress, network, relayer) {
+    constructor(accountAddress, network, relayer, geolocation) {
         this.index = 0;
         this.providers = [];
         this.network = network;
         this.accountAddress = accountAddress;
         this.relayer = relayer;
+        this.geolocation = geolocation;
     }
     init(pairingListConfig) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -120,7 +121,8 @@ class LavaProviders {
                     const relevantEndpoints = [];
                     //only take into account endpoints that use the same api interface
                     for (const endpoint of provider.endpoints) {
-                        if (endpoint.useType == rpcInterface) {
+                        if (endpoint.useType == rpcInterface &&
+                            endpoint.geolocation == this.geolocation) {
                             const convertedEndpoint = new types_1.Endpoint(endpoint.iPPORT, true, 0);
                             relevantEndpoints.push(convertedEndpoint);
                         }

@@ -4,6 +4,7 @@ import {
   Endpoint,
   SingleConsumerSession,
 } from "../types/types";
+import { DEFAULT_GEOLOCATION } from "../config/default";
 
 it("Test convertRestApiName method", () => {
   const testCasses: { name: string; output: string }[] = [
@@ -31,7 +32,7 @@ it("Test convertRestApiName method", () => {
     },
   ];
 
-  const lavaProviders = new LavaProviders("", "", null);
+  const lavaProviders = new LavaProviders("", "", null, DEFAULT_GEOLOCATION);
 
   testCasses.map((test) => {
     expect(lavaProviders.convertRestApiName(test.name)).toBe(test.output);
@@ -61,7 +62,7 @@ it("Test pickRandomProvider method", () => {
     },
   ];
 
-  const lavaProviders = new LavaProviders("", "", null);
+  const lavaProviders = new LavaProviders("", "", null, DEFAULT_GEOLOCATION);
 
   testCasses.map((test) => {
     const consumerSessionWithProviderArr = [

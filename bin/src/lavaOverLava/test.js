@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const providers_1 = require("./providers");
 const types_1 = require("../types/types");
+const default_1 = require("../config/default");
 it("Test convertRestApiName method", () => {
     const testCasses = [
         {
@@ -25,7 +26,7 @@ it("Test convertRestApiName method", () => {
             output: "/lavanet/lava/pairing/verify_pairing/[^/s]+/[^/s]+/[^/s]+/[^/s]+",
         },
     ];
-    const lavaProviders = new providers_1.LavaProviders("", "", null);
+    const lavaProviders = new providers_1.LavaProviders("", "", null, default_1.DEFAULT_GEOLOCATION);
     testCasses.map((test) => {
         expect(lavaProviders.convertRestApiName(test.name)).toBe(test.output);
     });
@@ -48,7 +49,7 @@ it("Test pickRandomProvider method", () => {
             shouldFail: true,
         },
     ];
-    const lavaProviders = new providers_1.LavaProviders("", "", null);
+    const lavaProviders = new providers_1.LavaProviders("", "", null, default_1.DEFAULT_GEOLOCATION);
     testCasses.map((test) => {
         const consumerSessionWithProviderArr = [
             // default consumer session with provider with only compute units set
