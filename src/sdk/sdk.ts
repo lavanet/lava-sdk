@@ -94,6 +94,8 @@ export class LavaSDK {
 
     this.lavaProviders = lavaProviders;
 
+    console.log("SDK initialized");
+
     // Get pairing list for current epoch
     this.activeSessionManager = await this.lavaProviders.getSession(
       this.chainID,
@@ -289,6 +291,17 @@ export class LavaSDK {
 
     // Get current date and time
     const now = new Date();
+
+    console.log("Time now: ", now.getTime());
+    console.log(
+      "New epoch starts: ",
+      this.activeSessionManager.NextEpochStart.getTime()
+    );
+
+    console.log(
+      "Should start new epoch: ",
+      now.getTime() > this.activeSessionManager.NextEpochStart.getTime()
+    );
 
     // Return if new epoch has started
     return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();

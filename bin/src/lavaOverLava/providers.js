@@ -97,6 +97,7 @@ class LavaProviders {
                 const nextEpochStart = new Date();
                 nextEpochStart.setSeconds(nextEpochStart.getSeconds() +
                     parseInt(pairingResponse.timeLeftToNextPairing));
+                console.log("Time left till next epoch: ", parseInt(pairingResponse.timeLeftToNextPairing));
                 // Extract providers from pairing response
                 const providers = pairingResponse.providers;
                 // Initialize ConsumerSessionWithProvider array

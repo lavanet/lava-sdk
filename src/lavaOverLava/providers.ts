@@ -138,6 +138,11 @@ export class LavaProviders {
           parseInt(pairingResponse.timeLeftToNextPairing)
       );
 
+      console.log(
+        "Time left till next epoch: ",
+        parseInt(pairingResponse.timeLeftToNextPairing)
+      );
+
       // Extract providers from pairing response
       const providers = pairingResponse.providers;
 
