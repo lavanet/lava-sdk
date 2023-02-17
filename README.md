@@ -107,8 +107,10 @@ To use the LavaSDK library, you will first need to initialize it.
 const lavaSDK = await new LavaSDK({
   privateKey: privKey,
   chainID: chainID,
-  lavaEndpoint: endpoint, // Optional
   rpcInterface: rpcInterface, // Optional
+  pairingListConfig: localConfigPath; // Optional
+  network: network; // Optional
+  geolocation: geolocation; // Optional
 });
 ```
 
@@ -116,9 +118,13 @@ const lavaSDK = await new LavaSDK({
 
 - `chainID` parameter is required and should be the ID of the chain you want to query. You can find all supported chains with their IDs [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
 
-- `lavaEndpoint` is an optional field that specifies the RPC endpoint of the Lava network node. It is used to fetch list of the providers for specified `chainID` and `rpcInterface`. You can check the [default lava rpc endpoint](https://github.com/lavanet/lava-sdk/blob/main/src/config/default.ts#L1)
-
 - `rpcInterface` is an optional field representing the interface that will be used for sending relays. For cosmos chains it can be `tendermintRPC` or `rest`. For evm compatible chains `jsonRPC` or `rest`. You can find the list of all default rpc interfaces [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
+
+- `pairingListConfig` is an optional field that specifies the lava pairing list config used for communicating with lava network. Lava SDK does not rely on one centralized rpc for querying lava network. It uses a list of rpc providers to fetch list of the providers for specified `chainID` and `rpcInterface` from lava network. If not pairingListConfig set, the default list will be used [default lava pairing list](https://github.com/lavanet/lava-providers/blob/main/pairingList.json)
+
+- `network` is an optional field that specifies the network from pairingListConfig which will be used. Default value is `mainnet`.
+
+- `geolocation` is an optional field that specifies the geolocation which will be used. Default value is `1`.
 
 ---
 
