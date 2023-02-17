@@ -41,6 +41,7 @@ export class LavaProviders {
     if (pairingListConfig == "") {
       data = await this.initDefaultConfig();
     } else {
+      // Else use local config file
       data = await this.initLocalConfig(pairingListConfig);
     }
 
@@ -71,19 +72,28 @@ export class LavaProviders {
       pairing.push(newPairing);
     }
 
+    // Save providers as local attribute
     this.providers = pairing;
   }
 
   async initDefaultConfig(): Promise<any> {
+    // Fetch config from github repo
     const response = await fetch(DEFAULT_LAVA_PAIRING_LIST);
 
+    // Validate response
     if (!response.ok) {
       throw new Error(`Unable to fetch pairing list: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    try {
+      // Parse response
+      const data = await response.json();
 
-    return data[this.network];
+      // Return data array
+      return data[this.network];
+    } catch (error) {
+      throw ProvidersErrors.errConfigNotValidJson;
+    }
   }
 
   async initLocalConfig(path: string): Promise<any> {
@@ -92,14 +102,19 @@ export class LavaProviders {
     return data[this.network];
   }
 
-  getNextProvider(): ConsumerSessionWithProvider {
-    // TODO add some guard for empty
+  // getNextLavaProvider return lava providers used for fetching epoch
+  // in round-robin fashion
+  getNextLavaProvider(): ConsumerSessionWithProvider {
+    if (this.providers.length == 0) {
+      throw ProvidersErrors.errNoProviders;
+    }
+
     const rpcAddress = this.providers[this.index];
     this.index = (this.index + 1) % this.providers.length;
     return rpcAddress;
   }
 
-  // Get session return providers for current epoch
+  // getSession returns providers for current epoch
   async getSession(
     chainID: string,
     rpcInterface: string
@@ -109,12 +124,9 @@ export class LavaProviders {
         throw ProvidersErrors.errLavaProvidersNotInitialized;
       }
 
-      const lavaRPCEndpoint = this.getNextProvider();
+      // Fetch lava provider which will be used for fetching pairing list
+      const lavaRPCEndpoint = this.getNextLavaProvider();
 
-      console.log(
-        "Fetching pairing list from ",
-        lavaRPCEndpoint.Session.Endpoint
-      );
       // Create request for getServiceApis method
       const apis = await this.getServiceApis(
         lavaRPCEndpoint,
@@ -141,31 +153,26 @@ export class LavaProviders {
           parseInt(pairingResponse.timeLeftToNextPairing)
       );
 
-      console.log(
-        "Time left till next epoch: ",
-        parseInt(pairingResponse.timeLeftToNextPairing)
-      );
-
       // Extract providers from pairing response
       const providers = pairingResponse.providers;
 
       // Initialize ConsumerSessionWithProvider array
       const pairing: Array<ConsumerSessionWithProvider> = [];
 
-      // create request for getting userEntity
+      // Create request for getting userEntity
       const userEntityRequest = {
         address: this.accountAddress,
         chainID: chainID,
         block: pairingResponse.currentEpoch,
       };
 
-      // fetch max compute units
+      // Fetch max compute units
       const maxcu = await this.getMaxCuForUser(
         lavaRPCEndpoint,
         userEntityRequest
       );
 
-      //Iterate over providers to populate pairing list
+      // Iterate over providers to populate pairing list
       for (const provider of providers) {
         // Skip providers with no endpoints
         if (provider.endpoints.length == 0) {
@@ -175,7 +182,8 @@ export class LavaProviders {
         // Initialize relevantEndpoints array
         const relevantEndpoints: Array<Endpoint> = [];
 
-        //only take into account endpoints that use the same api interface
+        // Only take into account endpoints that use the same api interface
+        // And geolocation
         for (const endpoint of provider.endpoints) {
           if (
             endpoint.useType == rpcInterface &&
@@ -260,6 +268,10 @@ export class LavaProviders {
       lavaRPCEndpoint
     );
 
+    if (jsonResponse.providers == undefined) {
+      throw ProvidersErrors.errProvidersNotFound;
+    }
+
     return jsonResponse;
   }
 
@@ -282,6 +294,10 @@ export class LavaProviders {
       options,
       lavaRPCEndpoint
     );
+
+    if (jsonResponse.maxCU == undefined) {
+      throw ProvidersErrors.errMaxCuNotFound;
+    }
 
     // return maxCu from userEntry
     return parseInt(jsonResponse.maxCU);
@@ -334,46 +350,79 @@ export class LavaProviders {
   }
 
   async sendRelayWithRetry(
-    options: any, // TODO add type
+    options: any,
     lavaRPCEndpoint: ConsumerSessionWithProvider
   ): Promise<any> {
     let response;
-    // TODO make sure relayer is not null
+
     try {
-      response = await this.relayer?.sendRelay(options, lavaRPCEndpoint, 10);
+      if (this.relayer == null) {
+        throw ProvidersErrors.errNoRelayer;
+      }
+
+      // For now we have hardcode relay cu
+      const relayCu = 10;
+
+      response = await this.relayer.sendRelay(
+        options,
+        lavaRPCEndpoint,
+        relayCu
+      );
     } catch (error) {
+      // If error is instace of Error
       if (error instanceof Error) {
-        if (
-          error.message.startsWith("user reported very old lava block height")
-        ) {
-          const currentBlockHeightRegex = /current epoch block:(\d+)/;
-          const match = error.message.match(currentBlockHeightRegex);
-          const currentBlockHeight = match ? match[1] : null;
-          if (currentBlockHeight != null) {
-            lavaRPCEndpoint.Session.PairingEpoch = parseInt(currentBlockHeight);
-            response = await this.relayer?.sendRelay(
-              options,
-              lavaRPCEndpoint,
-              10
-            );
-          }
-        } else {
+        // If error is not old blokc height throw and error
+        if (!this.isErrorOldBlock(error)) {
           throw error;
         }
-      } else {
-        throw error;
+
+        // Extract current block height from error
+        const currentBlockHeight = this.extractBlockNumberFromError(error);
+
+        // If current block height equal nill throw an error
+        if (currentBlockHeight == null) {
+          throw error;
+        }
+
+        // Save current block height
+        lavaRPCEndpoint.Session.PairingEpoch = parseInt(currentBlockHeight);
+
+        // Validate that relayer exists
+        if (this.relayer == null) {
+          throw ProvidersErrors.errNoRelayer;
+        }
+        // Retry same relay with added block height
+        try {
+          response = await this.relayer.sendRelay(options, lavaRPCEndpoint, 10);
+        } catch (error) {
+          throw error;
+        }
       }
     }
 
+    // Validate that response is not undefined
     if (response == undefined) {
       return "";
     }
 
+    // Decode response
     const dec = new TextDecoder();
     const decodedResponse = dec.decode(response.getData_asU8());
 
+    // Parse response
     const jsonResponse = JSON.parse(decodedResponse);
 
+    // Return response
     return jsonResponse;
+  }
+
+  private isErrorOldBlock(error: Error): boolean {
+    return error.message.startsWith("user reported very old lava block height");
+  }
+
+  private extractBlockNumberFromError(error: Error): string | null {
+    const currentBlockHeightRegex = /current epoch block:(\d+)/;
+    const match = error.message.match(currentBlockHeightRegex);
+    return match ? match[1] : null;
   }
 }

@@ -1,5 +1,5 @@
 import supportedChains from "../../supportedChains.json";
-import { isValidChainID, fetchRpcInterface } from "./chains";
+import { isValidChainID, fetchRpcInterface, isNetworkValid } from "./chains";
 
 describe("Make sure supportedChains.json is valid", () => {
   it("All entities are valid", async () => {
@@ -42,6 +42,16 @@ describe("Test isValidChainID method", () => {
   });
   it("Entity with specified chainID doesn't exist", async () => {
     expect(isValidChainID("InvalidChainID")).toBe(false);
+  });
+});
+
+describe("Test isNetworkValid", () => {
+  it("Network is valid", async () => {
+    expect(isNetworkValid("testnet")).toBe(true);
+    expect(isNetworkValid("mainnet")).toBe(true);
+  });
+  it("Network is not valid", async () => {
+    expect(isNetworkValid("randomNetwork")).toBe(false);
   });
 });
 

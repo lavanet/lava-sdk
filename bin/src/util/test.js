@@ -49,6 +49,15 @@ describe("Test isValidChainID method", () => {
         expect((0, chains_1.isValidChainID)("InvalidChainID")).toBe(false);
     }));
 });
+describe("Test isNetworkValid", () => {
+    it("Network is valid", () => __awaiter(void 0, void 0, void 0, function* () {
+        expect((0, chains_1.isNetworkValid)("testnet")).toBe(true);
+        expect((0, chains_1.isNetworkValid)("mainnet")).toBe(true);
+    }));
+    it("Network is not valid", () => __awaiter(void 0, void 0, void 0, function* () {
+        expect((0, chains_1.isNetworkValid)("randomNetwork")).toBe(false);
+    }));
+});
 describe("Test fetchRpcInterface method", () => {
     it("Return correct rpc interface for all entities", () => __awaiter(void 0, void 0, void 0, function* () {
         supportedChains_json_1.default.filter((item) => {

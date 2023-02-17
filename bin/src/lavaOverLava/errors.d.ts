@@ -3,5 +3,7 @@ declare class ProvidersErrors {
     static errRelayerServiceNotInitialized: Error;
     static errNoValidProvidersForCurrentEpoch: Error;
     static errSpecNotFound: Error;
+    static errNoProviders: Error;
+    static errConfigNotValidJson: Error;
 }
 export default ProvidersErrors;

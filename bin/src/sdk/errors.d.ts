@@ -5,6 +5,7 @@ declare class SDKErrors {
     static errSessionNotInitialized: Error;
     static errMethodNotSupported: Error;
     static errChainIDUnsupported: Error;
+    static errNetworkUnsupported: Error;
     static errRPCRelayMethodNotSupported: Error;
     static errRestRelayMethodNotSupported: Error;
 }

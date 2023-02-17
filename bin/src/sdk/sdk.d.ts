@@ -38,6 +38,7 @@ export declare class LavaSDK {
     private getCuSumForMethod;
     private getConsumerProviderSession;
     private newEpochStarted;
+    private isRest;
 }
 /**
  * Options for sending RPC relay.

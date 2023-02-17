@@ -34,6 +34,7 @@ class LavaProviders {
                 data = yield this.initDefaultConfig();
             }
             else {
+                // Else use local config file
                 data = yield this.initLocalConfig(pairingListConfig);
             }
             // Initialize ConsumerSessionWithProvider array
@@ -51,17 +52,27 @@ class LavaProviders {
                 // Add newly created pairing in the pairing list
                 pairing.push(newPairing);
             }
+            // Save providers as local attribute
             this.providers = pairing;
         });
     }
     initDefaultConfig() {
         return __awaiter(this, void 0, void 0, function* () {
+            // Fetch config from github repo
             const response = yield fetch(default_1.DEFAULT_LAVA_PAIRING_LIST);
+            // Validate response
             if (!response.ok) {
                 throw new Error(`Unable to fetch pairing list: ${response.statusText}`);
             }
-            const data = yield response.json();
-            return data[this.network];
+            try {
+                // Parse response
+                const data = yield response.json();
+                // Return data array
+                return data[this.network];
+            }
+            catch (error) {
+                throw errors_1.default.errConfigNotValidJson;
+            }
         });
     }
     initLocalConfig(path) {
@@ -70,21 +81,24 @@ class LavaProviders {
             return data[this.network];
         });
     }
-    getNextProvider() {
-        // TODO add some guard for empty
+    // getNextLavaProvider return lava providers used for fetching epoch
+    // in round-robin fashion
+    getNextLavaProvider() {
+        if (this.providers.length == 0) {
+            throw errors_1.default.errNoProviders;
+        }
         const rpcAddress = this.providers[this.index];
         this.index = (this.index + 1) % this.providers.length;
         return rpcAddress;
     }
-    // Get session return providers for current epoch
+    // getSession returns providers for current epoch
     getSession(chainID, rpcInterface) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (this.providers == null) {
                     throw errors_1.default.errLavaProvidersNotInitialized;
                 }
-                const lavaRPCEndpoint = this.getNextProvider();
-                console.log("Fetching pairing list from ", lavaRPCEndpoint.Session.Endpoint);
+                const lavaRPCEndpoint = this.getNextLavaProvider();
                 // Create request for getServiceApis method
                 const apis = yield this.getServiceApis(lavaRPCEndpoint, chainID, rpcInterface);
                 // Create pairing request for getPairing method
@@ -98,7 +112,6 @@ class LavaProviders {
                 const nextEpochStart = new Date();
                 nextEpochStart.setSeconds(nextEpochStart.getSeconds() +
                     parseInt(pairingResponse.timeLeftToNextPairing));
-                console.log("Time left till next epoch: ", parseInt(pairingResponse.timeLeftToNextPairing));
                 // Extract providers from pairing response
                 const providers = pairingResponse.providers;
                 // Initialize ConsumerSessionWithProvider array

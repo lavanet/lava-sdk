@@ -11,7 +11,7 @@ export declare class LavaProviders {
     init(pairingListConfig: string): Promise<void>;
     initDefaultConfig(): Promise<any>;
     initLocalConfig(path: string): Promise<any>;
-    getNextProvider(): ConsumerSessionWithProvider;
+    getNextLavaProvider(): ConsumerSessionWithProvider;
     getSession(chainID: string, rpcInterface: string): Promise<SessionManager>;
     pickRandomProvider(providers: Array<ConsumerSessionWithProvider>): ConsumerSessionWithProvider;
     private getPairingFromChain;

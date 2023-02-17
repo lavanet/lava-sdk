@@ -46,7 +46,11 @@ class LavaSDK {
         }
         // If network is not defined use default network
         network = network || default_1.DEFAULT_LAVA_PAIRING_NETWORK;
-        // if geolocation is not defined use default geolocation
+        // Validate network
+        if (!(0, chains_1.isNetworkValid)(network)) {
+            throw errors_1.default.errNetworkUnsupported;
+        }
+        // If geolocation is not defined use default geolocation
         geolocation = geolocation || default_1.DEFAULT_GEOLOCATION;
         // If lava pairing config not defined set as empty
         pairingListConfig = pairingListConfig || "";
@@ -61,6 +65,7 @@ class LavaSDK {
         this.relayer = errors_1.default.errRelayerServiceNotInitialized;
         this.lavaProviders = errors_1.default.errLavaProvidersNotInitialized;
         this.activeSessionManager = errors_1.default.errSessionNotInitialized;
+        // Init sdk
         return (() => __awaiter(this, void 0, void 0, function* () {
             yield this.init();
             return this;
@@ -74,11 +79,12 @@ class LavaSDK {
             this.account = yield wallet.getConsumerAccount();
             // Init relayer for lava providers
             const lavaRelayer = new relayer_1.default(default_1.LAVA_CHAIN_ID, this.privKey);
-            // Init lava providers
+            // Create new instance of lava providers
             const lavaProviders = yield new providers_1.LavaProviders(this.account.address, this.network, lavaRelayer, this.geolocation);
+            // Init lava providers
             yield lavaProviders.init(this.pairingListConfig);
+            // Save lava providers as local attribute
             this.lavaProviders = lavaProviders;
-            console.log("SDK initialized");
             // Get pairing list for current epoch
             this.activeSessionManager = yield this.lavaProviders.getSession(this.chainID, this.rpcInterface);
             // Create relayer for querying network
@@ -92,11 +98,10 @@ class LavaSDK {
                     throw errors_1.default.errRPCRelayMethodNotSupported;
                 }
                 // Extract attributes from options
-                // TODO change naming for optiosn atribute method both in RPC and REST
                 const { method, params } = options;
-                // get consumerProvider session
+                // Get consumerProvider session
                 const consumerProviderSession = yield this.getConsumerProviderSession();
-                // get cuSum for specified method
+                // Get cuSum for specified method
                 const cuSum = this.getCuSumForMethod(method);
                 const data = this.generateRPCData(method, params);
                 // Check if relay was initialized
@@ -127,9 +132,9 @@ class LavaSDK {
                 }
                 // Extract attributes from options
                 const { method, url, data } = options;
-                // get consumerProvider session
+                // Get consumerProvider session
                 const consumerProviderSession = yield this.getConsumerProviderSession();
-                // get cuSum for specified method
+                // Get cuSum for specified method
                 const cuSum = this.getCuSumForMethod(url);
                 // Check if relay was initialized
                 if (this.relayer instanceof Error) {
@@ -166,7 +171,7 @@ class LavaSDK {
      */
     sendRelay(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (isRest(options))
+            if (this.isRest(options))
                 return yield this.handleRestRelay(options);
             return yield this.handleRpcRelay(options);
         });
@@ -229,14 +234,11 @@ class LavaSDK {
         }
         // Get current date and time
         const now = new Date();
-        console.log("Time now: ", now.getTime());
-        console.log("New epoch starts: ", this.activeSessionManager.NextEpochStart.getTime());
-        console.log("Should start new epoch: ", now.getTime() > this.activeSessionManager.NextEpochStart.getTime());
         // Return if new epoch has started
         return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
     }
+    isRest(options) {
+        return options.url !== undefined;
+    }
 }
 exports.LavaSDK = LavaSDK;
-function isRest(options) {
-    return options.url !== undefined;
-}

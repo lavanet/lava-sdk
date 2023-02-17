@@ -4,7 +4,11 @@ import { AccountData } from "@cosmjs/proto-signing";
 import Relayer from "../relayer/relayer";
 import { RelayReply } from "../proto/relay_pb";
 import { SessionManager, ConsumerSessionWithProvider } from "../types/types";
-import { isValidChainID, fetchRpcInterface } from "../util/chains";
+import {
+  isValidChainID,
+  fetchRpcInterface,
+  isNetworkValid,
+} from "../util/chains";
 import { LavaProviders } from "../lavaOverLava/providers";
 import {
   LAVA_CHAIN_ID,
@@ -57,7 +61,12 @@ export class LavaSDK {
     // If network is not defined use default network
     network = network || DEFAULT_LAVA_PAIRING_NETWORK;
 
-    // if geolocation is not defined use default geolocation
+    // Validate network
+    if (!isNetworkValid(network)) {
+      throw SDKErrors.errNetworkUnsupported;
+    }
+
+    // If geolocation is not defined use default geolocation
     geolocation = geolocation || DEFAULT_GEOLOCATION;
 
     // If lava pairing config not defined set as empty
@@ -75,6 +84,7 @@ export class LavaSDK {
     this.lavaProviders = SDKErrors.errLavaProvidersNotInitialized;
     this.activeSessionManager = SDKErrors.errSessionNotInitialized;
 
+    // Init sdk
     return (async (): Promise<LavaSDK> => {
       await this.init();
 
@@ -92,18 +102,19 @@ export class LavaSDK {
     // Init relayer for lava providers
     const lavaRelayer = new Relayer(LAVA_CHAIN_ID, this.privKey);
 
-    // Init lava providers
+    // Create new instance of lava providers
     const lavaProviders = await new LavaProviders(
       this.account.address,
       this.network,
       lavaRelayer,
       this.geolocation
     );
+
+    // Init lava providers
     await lavaProviders.init(this.pairingListConfig);
 
+    // Save lava providers as local attribute
     this.lavaProviders = lavaProviders;
-
-    console.log("SDK initialized");
 
     // Get pairing list for current epoch
     this.activeSessionManager = await this.lavaProviders.getSession(
@@ -121,13 +132,12 @@ export class LavaSDK {
         throw SDKErrors.errRPCRelayMethodNotSupported;
       }
       // Extract attributes from options
-      // TODO change naming for optiosn atribute method both in RPC and REST
       const { method, params } = options;
 
-      // get consumerProvider session
+      // Get consumerProvider session
       const consumerProviderSession = await this.getConsumerProviderSession();
 
-      // get cuSum for specified method
+      // Get cuSum for specified method
       const cuSum = this.getCuSumForMethod(method);
 
       const data = this.generateRPCData(method, params);
@@ -169,10 +179,10 @@ export class LavaSDK {
       // Extract attributes from options
       const { method, url, data } = options;
 
-      // get consumerProvider session
+      // Get consumerProvider session
       const consumerProviderSession = await this.getConsumerProviderSession();
 
-      // get cuSum for specified method
+      // Get cuSum for specified method
       const cuSum = this.getCuSumForMethod(url);
 
       // Check if relay was initialized
@@ -218,7 +228,7 @@ export class LavaSDK {
   async sendRelay(
     options: SendRelayOptions | SendRestRelayOptions
   ): Promise<string> {
-    if (isRest(options)) return await this.handleRestRelay(options);
+    if (this.isRest(options)) return await this.handleRestRelay(options);
     return await this.handleRpcRelay(options);
   }
 
@@ -301,19 +311,14 @@ export class LavaSDK {
     // Get current date and time
     const now = new Date();
 
-    console.log("Time now: ", now.getTime());
-    console.log(
-      "New epoch starts: ",
-      this.activeSessionManager.NextEpochStart.getTime()
-    );
-
-    console.log(
-      "Should start new epoch: ",
-      now.getTime() > this.activeSessionManager.NextEpochStart.getTime()
-    );
-
     // Return if new epoch has started
     return now.getTime() > this.activeSessionManager.NextEpochStart.getTime();
+  }
+
+  private isRest(
+    options: SendRelayOptions | SendRestRelayOptions
+  ): options is SendRestRelayOptions {
+    return (options as SendRestRelayOptions).url !== undefined;
   }
 }
 
@@ -333,12 +338,6 @@ export interface SendRestRelayOptions {
   url: string;
   // eslint-disable-next-line
   data?: Record<string, any>;
-}
-
-function isRest(
-  options: SendRelayOptions | SendRestRelayOptions
-): options is SendRestRelayOptions {
-  return (options as SendRestRelayOptions).url !== undefined;
 }
 
 /**
