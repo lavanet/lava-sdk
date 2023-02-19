@@ -17,10 +17,10 @@
     <img src="./.github/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Lava SDK</h3>
+  <h3 align="center">Lava Access SDK</h3>
 
   <p align="center">
-    A decentralized access library enabling developers and end users to directly access blockchain data using the lava protocol.
+    JavaScript/TypeScript SDK reference implementation designed for developers looking for access through the Lava Network. It can be added to your app/dapp and run in browsers to provide multi-chain peer-to-peer access to blockchain APIs.
     <br />
     <br />
     <a href="https://github.com/lavanet/lava-sdk/issues"><strong>Issue tracking</strong></a>
@@ -57,10 +57,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Lava SDK is a TypeScript implementation of the Lava Protocol, which enables direct communication between developers and providers via peer-to-peer connections. 
+Lava Access SDK ("SDK") is a TypeScript implementation of the Lava Protocol, which enables direct communication between developers and providers via peer-to-peer connections. 
 
-With Lava SDK, you can easily integrate decentralized access into your projects by importing the library. Behind the scenes, Lava SDK handles all the necessary operations to implement the Lava Protocol and establishes a peer-to-peer connection with providers on the network. 
-This allows developers to focus on building their applications, while Lava SDK takes care of the underlying communications and connection management.
+With the SDK, you can easily integrate decentralized access into your projects by importing the library. Behind the scenes, the SDK handles all the necessary operations to implement the Lava Protocol and establishes a peer-to-peer connection with providers on the network. 
+This allows developers to focus on building their applications, while the SDK takes care of the underlying communications and connection management.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -80,7 +80,7 @@ This allows developers to focus on building their applications, while Lava SDK t
 <!-- Installation -->
 ## Installation
 
-You can install the Lava SDK either using [Yarn](https://yarnpkg.com/package/web3) or using [NPM](https://www.npmjs.com/package/web3)
+You can install the SDK either using [Yarn](https://yarnpkg.com/package/web3) or using [NPM](https://www.npmjs.com/package/web3)
 
 ### Yarn
 
@@ -99,9 +99,9 @@ npm install lava-sdk
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-A single instance of the LavaSDK establishes a connection with a specific blockchain network using a single RPC interface. _Need multiple chains or use multiple RPC interfaces? Create multiple instances._ 
+A single instance of the SDK establishes a connection with a specific blockchain network using a single RPC interface. _Need multiple chains or use multiple RPC interfaces? Create multiple instances._ 
 
-To use the LavaSDK library, you will first need to initialize it.
+To use the SDK, you will first need to initialize it.
 
 ```typescript
 const lavaSDK = await new LavaSDK({
