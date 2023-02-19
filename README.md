@@ -1,15 +1,5 @@
 <a name="readme-top"></a>
 
-
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Apache 2 License][license-shield]]([license-url])
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -17,70 +7,42 @@
     <img src="./.github/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Lava Access SDK</h3>
-
-  <p align="center">
-    JavaScript/TypeScript SDK reference implementation designed for developers looking for access through the Lava Network. It can be added to your app/dapp and run in browsers to provide multi-chain peer-to-peer access to blockchain APIs.
-    <br />
-    <br />
-    <a href="https://github.com/lavanet/lava-sdk/issues"><strong>Issue tracking</strong></a>
-    <br />
-    <br />
+  <h3 align="center">Lava Access SDK - <i>ALPHA</i></h3>
   </p>
 </div>
 
+<b>Access Web3 APIs, the Lava way 🌋</b>
+    
+JavaScript/TypeScript SDK reference implementation designed for developers looking for access through the Lava Network. It can be added to your app/dapp and run in browsers to provide multi-chain peer-to-peer access to blockchain APIs.
 
+<!-- Roadmap -->
+## Roadmap
+The SDK is currently in the Alpha stage and is not production-ready for all usecases. 
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-    </li>
-     <li>
-      <a href="#prerequisites">Prerequisites</a>
-    </li>
-    <li>
-      <a href="#installation">Installation</a>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#troubleshooting">Troubleshooting</a>
-    </li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-  </ol>
-</details>
+Roadmap highlights:
 
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
-Lava Access SDK ("SDK") is a TypeScript implementation of the Lava Protocol, which enables direct communication between developers and providers via peer-to-peer connections. 
-
-With the SDK, you can easily integrate decentralized access into your projects by importing the library. Behind the scenes, the SDK handles all the necessary operations to implement the Lava Protocol and establishes a peer-to-peer connection with providers on the network. 
-This allows developers to focus on building their applications, while the SDK takes care of the underlying communications and connection management.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+1. ~Send Relays per Lava Pairing~ ✅
+2. ~Find seed providers for the initial connection~ ✅
+3. Integration with EtherJS and other tooling
+4. Ability to run in the browser without compromising private keys
+5. High throughput via session management
+6. Other Lava consensus implementations (e.g. QoS, data reliability, ...)
 
 <!-- Prerequisites -->
-## Prerequisites
-- Determine which blockchain network you want to query
-  - Check the list of supported chains and their IDs at [supportedChains](https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
-- Stake on the Lava network as a client for the chosen chain (more details in [Docs](https://docs.lavanet.xyz/))
-
-ℹ️ Successful relays will be deducted from your stake
-
-❓ Need help staking or initial setup? We've got you covered 😻 Head over to our [Discord](https://discord.gg/5VcqgwMmkA) and we'll provide testnet tokens and further support
-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Installation -->
 ## Installation
 
-You can install the SDK either using [Yarn](https://yarnpkg.com/package/web3) or using [NPM](https://www.npmjs.com/package/web3)
+### Prerequisites (Alpha version)
+_SDK setup requires additional steps at the moment, but we're working on minimizing prerequisites as we progress through the roadmap._
+
+1. Create a wallet on the Lava Testnet, have LAVA tokens
+1. Stake in the chain you want to access
+2. Stake in Lava chain
+
+Need help? We've got you covered 😻 Head over to our [Discord](https://discord.gg/5VcqgwMmkA) channel `#developers` and we'll provide testnet tokens and further support
 
 ### Yarn
 
@@ -88,7 +50,7 @@ You can install the SDK either using [Yarn](https://yarnpkg.com/package/web3) or
 yarn add lava-sdk
 ```
 
-### Using NPM
+### NPM
 
 ```bash
 npm install lava-sdk
@@ -161,24 +123,13 @@ If you are using `create-react-app` version 5 or higher, or `Angular` version 11
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- LICENSE -->
-## License
 
-Copyright 2022 Lava Network
-
-Licensed under the Apache License, Version 2.0 (the “License”); you may not use this file except in compliance with the
-License. You may obtain a copy of the License at
-
-
-```
-http://www.apache.org/licenses/LICENSE-2.0
-```
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “
-AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
-language governing permissions and limitations under the License.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![Apache 2 License][license-shield]]([license-url])
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
