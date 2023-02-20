@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchRpcInterface = exports.isValidChainID = exports.isNetworkValid = void 0;
 const supportedChains_json_1 = __importDefault(require("../../supportedChains.json"));
+const default_1 = require("../config/default");
 // isNetworkValid validates network param
 function isNetworkValid(network) {
-    const validNetworks = ["mainnet", "testnet"];
-    return validNetworks.includes(network);
+    return default_1.DEFAULT_NETWORKS.includes(network);
 }
 exports.isNetworkValid = isNetworkValid;
 // isValidChainID validates chainID param

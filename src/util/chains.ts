@@ -1,9 +1,9 @@
 import supportedChains from "../../supportedChains.json";
+import { DEFAULT_NETWORKS } from "../config/default";
 
 // isNetworkValid validates network param
 export function isNetworkValid(network: string): boolean {
-  const validNetworks = ["mainnet", "testnet"];
-  return validNetworks.includes(network);
+  return DEFAULT_NETWORKS.includes(network);
 }
 
 // isValidChainID validates chainID param
