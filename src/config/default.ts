@@ -3,3 +3,4 @@ export const DEFAULT_LAVA_PAIRING_LIST =
 export const DEFAULT_LAVA_PAIRING_NETWORK = "mainnet";
 export const LAVA_CHAIN_ID = "LAV1";
 export const DEFAULT_GEOLOCATION = "1";
+export const DEFAULT_NETWORKS = ["mainnet", "testnet"];
