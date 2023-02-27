@@ -281,7 +281,27 @@ class LavaProviders {
                         response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, 10);
                     }
                     catch (error) {
-                        throw error;
+                        if (error instanceof Error) {
+                            // Extract current block height from error
+                            const currentBlockHeight = this.extractBlockNumberFromError2(error);
+                            // If current block height equal nill throw an error
+                            if (currentBlockHeight == null) {
+                                throw error;
+                            }
+                            console.log(currentBlockHeight);
+                            lavaRPCEndpoint.Session.PairingEpoch = parseInt(currentBlockHeight);
+                            // Validate that relayer exists
+                            if (this.relayer == null) {
+                                throw errors_1.default.errNoRelayer;
+                            }
+                            // Retry same relay with added block height
+                            try {
+                                response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, 10);
+                            }
+                            catch (error) {
+                                throw error;
+                            }
+                        }
                     }
                 }
             }
@@ -302,7 +322,12 @@ class LavaProviders {
         return error.message.startsWith("user reported very old lava block height");
     }
     extractBlockNumberFromError(error) {
-        const currentBlockHeightRegex = /current epoch block:(\d+)/;
+        const currentBlockHeightRegex = /current lava block:(\d+)/;
+        const match = error.message.match(currentBlockHeightRegex);
+        return match ? match[1] : null;
+    }
+    extractBlockNumberFromError2(error) {
+        const currentBlockHeightRegex = /expected:(\d+)/;
         const match = error.message.match(currentBlockHeightRegex);
         return match ? match[1] : null;
     }

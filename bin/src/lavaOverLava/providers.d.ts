@@ -21,4 +21,5 @@ export declare class LavaProviders {
     sendRelayWithRetry(options: any, lavaRPCEndpoint: ConsumerSessionWithProvider): Promise<any>;
     private isErrorOldBlock;
     private extractBlockNumberFromError;
+    private extractBlockNumberFromError2;
 }

@@ -395,7 +395,33 @@ export class LavaProviders {
         try {
           response = await this.relayer.sendRelay(options, lavaRPCEndpoint, 10);
         } catch (error) {
-          throw error;
+          if (error instanceof Error) {
+            // Extract current block height from error
+            const currentBlockHeight = this.extractBlockNumberFromError2(error);
+
+            // If current block height equal nill throw an error
+            if (currentBlockHeight == null) {
+              throw error;
+            }
+
+            console.log(currentBlockHeight);
+            lavaRPCEndpoint.Session.PairingEpoch = parseInt(currentBlockHeight);
+
+            // Validate that relayer exists
+            if (this.relayer == null) {
+              throw ProvidersErrors.errNoRelayer;
+            }
+            // Retry same relay with added block height
+            try {
+              response = await this.relayer.sendRelay(
+                options,
+                lavaRPCEndpoint,
+                10
+              );
+            } catch (error) {
+              throw error;
+            }
+          }
         }
       }
     }
@@ -421,7 +447,13 @@ export class LavaProviders {
   }
 
   private extractBlockNumberFromError(error: Error): string | null {
-    const currentBlockHeightRegex = /current epoch block:(\d+)/;
+    const currentBlockHeightRegex = /current lava block:(\d+)/;
+    const match = error.message.match(currentBlockHeightRegex);
+    return match ? match[1] : null;
+  }
+
+  private extractBlockNumberFromError2(error: Error): string | null {
+    const currentBlockHeightRegex = /expected:(\d+)/;
     const match = error.message.match(currentBlockHeightRegex);
     return match ? match[1] : null;
   }
