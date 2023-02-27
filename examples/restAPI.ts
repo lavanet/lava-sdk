@@ -6,7 +6,7 @@ import { LavaSDK } from "../src/sdk/sdk";
 
   You can find a list with all supported chains (https://github.com/lavanet/lava-sdk/blob/main/supportedChains.json)
 */
-async function getLatestBlockAndValidators(): Promise<[string, string]> {
+async function getLatestBlockAndValidators(): Promise<[string]> {
   // Create dAccess for Juno Mainnet
   // Default rpcInterface for Juno Mainnet is tendermintRPC
   // If you want to use rest it needs to be explicitly defined
@@ -14,12 +14,6 @@ async function getLatestBlockAndValidators(): Promise<[string, string]> {
     privateKey: "private key from Juno Mainnet staked client",
     chainID: "JUN1", // chainID for Juno Mainnet
     rpcInterface: "rest",
-  });
-
-  // Get latest block
-  const latestBlock = await lavaSDK.sendRelay({
-    method: "GET",
-    url: "/blocks/latest",
   });
 
   // Get latest validator-set
@@ -32,13 +26,12 @@ async function getLatestBlockAndValidators(): Promise<[string, string]> {
     },
   });
 
-  return [latestBlock, validators];
+  return [validators];
 }
 
 (async function () {
   try {
-    const [latestBlock, validators] = await getLatestBlockAndValidators();
-    console.log("Latest block:", latestBlock);
+    const [validators] = await getLatestBlockAndValidators();
     console.log("Latest validators:", validators);
     process.exit(0);
   } catch (error) {

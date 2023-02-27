@@ -26,11 +26,6 @@ function getLatestBlockAndValidators() {
             chainID: "JUN1",
             rpcInterface: "rest",
         });
-        // Get latest block
-        const latestBlock = yield lavaSDK.sendRelay({
-            method: "GET",
-            url: "/blocks/latest",
-        });
         // Get latest validator-set
         const validators = yield lavaSDK.sendRelay({
             method: "GET",
@@ -40,14 +35,13 @@ function getLatestBlockAndValidators() {
                 "pagination.reverse": "true",
             },
         });
-        return [latestBlock, validators];
+        return [validators];
     });
 }
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const [latestBlock, validators] = yield getLatestBlockAndValidators();
-            console.log("Latest block:", latestBlock);
+            const [validators] = yield getLatestBlockAndValidators();
             console.log("Latest validators:", validators);
             process.exit(0);
         }
