@@ -288,7 +288,6 @@ class LavaProviders {
                             if (currentBlockHeight == null) {
                                 throw error;
                             }
-                            console.log(currentBlockHeight);
                             lavaRPCEndpoint.Session.PairingEpoch = parseInt(currentBlockHeight);
                             // Validate that relayer exists
                             if (this.relayer == null) {
