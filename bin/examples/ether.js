@@ -16,7 +16,7 @@ function getLatestBlock() {
         // Initializing Lava Ether.js provider
         const ethProvider = yield new ether_1.LavaEtherProvider({
             chainID: "ETH1",
-            privKey: "6cedd036b1eb0ffe9d5f92d111b0d026ae15d10b905af1bf8bcdc2b024311a73",
+            privKey: "<private key>",
         });
         // Fetch latest block from Ethereum Mainnet
         // Using etherProvider.getBlockNumber()
