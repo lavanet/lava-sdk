@@ -3,7 +3,7 @@ const webpack = require('webpack')
 
 module.exports = [
     {
-  entry: './bin/examples/tendermintRPC.js',
+  entry: './bin/examples/ether.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
@@ -11,13 +11,11 @@ module.exports = [
   mode: 'development',
 
   resolve: {
-    extensions: [".js", ".jsx", "tsx", "ts"],
     fallback: {
-      buffer: false,
       crypto: false,
       events: false,
       path: false,
-      stream: false,
+      stream: require.resolve("stream-browserify"),
       string_decoder: false,
       http: false,
       https:false,
@@ -32,6 +30,7 @@ module.exports = [
   }, 
   plugins: [
     new webpack.ProvidePlugin({
+      process: "process/browser",
       Buffer: ["buffer", "Buffer"],
     }),
   ],
