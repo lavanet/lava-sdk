@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from "ethers";
 import { LavaSDK } from "../sdk/sdk";
 
-export interface SendRelayOptions {
+interface SendRelayOptions {
   chainID: string;
   privKey: string;
   pairingListConfig?: string;

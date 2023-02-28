@@ -2,7 +2,7 @@
   "name": "lava-sdk",
   "version": "1.0.0",
   "description": "An SDK for interacting with Lava provider",
-  "main": "./bin/src/sdk/sdk.js",
+  "main": "./bin/src/index.js",
   "author": "Lava Protocol Inc",
   "license": "Apache-2.0",
   "scripts": {
