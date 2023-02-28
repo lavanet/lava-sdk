@@ -9,7 +9,9 @@ module.exports = [
     path: path.resolve(__dirname, 'dist'),
   },
   mode: 'development',
+
   resolve: {
+    extensions: [".js", ".jsx", "tsx", "ts"],
     fallback: {
       buffer: false,
       crypto: false,
