@@ -20,7 +20,12 @@ module.exports = [
       http: false,
       https:false,
       url: false,
-      fs:false
+      fs:false,
+      net: false,
+      tls: false, 
+      zlib: false,
+      bufferutil: false,
+      "utf-8-validate": false,
     },
   }, 
   plugins: [
