@@ -178,7 +178,12 @@ class LavaSDK {
     }
     generateRPCData(method, params) {
         const stringifyMethod = JSON.stringify(method);
-        const stringifyParam = JSON.stringify(params);
+        const stringifyParam = JSON.stringify(params, (key, value) => {
+            if (typeof value === "bigint") {
+                return value.toString();
+            }
+            return value;
+        });
         // TODO make id changable
         return ('{"jsonrpc": "2.0", "id": 1, "method": ' +
             stringifyMethod +

@@ -45,7 +45,7 @@ export declare class LavaSDK {
  */
 export interface SendRelayOptions {
     method: string;
-    params: Array<string>;
+    params: Array<any>;
 }
 /**
  * Options for sending Rest relay.

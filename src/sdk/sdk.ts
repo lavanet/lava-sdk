@@ -232,9 +232,14 @@ export class LavaSDK {
     return await this.handleRpcRelay(options);
   }
 
-  private generateRPCData(method: string, params: Array<string>): string {
+  private generateRPCData(method: string, params: Array<any>): string {
     const stringifyMethod = JSON.stringify(method);
-    const stringifyParam = JSON.stringify(params);
+    const stringifyParam = JSON.stringify(params, (key, value) => {
+      if (typeof value === "bigint") {
+        return value.toString();
+      }
+      return value;
+    });
     // TODO make id changable
     return (
       '{"jsonrpc": "2.0", "id": 1, "method": ' +
@@ -327,7 +332,7 @@ export class LavaSDK {
  */
 export interface SendRelayOptions {
   method: string;
-  params: Array<string>;
+  params: Array<any>;
 }
 
 /**
