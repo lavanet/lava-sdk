@@ -3,7 +3,7 @@ const webpack = require("webpack");
 
 module.exports = [
   {
-    entry: "./bin/src/sdk/sdk.js",
+    entry: "./bin/examples/jsonRPC.js",
     output: {
       filename: "main.js",
       path: path.resolve(__dirname, "dist"),
