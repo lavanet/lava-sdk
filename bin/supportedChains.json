@@ -20,6 +20,16 @@
         "defaultRPC": "jsonrpc"
     },
     {
+        "name": "base goerli testnet",
+        "chainID": "BASET",
+        "defaultRPC": "jsonrpc"
+    },
+    {
+        "name": "canto mainnet",
+        "chainID": "CANTO",
+        "defaultRPC": "tendermintrpc"
+    },
+    {
         "name": "Celo Mainnet",
         "chainID": "CELO",
         "defaultRPC": "jsonrpc"
@@ -48,6 +58,16 @@
         "name": "Ethereum Mainnet",
         "chainID": "ETH1",
         "defaultRPC": "jsonrpc"
+    },
+    {
+        "name": "evmos mainnet",
+        "chainID": "EVMOS",
+        "defaultRPC": "tendermintrpc"
+    },
+    {
+        "name": "evmos testnet",
+        "chainID": "EVMOST",
+        "defaultRPC": "tendermintrpc"
     },
     {
         "name": "Fantom Mainnet",
@@ -80,13 +100,38 @@
         "defaultRPC": "tendermintrpc"
     },
     {
+        "name": "optimism mainnet",
+        "chainID": "OPTM",
+        "defaultRPC": "jsonrpc"
+    },
+    {
+        "name": "optimism goerli testnet",
+        "chainID": "OPTMT",
+        "defaultRPC": "jsonrpc"
+    },
+    {
         "name": "Poligon Mainnet",
         "chainID": "POLYGON1",
         "defaultRPC": "jsonrpc"
     },
     {
+        "name": "polygon testnet",
+        "chainID": "POLYGON1T",
+        "defaultRPC": "jsonrpc"
+    },
+    {
         "name": "StarkNet mainnet",
         "chainID": "STRK",
+        "defaultRPC": "jsonrpc"
+    },
+    {
+        "name": "starknet testnet",
+        "chainID": "STRKT",
+        "defaultRPC": "jsonrpc"
+    },
+    {
+        "name": "sui devnet",
+        "chainID": "SUIT",
         "defaultRPC": "jsonrpc"
     }
 ]

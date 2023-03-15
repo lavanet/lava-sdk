@@ -71,6 +71,14 @@ class Relayer {
                         else {
                             consumerProviderSession.UsedComputeUnits = 0;
                         }
+                        if (msg.includes("Response closed without headers")) {
+                            msg =
+                                msg +
+                                    ", provider iPPORT: " +
+                                    consumerProviderSession.Session.Endpoint.Addr +
+                                    ", provider address: " +
+                                    consumerProviderSession.Session.ProviderAddress;
+                        }
                         reject(new Error(msg));
                     },
                 });
