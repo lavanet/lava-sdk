@@ -33,7 +33,7 @@ export class LavaProviders {
     this.relayer = relayer;
 
     if (geolocation == "1") {
-      this.geolocation = "us";
+      this.geolocation = "north_america";
     } else {
       this.geolocation = "eu";
     }
