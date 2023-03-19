@@ -31,7 +31,12 @@ export class LavaProviders {
     this.network = network;
     this.accountAddress = accountAddress;
     this.relayer = relayer;
-    this.geolocation = geolocation;
+
+    if (geolocation == "1") {
+      this.geolocation = "us";
+    } else {
+      this.geolocation = "eu";
+    }
   }
 
   async init(pairingListConfig: string) {
@@ -90,7 +95,7 @@ export class LavaProviders {
       const data = await response.json();
 
       // Return data array
-      return data[this.network];
+      return data[this.network][this.geolocation];
     } catch (error) {
       throw ProvidersErrors.errConfigNotValidJson;
     }
@@ -98,8 +103,8 @@ export class LavaProviders {
 
   async initLocalConfig(path: string): Promise<any> {
     const data = await fetchLavaPairing(path);
-
-    return data[this.network];
+    console.log(data[this.network][this.geolocation]);
+    return data[this.network][this.geolocation];
   }
 
   // getNextLavaProvider return lava providers used for fetching epoch
