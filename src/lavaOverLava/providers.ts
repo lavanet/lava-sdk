@@ -168,7 +168,7 @@ export class LavaProviders {
       const userEntityRequest = {
         address: this.accountAddress,
         chainID: chainID,
-        block: pairingResponse.currentEpoch,
+        block: pairingResponse.current_epoch,
       };
 
       // Fetch max compute units
@@ -209,7 +209,7 @@ export class LavaProviders {
           0, // latestRelayCuSum
           1, // relayNumber
           relevantEndpoints[0],
-          parseInt(pairingResponse.currentEpoch),
+          parseInt(pairingResponse.current_epoch),
           provider.address
         );
 
