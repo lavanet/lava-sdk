@@ -121,7 +121,7 @@ class LavaProviders {
                 const userEntityRequest = {
                     address: this.accountAddress,
                     chainID: chainID,
-                    block: pairingResponse.currentEpoch,
+                    block: pairingResponse.current_epoch,
                 };
                 // Fetch max compute units
                 const maxcu = yield this.getMaxCuForUser(lavaRPCEndpoint, userEntityRequest);
@@ -149,7 +149,7 @@ class LavaProviders {
                     const singleConsumerSession = new types_1.SingleConsumerSession(0, // cuSum
                     0, // latestRelayCuSum
                     1, // relayNumber
-                    relevantEndpoints[0], parseInt(pairingResponse.currentEpoch), provider.address);
+                    relevantEndpoints[0], parseInt(pairingResponse.current_epoch), provider.address);
                     // Create a new pairing object
                     const newPairing = new types_1.ConsumerSessionWithProvider(this.accountAddress, relevantEndpoints, singleConsumerSession, maxcu, 0, // used compute units
                     false);
