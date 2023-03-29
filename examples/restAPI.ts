@@ -29,7 +29,7 @@ async function getLatestBlockAndValidators(): Promise<[string, string]> {
   // Get latest block
   const latestBlock = await lavaSDK.sendRelay({
     method: "GET",
-    url: "/blocks/latest",
+    url: "/node_info",
   });
 
   // Get latest validator-set
