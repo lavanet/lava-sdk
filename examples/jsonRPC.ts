@@ -16,14 +16,14 @@ async function getLatestBlock(): Promise<string> {
   // Default rpcInterface for Ethereum Mainnet is jsonRPC
   const ethereum = await new LavaSDK({
     // private key with an active subscription
-    privateKey: "<private key from Cosmos Hub staked client>",
+    privateKey: "<lava consumer private key>",
 
     // chainID for Ethereum mainnet
-    chainID: "ETH1", 
-    
-    // geolocation 1 for North america - geolocation 2 for Europe providers 
+    chainID: "ETH1",
+
+    // geolocation 1 for North america - geolocation 2 for Europe providers
     // default value is 1
-    geolocation: "2", 
+    geolocation: "2",
   });
 
   // Get latest block number

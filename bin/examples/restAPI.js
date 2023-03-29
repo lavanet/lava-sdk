@@ -23,13 +23,13 @@ function getLatestBlockAndValidators() {
         // If you want to use rest it needs to be explicitly defined
         const lavaSDK = yield new sdk_1.LavaSDK({
             // private key with an active subscription
-            privateKey: "<private key from Cosmos Hub staked client>",
+            privateKey: "<lava consumer private key>",
             // chainID for Cosmos Hub
             chainID: "COS5",
-            // geolocation 1 for North america - geolocation 2 for Europe providers 
+            // geolocation 1 for North america - geolocation 2 for Europe providers
             // default value is 1
             geolocation: "2",
-            // rpcInterface default is tendermintrpc / jsonrpc for respective chains. 
+            // rpcInterface default is tendermintrpc / jsonrpc for respective chains.
             // in this example we want to test rest so we need to specify it
             rpcInterface: "rest",
         });

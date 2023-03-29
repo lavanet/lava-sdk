@@ -16,14 +16,14 @@ async function getLatestBlock(): Promise<string> {
   // Default rpcInterface for Cosmos Hub is tendermintRPC
   const cosmosHub = await new LavaSDK({
     // private key with an active subscription
-    privateKey: "<private key from Cosmos Hub staked client>",
+    privateKey: "<lava consumer private key>",
 
     // chainID for Cosmos Hub
-    chainID: "COS5", 
-    
-    // geolocation 1 for North america - geolocation 2 for Europe providers 
+    chainID: "COS5",
+
+    // geolocation 1 for North america - geolocation 2 for Europe providers
     // default value is 1
-    geolocation: "2", 
+    geolocation: "2",
   });
 
   // Get abci_info

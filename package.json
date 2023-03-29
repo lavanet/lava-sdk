@@ -18,7 +18,7 @@
     "jsonRPC": "node ./bin/examples/jsonRPC.js",
     "restAPI": "node ./bin/examples/restAPI.js",
     "prettier": "prettier --check .",
-    "lint": "eslint '**/*.ts'"
+    "lint": "eslint '**/*.ts' --fix"
   },
   "bin": {
     "lava-sdk": "./bin/main.js"
