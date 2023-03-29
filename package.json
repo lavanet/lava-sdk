@@ -12,6 +12,7 @@
     "server": "http-server dist/ -c-1",
     "test": "jest ./src",
     "tendermintRPC": "node ./bin/examples/tendermintRPC.js",
+    "run_example": "yarn tsc && webpack --config webpack.config.js && node ./bin/examples/tendermintRPC.js",
     "jsonRPC": "node ./bin/examples/jsonRPC.js",
     "restAPI": "node ./bin/examples/restAPI.js",
     "prettier": "prettier --check .",

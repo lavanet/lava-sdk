@@ -24,12 +24,7 @@ class LavaProviders {
         this.network = network;
         this.accountAddress = accountAddress;
         this.relayer = relayer;
-        if (geolocation == "1") {
-            this.geolocation = "north_america";
-        }
-        else {
-            this.geolocation = "eu";
-        }
+        this.geolocation = geolocation;
     }
     init(pairingListConfig) {
         return __awaiter(this, void 0, void 0, function* () {

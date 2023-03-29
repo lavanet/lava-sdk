@@ -31,12 +31,7 @@ export class LavaProviders {
     this.network = network;
     this.accountAddress = accountAddress;
     this.relayer = relayer;
-
-    if (geolocation == "1") {
-      this.geolocation = "north_america";
-    } else {
-      this.geolocation = "eu";
-    }
+    this.geolocation = geolocation;
   }
 
   async init(pairingListConfig: string) {
@@ -49,7 +44,6 @@ export class LavaProviders {
       // Else use local config file
       data = await this.initLocalConfig(pairingListConfig);
     }
-
     // Initialize ConsumerSessionWithProvider array
     const pairing: Array<ConsumerSessionWithProvider> = [];
 
