@@ -11,8 +11,18 @@ async function getLatestBlockAndValidators(): Promise<[string, string]> {
   // Default rpcInterface for Juno Mainnet is tendermintRPC
   // If you want to use rest it needs to be explicitly defined
   const lavaSDK = await new LavaSDK({
-    privateKey: "private key from Juno Mainnet staked client",
-    chainID: "JUN1", // chainID for Juno Mainnet
+    // private key with an active subscription
+    privateKey: "<private key from Cosmos Hub staked client>",
+
+    // chainID for Cosmos Hub
+    chainID: "COS5", 
+    
+    // geolocation 1 for North america - geolocation 2 for Europe providers 
+    // default value is 1
+    geolocation: "2", 
+
+    // rpcInterface default is tendermintrpc / jsonrpc for respective chains. 
+    // in this example we want to test rest so we need to specify it
     rpcInterface: "rest",
   });
 
