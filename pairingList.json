@@ -1,0 +1,30 @@
+
+
+  {
+    "testnet": {
+      "north_america": [
+        {
+            "rpcAddress": "127.0.0.1:2221",
+            "publicAddress": "lava@1x7msjwdsslxkuhk4pusz0tjkdhvaufgpuk3a39"
+          },
+          {
+            "rpcAddress": "127.0.0.1:2222",
+            "publicAddress": "lava@1l759gph2tmsfkhkpgeee3mm4x76kwschfctq8x"
+          },
+          {
+            "rpcAddress": "127.0.0.1:2223",
+            "publicAddress": "lava@1drja9yfr8af8nvqhqdkp00v3f6z5xmtj2fn674"
+          }
+      ],
+      "eu": [
+        {
+          "rpcAddress": "providers-eu-1.lavanet-zarak.xyz:20006",
+          "publicAddress": "lava@1kyhxrg453u6lfc77jwezyxrhy0laeuk69cpk4e"
+        },
+        {
+          "rpcAddress": "providers-eu-1.lavanet-zarak.xyz:19906",
+          "publicAddress": "lava@1e4vghfjertxq25l2vv56egkfkvdjk90t0c667v"
+        }
+      ]
+    }
+  }

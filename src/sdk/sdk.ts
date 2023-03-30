@@ -15,6 +15,7 @@ import {
   DEFAULT_LAVA_PAIRING_NETWORK,
   DEFAULT_GEOLOCATION,
 } from "../config/default";
+import { apiList } from "../codec/spec/query";
 
 export class LavaSDK {
   private privKey: string;
@@ -158,7 +159,8 @@ export class LavaSDK {
       const relayResponse = await this.relayer.sendRelay(
         sendRelayOptions,
         consumerProviderSession,
-        cuSum
+        cuSum,
+        this.rpcInterface
       );
 
       // Return relay in json format
@@ -206,7 +208,8 @@ export class LavaSDK {
       const relayResponse = await this.relayer.sendRelay(
         sendRelayOptions,
         consumerProviderSession,
-        cuSum
+        cuSum,
+        this.rpcInterface
       );
 
       // Return relay in json format

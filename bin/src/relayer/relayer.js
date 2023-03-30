@@ -23,7 +23,7 @@ class Relayer {
         this.chainID = chainID;
         this.privKey = privKey;
     }
-    sendRelay(options, consumerProviderSession, cuSum) {
+    sendRelay(options, consumerProviderSession, cuSum, apiInterface) {
         return __awaiter(this, void 0, void 0, function* () {
             // Extract attributes from options
             const { data, url, connectionType } = options;
@@ -32,25 +32,33 @@ class Relayer {
             // Increase used compute units
             consumerProviderSession.UsedComputeUnits =
                 consumerProviderSession.UsedComputeUnits + cuSum;
+            // create request session
+            const requestSession = new relay_pb_1.RelaySession();
+            requestSession.setSpecid(this.chainID);
+            requestSession.setSessionId(consumerSession.getNewSessionId());
+            requestSession.setCuSum(cuSum);
+            requestSession.setProvider(consumerSession.ProviderAddress);
+            requestSession.setRelayNum(consumerSession.RelayNum);
+            requestSession.setEpoch(consumerSession.PairingEpoch);
+            requestSession.setUnresponsiveProviders(new Uint8Array());
+            requestSession.setContentHash(new Uint8Array());
+            requestSession.setSig(new Uint8Array());
+            requestSession.setLavaChainId("lava");
+            // create request private data
+            const requestPrivateData = new relay_pb_1.RelayPrivateData();
+            requestPrivateData.setConnectionType(connectionType);
+            requestPrivateData.setApiUrl(url);
+            requestPrivateData.setData(enc.encode(data));
+            requestPrivateData.setRequestBlock(0);
+            requestPrivateData.setApiinterface(apiInterface);
+            requestPrivateData.setSalt(new Uint8Array());
             // Create request
-            const request = new relay_pb_1.RelayRequest();
-            request.setChainid(this.chainID);
-            request.setConnectionType(connectionType);
-            request.setApiUrl(url);
-            request.setSessionId(consumerSession.getNewSessionId());
-            request.setCuSum(cuSum);
-            request.setSig(new Uint8Array());
-            request.setData(data);
-            request.setProvider(consumerSession.ProviderAddress);
-            request.setBlockHeight(consumerSession.PairingEpoch);
-            request.setRelayNum(consumerSession.RelayNum);
-            request.setRequestBlock(0);
-            request.setUnresponsiveProviders(new Uint8Array());
             // Sign data
-            const signedMessage = yield this.signRelay(request, this.privKey);
-            // Add signature in the request
-            request.setSig(signedMessage);
-            request.setData(enc.encode(data));
+            const signedMessage = yield this.signRelay(requestSession, this.privKey);
+            requestSession.setSig(signedMessage);
+            var request = new relay_pb_1.RelayRequest();
+            request.setRelaySession(requestSession);
+            request.setRelayData(requestPrivateData);
             const requestPromise = new Promise((resolve, reject) => {
                 grpc_web_1.grpc.invoke(relay_pb_service_1.Relayer.Relay, {
                     request: request,

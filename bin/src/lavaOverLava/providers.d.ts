@@ -19,6 +19,5 @@ export declare class LavaProviders {
     private getServiceApis;
     convertRestApiName(name: string): string;
     sendRelayWithRetry(options: any, lavaRPCEndpoint: ConsumerSessionWithProvider): Promise<any>;
-    private isErrorOldBlock;
     private extractBlockNumberFromError;
 }

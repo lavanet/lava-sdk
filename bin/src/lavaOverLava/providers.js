@@ -127,8 +127,10 @@ class LavaProviders {
                 const maxcu = yield this.getMaxCuForUser(lavaRPCEndpoint, userEntityRequest);
                 // Iterate over providers to populate pairing list
                 for (const provider of providers) {
+                    console.log(provider);
                     // Skip providers with no endpoints
                     if (provider.endpoints.length == 0) {
+                        console.log("USAOOO 1");
                         continue;
                     }
                     // Initialize relevantEndpoints array
@@ -136,14 +138,14 @@ class LavaProviders {
                     // Only take into account endpoints that use the same api interface
                     // And geolocation
                     for (const endpoint of provider.endpoints) {
-                        if (endpoint.useType == rpcInterface &&
-                            endpoint.geolocation == this.geolocation) {
+                        if (endpoint.useType == rpcInterface) {
                             const convertedEndpoint = new types_1.Endpoint(endpoint.iPPORT, true, 0);
                             relevantEndpoints.push(convertedEndpoint);
                         }
                     }
                     // Skip providers with no relevant endpoints
                     if (relevantEndpoints.length == 0) {
+                        console.log("USAOO");
                         continue;
                     }
                     const singleConsumerSession = new types_1.SingleConsumerSession(0, // cuSum
@@ -166,6 +168,7 @@ class LavaProviders {
         });
     }
     pickRandomProvider(providers) {
+        console.log(providers);
         // Remove providers which does not match criteria
         const validProviders = providers.filter((item) => item.MaxComputeUnits > item.UsedComputeUnits);
         if (validProviders.length === 0) {
@@ -255,15 +258,12 @@ class LavaProviders {
                 }
                 // For now we have hardcode relay cu
                 const relayCu = 10;
-                response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, relayCu);
+                response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, relayCu, "rest");
             }
             catch (error) {
                 // If error is instace of Error
                 if (error instanceof Error) {
                     // If error is not old blokc height throw and error
-                    if (!this.isErrorOldBlock(error)) {
-                        throw error;
-                    }
                     // Extract current block height from error
                     const currentBlockHeight = this.extractBlockNumberFromError(error);
                     // If current block height equal nill throw an error
@@ -278,7 +278,7 @@ class LavaProviders {
                     }
                     // Retry same relay with added block height
                     try {
-                        response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, 10);
+                        response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, 10, "rest");
                     }
                     catch (error) {
                         throw error;
@@ -298,11 +298,8 @@ class LavaProviders {
             return jsonResponse;
         });
     }
-    isErrorOldBlock(error) {
-        return error.message.startsWith("user reported very old lava block height");
-    }
     extractBlockNumberFromError(error) {
-        const currentBlockHeightRegex = /current epoch block:(\d+)/;
+        const currentBlockHeightRegex = /current epoch: (\d+)/;
         const match = error.message.match(currentBlockHeightRegex);
         return match ? match[1] : null;
     }

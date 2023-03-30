@@ -1,7 +1,7 @@
 // package: lavanet.lava.pairing
 // file: proto/relay.proto
 
-var proto_relay_pb = require("./relay_pb");
+var proto_relay_pb = require("../proto/relay_pb");
 var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var Relayer = (function () {

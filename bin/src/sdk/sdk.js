@@ -115,7 +115,7 @@ class LavaSDK {
                     connectionType: "GET", // temporary solution to spec changes - remove this when PRT-216 is fixed
                 };
                 // Send relay
-                const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
+                const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum, this.rpcInterface);
                 // Return relay in json format
                 return this.decodeRelayResponse(relayResponse);
             }
@@ -151,7 +151,7 @@ class LavaSDK {
                     connectionType: method,
                 };
                 // Send relay
-                const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum);
+                const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum, this.rpcInterface);
                 // Return relay in json format
                 return this.decodeRelayResponse(relayResponse);
             }

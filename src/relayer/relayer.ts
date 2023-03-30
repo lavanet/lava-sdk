@@ -2,7 +2,12 @@ import { ConsumerSessionWithProvider } from "../types/types";
 import { Secp256k1, sha256 } from "@cosmjs/crypto";
 import { fromHex } from "@cosmjs/encoding";
 import { grpc } from "@improbable-eng/grpc-web";
-import { RelayRequest, RelayReply } from "../proto/relay_pb";
+import {
+  RelayRequest,
+  RelayReply,
+  RelaySession,
+  RelayPrivateData,
+} from "../proto/relay_pb";
 import { Relayer as RelayerService } from "../proto/relay_pb_service";
 import transport from "../util/browser";
 
@@ -18,7 +23,8 @@ class Relayer {
   async sendRelay(
     options: SendRelayOptions,
     consumerProviderSession: ConsumerSessionWithProvider,
-    cuSum: number
+    cuSum: number,
+    apiInterface: string
   ): Promise<RelayReply> {
     // Extract attributes from options
     const { data, url, connectionType } = options;
@@ -31,28 +37,38 @@ class Relayer {
     consumerProviderSession.UsedComputeUnits =
       consumerProviderSession.UsedComputeUnits + cuSum;
 
+    // create request session
+    const requestSession = new RelaySession();
+    requestSession.setSpecid(this.chainID);
+    requestSession.setSessionId(consumerSession.getNewSessionId());
+    requestSession.setCuSum(cuSum);
+    requestSession.setProvider(consumerSession.ProviderAddress);
+    requestSession.setRelayNum(consumerSession.RelayNum);
+    requestSession.setEpoch(consumerSession.PairingEpoch);
+    requestSession.setUnresponsiveProviders(new Uint8Array());
+    requestSession.setContentHash(new Uint8Array());
+    requestSession.setSig(new Uint8Array());
+    requestSession.setLavaChainId("lava");
+
+    // create request private data
+    const requestPrivateData = new RelayPrivateData();
+    requestPrivateData.setConnectionType(connectionType);
+    requestPrivateData.setApiUrl(url);
+    requestPrivateData.setData(enc.encode(data));
+    requestPrivateData.setRequestBlock(0);
+    requestPrivateData.setApiinterface(apiInterface);
+    requestPrivateData.setSalt(new Uint8Array());
+
     // Create request
-    const request = new RelayRequest();
-    request.setChainid(this.chainID);
-    request.setConnectionType(connectionType);
-    request.setApiUrl(url);
-    request.setSessionId(consumerSession.getNewSessionId());
-    request.setCuSum(cuSum);
-    request.setSig(new Uint8Array());
-    request.setData(data);
-    request.setProvider(consumerSession.ProviderAddress);
-    request.setBlockHeight(consumerSession.PairingEpoch);
-    request.setRelayNum(consumerSession.RelayNum);
-    request.setRequestBlock(0);
-    request.setUnresponsiveProviders(new Uint8Array());
 
     // Sign data
-    const signedMessage = await this.signRelay(request, this.privKey);
+    const signedMessage = await this.signRelay(requestSession, this.privKey);
 
-    // Add signature in the request
-    request.setSig(signedMessage);
-    request.setData(enc.encode(data));
+    requestSession.setSig(signedMessage);
 
+    var request = new RelayRequest();
+    request.setRelaySession(requestSession);
+    request.setRelayData(requestPrivateData);
     const requestPromise = new Promise<RelayReply>((resolve, reject) => {
       grpc.invoke(RelayerService.Relay, {
         request: request,
@@ -90,7 +106,7 @@ class Relayer {
   }
 
   // Sign relay request using priv key
-  async signRelay(request: RelayRequest, privKey: string): Promise<Uint8Array> {
+  async signRelay(request: RelaySession, privKey: string): Promise<Uint8Array> {
     const message = this.prepareRequest(request);
 
     const sig = await Secp256k1.createSignature(message, fromHex(privKey));
@@ -105,7 +121,7 @@ class Relayer {
     return Uint8Array.from([27 + recovery, ...r, ...s]);
   }
 
-  prepareRequest(request: RelayRequest): Uint8Array {
+  prepareRequest(request: RelaySession): Uint8Array {
     const enc = new TextEncoder();
 
     const jsonMessage = JSON.stringify(request.toObject(), (key, value) => {
