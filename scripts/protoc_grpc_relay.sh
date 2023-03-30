@@ -13,6 +13,6 @@ protoc --plugin="protoc-gen-ts=./node_modules/.bin/protoc-gen-ts" \
     --proto_path="$THIRD_PARTY_PROTO_DIR" \
     ./proto/cosmos/cosmos-sdk/third_party/proto/pairing/relay.proto
 
-mv ./src/proto/test ./src/pairing/.
-rm -rf ./src/proto
-mv ./src/pairing ./src/proto
+# mv ./src/proto/test ./src/pairing/.
+# rm -rf ./src/proto
+# mv ./src/pairing ./src/proto

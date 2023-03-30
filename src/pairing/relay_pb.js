@@ -217,7 +217,7 @@ proto.lavanet.lava.pairing.RelaySession.serializeBinaryToWriter = function(messa
   f = message.getCuSum();
   if (f !== 0) {
     writer.writeUint64(
-      3,
+      4,
       f
     );
   }
@@ -2216,7 +2216,11 @@ proto.lavanet.lava.pairing.VRFData.prototype.getAllDataHash_asB64 = function() {
 
 /**
  * optional bytes all_data_hash = 7;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getAllDataHash()`
  * @return {!Uint8Array}
+ */
 proto.lavanet.lava.pairing.VRFData.prototype.getAllDataHash_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getAllDataHash()));

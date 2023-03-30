@@ -7,8 +7,8 @@ import {
   RelayReply,
   RelaySession,
   RelayPrivateData,
-} from "../proto/relay_pb";
-import { Relayer as RelayerService } from "../proto/relay_pb_service";
+} from "../pairing/relay_pb";
+import { Relayer as RelayerService } from "../pairing/relay_pb_service";
 import transport from "../util/browser";
 
 class Relayer {
@@ -39,7 +39,7 @@ class Relayer {
 
     // create request session
     const requestSession = new RelaySession();
-    requestSession.setSpecid(this.chainID);
+    requestSession.setSpecId(this.chainID);
     requestSession.setSessionId(consumerSession.getNewSessionId());
     requestSession.setCuSum(cuSum);
     requestSession.setProvider(consumerSession.ProviderAddress);
@@ -56,7 +56,7 @@ class Relayer {
     requestPrivateData.setApiUrl(url);
     requestPrivateData.setData(enc.encode(data));
     requestPrivateData.setRequestBlock(0);
-    requestPrivateData.setApiinterface(apiInterface);
+    requestPrivateData.setApiInterface(apiInterface);
     requestPrivateData.setSalt(new Uint8Array());
 
     // Create request
