@@ -44,7 +44,6 @@ export class LavaProviders {
       // Else use local config file
       data = await this.initLocalConfig(pairingListConfig);
     }
-
     // Initialize ConsumerSessionWithProvider array
     const pairing: Array<ConsumerSessionWithProvider> = [];
 
@@ -90,7 +89,7 @@ export class LavaProviders {
       const data = await response.json();
 
       // Return data array
-      return data[this.network];
+      return data[this.network][this.geolocation];
     } catch (error) {
       throw ProvidersErrors.errConfigNotValidJson;
     }
@@ -98,8 +97,8 @@ export class LavaProviders {
 
   async initLocalConfig(path: string): Promise<any> {
     const data = await fetchLavaPairing(path);
-
-    return data[this.network];
+    console.log(data[this.network][this.geolocation]);
+    return data[this.network][this.geolocation];
   }
 
   // getNextLavaProvider return lava providers used for fetching epoch

@@ -22,14 +22,21 @@ function getLatestBlockAndValidators() {
         // Default rpcInterface for Juno Mainnet is tendermintRPC
         // If you want to use rest it needs to be explicitly defined
         const lavaSDK = yield new sdk_1.LavaSDK({
-            privateKey: "private key from Juno Mainnet staked client",
-            chainID: "JUN1",
+            // private key with an active subscription
+            privateKey: "<lava consumer private key>",
+            // chainID for Cosmos Hub
+            chainID: "COS5",
+            // geolocation 1 for North america - geolocation 2 for Europe providers
+            // default value is 1
+            geolocation: "2",
+            // rpcInterface default is tendermintrpc / jsonrpc for respective chains.
+            // in this example we want to test rest so we need to specify it
             rpcInterface: "rest",
         });
         // Get latest block
         const latestBlock = yield lavaSDK.sendRelay({
             method: "GET",
-            url: "/blocks/latest",
+            url: "/node_info",
         });
         // Get latest validator-set
         const validators = yield lavaSDK.sendRelay({

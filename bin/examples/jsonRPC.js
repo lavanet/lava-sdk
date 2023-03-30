@@ -26,8 +26,13 @@ function getLatestBlock() {
         // Create dAccess for Ethereum Mainnet
         // Default rpcInterface for Ethereum Mainnet is jsonRPC
         const ethereum = yield new sdk_1.LavaSDK({
-            privateKey: "<private key from Ethereum Mainnet staked client>",
-            chainID: "ETH1", // chainID for Ethereum Mainnet
+            // private key with an active subscription
+            privateKey: "<lava consumer private key>",
+            // chainID for Ethereum mainnet
+            chainID: "ETH1",
+            // geolocation 1 for North america - geolocation 2 for Europe providers
+            // default value is 1
+            geolocation: "2",
         });
         // Get latest block number
         const blockNumberResponse = yield ethereum.sendRelay({

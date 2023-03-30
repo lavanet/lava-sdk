@@ -1,11 +1,12 @@
 // package: lavanet.lava.pairing
-// file: proto/relay.proto
+// file: pairing/relay.proto
 
 import * as jspb from "google-protobuf";
+import * as gogoproto_gogo_pb from "../gogoproto/gogo_pb";
 
 export class RelaySession extends jspb.Message {
-  getSpecid(): string;
-  setSpecid(value: string): void;
+  getSpecId(): string;
+  setSpecId(value: string): void;
 
   getContentHash(): Uint8Array | string;
   getContentHash_asU8(): Uint8Array;
@@ -23,6 +24,11 @@ export class RelaySession extends jspb.Message {
 
   getRelayNum(): number;
   setRelayNum(value: number): void;
+
+  hasQosReport(): boolean;
+  clearQosReport(): void;
+  getQosReport(): QualityOfServiceReport | undefined;
+  setQosReport(value?: QualityOfServiceReport): void;
 
   getEpoch(): number;
   setEpoch(value: number): void;
@@ -57,12 +63,13 @@ export class RelaySession extends jspb.Message {
 
 export namespace RelaySession {
   export type AsObject = {
-    specid: string,
+    specId: string,
     contentHash: Uint8Array | string,
     sessionId: number,
     cuSum: number,
     provider: string,
     relayNum: number,
+    qosReport?: QualityOfServiceReport.AsObject,
     epoch: number,
     unresponsiveProviders: Uint8Array | string,
     lavaChainId: string,
@@ -86,8 +93,8 @@ export class RelayPrivateData extends jspb.Message {
   getRequestBlock(): number;
   setRequestBlock(value: number): void;
 
-  getApiinterface(): string;
-  setApiinterface(value: string): void;
+  getApiInterface(): string;
+  setApiInterface(value: string): void;
 
   getSalt(): Uint8Array | string;
   getSalt_asU8(): Uint8Array;
@@ -110,7 +117,7 @@ export namespace RelayPrivateData {
     apiUrl: string,
     data: Uint8Array | string,
     requestBlock: number,
-    apiinterface: string,
+    apiInterface: string,
     salt: Uint8Array | string,
   }
 }
@@ -126,10 +133,10 @@ export class RelayRequest extends jspb.Message {
   getRelayData(): RelayPrivateData | undefined;
   setRelayData(value?: RelayPrivateData): void;
 
-  hasDatareliability(): boolean;
-  clearDatareliability(): void;
-  getDatareliability(): VRFData | undefined;
-  setDatareliability(value?: VRFData): void;
+  hasDataReliability(): boolean;
+  clearDataReliability(): void;
+  getDataReliability(): VRFData | undefined;
+  setDataReliability(value?: VRFData): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RelayRequest.AsObject;
@@ -145,7 +152,7 @@ export namespace RelayRequest {
   export type AsObject = {
     relaySession?: RelaySession.AsObject,
     relayData?: RelayPrivateData.AsObject,
-    datareliability?: VRFData.AsObject,
+    dataReliability?: VRFData.AsObject,
   }
 }
 
@@ -238,8 +245,8 @@ export namespace RelayReply {
 }
 
 export class VRFData extends jspb.Message {
-  getChainid(): string;
-  setChainid(value: string): void;
+  getChainId(): string;
+  setChainId(value: string): void;
 
   getEpoch(): number;
   setEpoch(value: number): void;
@@ -262,15 +269,15 @@ export class VRFData extends jspb.Message {
   getProviderSig_asB64(): string;
   setProviderSig(value: Uint8Array | string): void;
 
-  getAlldatahash(): Uint8Array | string;
-  getAlldatahash_asU8(): Uint8Array;
-  getAlldatahash_asB64(): string;
-  setAlldatahash(value: Uint8Array | string): void;
+  getAllDataHash(): Uint8Array | string;
+  getAllDataHash_asU8(): Uint8Array;
+  getAllDataHash_asB64(): string;
+  setAllDataHash(value: Uint8Array | string): void;
 
-  getQueryhash(): Uint8Array | string;
-  getQueryhash_asU8(): Uint8Array;
-  getQueryhash_asB64(): string;
-  setQueryhash(value: Uint8Array | string): void;
+  getQueryHash(): Uint8Array | string;
+  getQueryHash_asU8(): Uint8Array;
+  getQueryHash_asB64(): string;
+  setQueryHash(value: Uint8Array | string): void;
 
   getSig(): Uint8Array | string;
   getSig_asU8(): Uint8Array;
@@ -289,15 +296,43 @@ export class VRFData extends jspb.Message {
 
 export namespace VRFData {
   export type AsObject = {
-    chainid: string,
+    chainId: string,
     epoch: number,
     differentiator: boolean,
     vrfValue: Uint8Array | string,
     vrfProof: Uint8Array | string,
     providerSig: Uint8Array | string,
-    alldatahash: Uint8Array | string,
-    queryhash: Uint8Array | string,
+    allDataHash: Uint8Array | string,
+    queryHash: Uint8Array | string,
     sig: Uint8Array | string,
+  }
+}
+
+export class QualityOfServiceReport extends jspb.Message {
+  getLatency(): string;
+  setLatency(value: string): void;
+
+  getAvailability(): string;
+  setAvailability(value: string): void;
+
+  getSync(): string;
+  setSync(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): QualityOfServiceReport.AsObject;
+  static toObject(includeInstance: boolean, msg: QualityOfServiceReport): QualityOfServiceReport.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: QualityOfServiceReport, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): QualityOfServiceReport;
+  static deserializeBinaryFromReader(message: QualityOfServiceReport, reader: jspb.BinaryReader): QualityOfServiceReport;
+}
+
+export namespace QualityOfServiceReport {
+  export type AsObject = {
+    latency: string,
+    availability: string,
+    sync: string,
   }
 }
 

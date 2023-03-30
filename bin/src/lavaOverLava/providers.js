@@ -68,7 +68,7 @@ class LavaProviders {
                 // Parse response
                 const data = yield response.json();
                 // Return data array
-                return data[this.network];
+                return data[this.network][this.geolocation];
             }
             catch (error) {
                 throw errors_1.default.errConfigNotValidJson;
@@ -78,7 +78,8 @@ class LavaProviders {
     initLocalConfig(path) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield (0, lavaPairing_1.fetchLavaPairing)(path);
-            return data[this.network];
+            console.log(data[this.network][this.geolocation]);
+            return data[this.network][this.geolocation];
         });
     }
     // getNextLavaProvider return lava providers used for fetching epoch

@@ -84,7 +84,7 @@ const lavaSDK = await new LavaSDK({
 
 - `network` is an optional field that specifies the network from pairingListConfig which will be used. Default value is `mainnet`.
 
-- `geolocation` is an optional field that specifies the geolocation which will be used. Default value is `1`.
+- `geolocation` is an optional field that specifies the geolocation which will be used. Default value is `1` which represents North America providers. Besides North America providers, lava supports EU providers on geolocation `2`.
 
 ---
 

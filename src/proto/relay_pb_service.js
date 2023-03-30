@@ -1,5 +1,5 @@
 // package: lavanet.lava.pairing
-// file: proto/relay.proto
+// file: pairing/relay.proto
 
 var proto_relay_pb = require("../proto/relay_pb");
 var grpc = require("@improbable-eng/grpc-web").grpc;
@@ -15,8 +15,17 @@ Relayer.Relay = {
   service: Relayer,
   requestStream: false,
   responseStream: false,
-  requestType: proto_relay_pb.RelayRequest,
-  responseType: proto_relay_pb.RelayReply
+  requestType: pairing_relay_pb.RelayRequest,
+  responseType: pairing_relay_pb.RelayReply
+};
+
+Relayer.RelaySubscribe = {
+  methodName: "RelaySubscribe",
+  service: Relayer,
+  requestStream: false,
+  responseStream: true,
+  requestType: pairing_relay_pb.RelayRequest,
+  responseType: pairing_relay_pb.RelayReply
 };
 
 exports.Relayer = Relayer;
@@ -52,6 +61,45 @@ RelayerClient.prototype.relay = function relay(requestMessage, metadata, callbac
   return {
     cancel: function () {
       callback = null;
+      client.close();
+    }
+  };
+};
+
+RelayerClient.prototype.relaySubscribe = function relaySubscribe(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(Relayer.RelaySubscribe, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
       client.close();
     }
   };

@@ -1,7 +1,7 @@
 // package: lavanet.lava.pairing
-// file: proto/relay.proto
+// file: pairing/relay.proto
 
-import * as proto_relay_pb from "../proto/relay_pb";
+import * as pairing_relay_pb from "../pairing/relay_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
 type RelayerRelay = {
@@ -9,13 +9,23 @@ type RelayerRelay = {
   readonly service: typeof Relayer;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof proto_relay_pb.RelayRequest;
-  readonly responseType: typeof proto_relay_pb.RelayReply;
+  readonly requestType: typeof pairing_relay_pb.RelayRequest;
+  readonly responseType: typeof pairing_relay_pb.RelayReply;
+};
+
+type RelayerRelaySubscribe = {
+  readonly methodName: string;
+  readonly service: typeof Relayer;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof pairing_relay_pb.RelayRequest;
+  readonly responseType: typeof pairing_relay_pb.RelayReply;
 };
 
 export class Relayer {
   static readonly serviceName: string;
   static readonly Relay: RelayerRelay;
+  static readonly RelaySubscribe: RelayerRelaySubscribe;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -51,13 +61,14 @@ export class RelayerClient {
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
   relay(
-    requestMessage: proto_relay_pb.RelayRequest,
+    requestMessage: pairing_relay_pb.RelayRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: proto_relay_pb.RelayReply|null) => void
+    callback: (error: ServiceError|null, responseMessage: pairing_relay_pb.RelayReply|null) => void
   ): UnaryResponse;
   relay(
-    requestMessage: proto_relay_pb.RelayRequest,
-    callback: (error: ServiceError|null, responseMessage: proto_relay_pb.RelayReply|null) => void
+    requestMessage: pairing_relay_pb.RelayRequest,
+    callback: (error: ServiceError|null, responseMessage: pairing_relay_pb.RelayReply|null) => void
   ): UnaryResponse;
+  relaySubscribe(requestMessage: pairing_relay_pb.RelayRequest, metadata?: grpc.Metadata): ResponseStream<pairing_relay_pb.RelayReply>;
 }
 
