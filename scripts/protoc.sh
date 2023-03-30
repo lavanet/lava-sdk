@@ -60,6 +60,7 @@ protoc \
   "$THIRD_PARTY_PROTO_DIR/pairing/params.proto" \
   "$THIRD_PARTY_PROTO_DIR/pairing/query.proto" \
   "$THIRD_PARTY_PROTO_DIR/pairing/relay.proto" \
+  "$THIRD_PARTY_PROTO_DIR/pairing/relayCache.proto" \
   "$THIRD_PARTY_PROTO_DIR/pairing/stake_to_max_cu_list.proto" \
   "$THIRD_PARTY_PROTO_DIR/pairing/unique_payment_storage_client_provider.proto" \
   "$THIRD_PARTY_PROTO_DIR/pairing/provider_payment_storage.proto" \
@@ -68,8 +69,21 @@ protoc \
   "$THIRD_PARTY_PROTO_DIR/spec/query.proto" \
   "$THIRD_PARTY_PROTO_DIR/spec/service_api.proto" \
   "$THIRD_PARTY_PROTO_DIR/spec/spec_add_proposal.proto" \
-  "$THIRD_PARTY_PROTO_DIR/spec/spec_modify_proposal.proto" \
   "$THIRD_PARTY_PROTO_DIR/spec/spec.proto" \
+  "$THIRD_PARTY_PROTO_DIR/common/fixationEntry.proto" \
+  "$THIRD_PARTY_PROTO_DIR/plans/params.proto" \
+  "$THIRD_PARTY_PROTO_DIR/plans/plan.proto" \
+  "$THIRD_PARTY_PROTO_DIR/plans/plans_add_proposal.proto" \
+  "$THIRD_PARTY_PROTO_DIR/plans/query.proto" \
+  "$THIRD_PARTY_PROTO_DIR/plans/tx.proto" \
+  "$THIRD_PARTY_PROTO_DIR/projects/params.proto" \
+  "$THIRD_PARTY_PROTO_DIR/projects/project.proto" \
+  "$THIRD_PARTY_PROTO_DIR/projects/query.proto" \
+  "$THIRD_PARTY_PROTO_DIR/projects/tx.proto" \
+  "$THIRD_PARTY_PROTO_DIR/subscription/tx.proto" \
+  "$THIRD_PARTY_PROTO_DIR/subscription/params.proto" \
+  "$THIRD_PARTY_PROTO_DIR/subscription/query.proto" \
+  "$THIRD_PARTY_PROTO_DIR/subscription/subscription.proto" \
 
 # Remove unnecessary codec files
 rm -rf \
