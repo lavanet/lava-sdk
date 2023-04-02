@@ -34,13 +34,13 @@ Roadmap highlights:
 
 # Installation
 
-### Important To Note
- 🟢 Please check the current Lava node version before installing the lava-sdk. 
+### Important Version Control
+ * Please check the current Lava node version before installing the lava-sdk. 
   
- 🟢 Make sure you are using the "Latest" tag. You can check the latest releases here: https://github.com/lavanet/lava/releases 
+ * Make sure you are using the "Latest" tag. You can check the latest releases here: https://github.com/lavanet/lava/releases 
 
 ### For Example
-If lava latest release version is v0.8.0 or any minor version such as v0.8.1 ➡️ sdk version will be v0.8.0
+If lava latest release version is `v0.8.0` or any minor version such as v0.8.1 ➡️ lava-sdk version will be `v0.8.0`
 
 ---
 
