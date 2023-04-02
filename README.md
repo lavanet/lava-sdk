@@ -13,7 +13,7 @@
 JavaScript/TypeScript SDK reference implementation designed for developers looking for access through the Lava Network. It can be added to your app/dapp and run in browsers to provide multi-chain peer-to-peer access to blockchain APIs.
 
 <!-- Roadmap -->
-## Roadmap
+# Roadmap
 The SDK is currently in the Alpha stage and is not production-ready for all usecases. 
 
 Roadmap highlights:
@@ -31,7 +31,18 @@ Roadmap highlights:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Installation -->
-## Installation
+
+# Installation
+
+### Important To Note
+ 🟢 Please check the current Lava node version before installing the lava-sdk. 
+  
+ 🟢 Make sure you are using the "Latest" tag. You can check the latest releases here: https://github.com/lavanet/lava/releases 
+
+### For Example
+If lava latest release version is v0.8.0 or any minor version such as v0.8.1 ➡️ sdk version will be v0.8.0
+
+---
 
 ### Prerequisites (Alpha version)
 _SDK setup requires additional steps at the moment, but we're working on minimizing prerequisites as we progress through the roadmap._
@@ -57,7 +68,7 @@ npm install @lavanet/lava-sdk
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
-## Usage
+# Usage
 
 A single instance of the SDK establishes a connection with a specific blockchain network using a single RPC interface. _Need multiple chains or use multiple RPC interfaces? Create multiple instances._ 
 
@@ -117,7 +128,7 @@ You can find more examples for rest sendRelay calls [Rest examples](https://gith
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Troubleshooting -->
-## Troubleshooting
+# Troubleshooting
 
 ### <b> Webpack >= 5 </b>
 If you are using `create-react-app` version 5 or higher, or `Angular` version 11 or higher, you may encounter build issues. This is because these versions use `webpack version 5`, which does not include Node.js polyfills.
