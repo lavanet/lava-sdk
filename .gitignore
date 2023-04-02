@@ -10,3 +10,4 @@ dist/utils/*
 .dccache
 .idea
 .vscode
+.npmrc
