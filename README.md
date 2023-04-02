@@ -39,7 +39,7 @@ Roadmap highlights:
   
  * Make sure you are using the `"Latest"` tag. You can check the latest releases here: https://github.com/lavanet/lava/releases 
 
- * lava-sdk releases can be found here: https://github.com/lavanet/lava-sdk/releases or in the npm official site: https://www.npmjs.com/package/@lavanet/lava-sdk?activeTab=readme
+ * lava-sdk releases can be found here: https://github.com/lavanet/lava-sdk/releases or in the npm official site: https://www.npmjs.com/package/@lavanet/lava-sdk
 
 ### For Example
 If lava latest release version is `v0.8.0` or any minor version such as v0.8.1 ➡️ sdk version will be `v0.8.0`
