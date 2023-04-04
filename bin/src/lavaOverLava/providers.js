@@ -78,7 +78,6 @@ class LavaProviders {
     initLocalConfig(path) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield (0, lavaPairing_1.fetchLavaPairing)(path);
-            console.log(data[this.network][this.geolocation]);
             return data[this.network][this.geolocation];
         });
     }
@@ -113,7 +112,7 @@ class LavaProviders {
                 // Set when will next epoch start
                 const nextEpochStart = new Date();
                 nextEpochStart.setSeconds(nextEpochStart.getSeconds() +
-                    parseInt(pairingResponse.timeLeftToNextPairing));
+                    parseInt(pairingResponse.time_left_to_next_pairing));
                 // Extract providers from pairing response
                 const providers = pairingResponse.providers;
                 // Initialize ConsumerSessionWithProvider array
