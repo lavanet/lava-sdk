@@ -1,5 +1,10 @@
 [
   {
+    "name": "Avalanche mainnet",
+    "chainID": "AVAX",
+    "defaultRPC": "jsonrpc"
+  },
+  {
     "name": "Celo Alfajores Testnet",
     "chainID": "ALFAJORES",
     "defaultRPC": "jsonrpc"
