@@ -95,7 +95,7 @@ const lavaSDK = await new LavaSDK({
 
 - `pairingListConfig` is an optional field that specifies the lava pairing list config used for communicating with lava network. Lava SDK does not rely on one centralized rpc for querying lava network. It uses a list of rpc providers to fetch list of the providers for specified `chainID` and `rpcInterface` from lava network. If not pairingListConfig set, the default list will be used [default lava pairing list](https://github.com/lavanet/lava-providers/blob/main/pairingList.json)
 
-- `network` is an optional field that specifies the network from pairingListConfig which will be used. Default value is `mainnet`.
+- `network` is an optional field that specifies the network from pairingListConfig which will be used. Default value is `testnet`.
 
 - `geolocation` is an optional field that specifies the geolocation which will be used. Default value is `1` which represents North America providers. Besides North America providers, lava supports EU providers on geolocation `2`.
 

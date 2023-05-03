@@ -344,29 +344,29 @@ export class LavaSDK {
  * Options for sending RPC relay.
  */
 export interface SendRelayOptions {
-  method: string;
-  params: Array<any>;
+  method: string; // Required: The RPC method to be called
+  params: Array<any>; // Required: An array of parameters to be passed to the RPC method
 }
 
 /**
  * Options for sending Rest relay.
  */
 export interface SendRestRelayOptions {
-  method: string;
-  url: string;
+  method: string; // Required: The HTTP method to be used (e.g., "GET", "POST")
+  url: string; // Required: The URL to send the request to
   // eslint-disable-next-line
-  data?: Record<string, any>;
+  data?: Record<string, any>; // Optional: An object containing data to be sent in the request body (applicable for methods like "POST" and "PUT")
 }
 
 /**
  * Options for initializing the LavaSDK.
  */
 export interface LavaSDKOptions {
-  privateKey: string;
-  chainID: string;
-  rpcInterface?: string;
-  pairingListConfig?: string;
-  network?: string;
-  geolocation?: string;
-  lavaChainId?: string;
+  privateKey: string; // Required: The private key of the staked Lava client for the specified chainID
+  chainID: string; // Required: The ID of the chain you want to query
+  rpcInterface?: string; // Optional: The interface that will be used for sending relays
+  pairingListConfig?: string; // Optional: The Lava pairing list config used for communicating with the Lava network
+  network?: string; // Optional: The network from pairingListConfig to be used ["mainnet", "testnet"]
+  geolocation?: string; // Optional: The geolocation to be used ["1" for North America, "2" for Europe ]
+  lavaChainId?: string; // Optional: The Lava chain ID (default value for Lava Testnet)
 }
