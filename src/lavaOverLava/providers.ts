@@ -100,9 +100,9 @@ export class LavaProviders {
     return data[this.network][this.geolocation];
   }
 
-  // getNextLavaProvider return lava providers used for fetching epoch
+  // GetNextLavaProvider return lava providers used for fetching epoch
   // in round-robin fashion
-  getNextLavaProvider(): ConsumerSessionWithProvider {
+  GetNextLavaProvider(): ConsumerSessionWithProvider {
     if (this.providers.length == 0) {
       throw ProvidersErrors.errNoProviders;
     }
@@ -123,7 +123,7 @@ export class LavaProviders {
       }
 
       // Fetch lava provider which will be used for fetching pairing list
-      const lavaRPCEndpoint = this.getNextLavaProvider();
+      const lavaRPCEndpoint = this.GetNextLavaProvider();
 
       // Create request for getServiceApis method
       const apis = await this.getServiceApis(
@@ -261,9 +261,10 @@ export class LavaProviders {
       data: "",
     };
 
-    const jsonResponse = await this.sendRelayWithRetry(
+    const jsonResponse = await this.SendRelayWithRetry(
       options,
-      lavaRPCEndpoint
+      lavaRPCEndpoint,
+      "rest"
     );
 
     if (jsonResponse.providers == undefined) {
@@ -288,9 +289,10 @@ export class LavaProviders {
       data: "?block=" + request.block,
     };
 
-    const jsonResponse = await this.sendRelayWithRetry(
+    const jsonResponse = await this.SendRelayWithRetry(
       options,
-      lavaRPCEndpoint
+      lavaRPCEndpoint,
+      "rest"
     );
 
     if (jsonResponse.maxCU == undefined) {
@@ -312,9 +314,10 @@ export class LavaProviders {
       data: "",
     };
 
-    const jsonResponse = await this.sendRelayWithRetry(
+    const jsonResponse = await this.SendRelayWithRetry(
       options,
-      lavaRPCEndpoint
+      lavaRPCEndpoint,
+      "rest"
     );
 
     if (jsonResponse.Spec == undefined) {
@@ -347,9 +350,10 @@ export class LavaProviders {
     return name.replace(regex, "[^/s]+");
   }
 
-  async sendRelayWithRetry(
+  async SendRelayWithRetry(
     options: any,
-    lavaRPCEndpoint: ConsumerSessionWithProvider
+    lavaRPCEndpoint: ConsumerSessionWithProvider,
+    rpcInterface: string
   ): Promise<any> {
     let response;
 
@@ -365,7 +369,7 @@ export class LavaProviders {
         options,
         lavaRPCEndpoint,
         relayCu,
-        "rest"
+        rpcInterface
       );
     } catch (error) {
       // If error is instace of Error
@@ -392,7 +396,7 @@ export class LavaProviders {
             options,
             lavaRPCEndpoint,
             10,
-            "rest"
+            rpcInterface
           );
         } catch (error) {
           throw error;

@@ -38,17 +38,6 @@ describe("Make sure supportedChains.json is valid", () => {
         expect(uniquechainIDs.length).toBe(supportedChains_json_1.default.length);
     }));
 });
-describe("Test isValidChainID method", () => {
-    it("Entity with specified chainID exists", () => __awaiter(void 0, void 0, void 0, function* () {
-        supportedChains_json_1.default.filter((item) => {
-            // For each chainID expect true
-            expect((0, chains_1.isValidChainID)(item.chainID)).toBe(true);
-        });
-    }));
-    it("Entity with specified chainID doesn't exist", () => __awaiter(void 0, void 0, void 0, function* () {
-        expect((0, chains_1.isValidChainID)("InvalidChainID")).toBe(false);
-    }));
-});
 describe("Test isNetworkValid", () => {
     it("Network is valid", () => __awaiter(void 0, void 0, void 0, function* () {
         expect((0, chains_1.isNetworkValid)("testnet")).toBe(true);
@@ -56,15 +45,5 @@ describe("Test isNetworkValid", () => {
     }));
     it("Network is not valid", () => __awaiter(void 0, void 0, void 0, function* () {
         expect((0, chains_1.isNetworkValid)("randomNetwork")).toBe(false);
-    }));
-});
-describe("Test fetchRpcInterface method", () => {
-    it("Return correct rpc interface for all entities", () => __awaiter(void 0, void 0, void 0, function* () {
-        supportedChains_json_1.default.filter((item) => {
-            expect((0, chains_1.fetchRpcInterface)(item.chainID)).toBe(item.defaultRPC);
-        });
-    }));
-    it("If chainID does not exists, should return empty string", () => __awaiter(void 0, void 0, void 0, function* () {
-        expect((0, chains_1.fetchRpcInterface)("InvalidChainID")).toBe("");
     }));
 });

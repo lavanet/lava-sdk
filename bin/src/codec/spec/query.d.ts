@@ -28,7 +28,12 @@ export interface QueryAllSpecResponse {
 export interface QueryShowAllChainsRequest {
 }
 export interface QueryShowAllChainsResponse {
-    chainNames: string[];
+    chainInfoList: showAllChainsInfoStruct[];
+}
+export interface showAllChainsInfoStruct {
+    chainName: string;
+    chainID: string;
+    enabledApiInterfaces: string[];
 }
 export interface QueryShowChainInfoRequest {
     chainName: string;
@@ -1754,10 +1759,45 @@ export declare const QueryShowAllChainsResponse: {
     fromJSON(object: any): QueryShowAllChainsResponse;
     toJSON(message: QueryShowAllChainsResponse): unknown;
     fromPartial<I extends {
-        chainNames?: string[] | undefined;
+        chainInfoList?: {
+            chainName?: string | undefined;
+            chainID?: string | undefined;
+            enabledApiInterfaces?: string[] | undefined;
+        }[] | undefined;
     } & {
-        chainNames?: (string[] & string[] & { [K in Exclude<keyof I["chainNames"], keyof string[]>]: never; }) | undefined;
-    } & { [K_1 in Exclude<keyof I, "chainNames">]: never; }>(object: I): QueryShowAllChainsResponse;
+        chainInfoList?: ({
+            chainName?: string | undefined;
+            chainID?: string | undefined;
+            enabledApiInterfaces?: string[] | undefined;
+        }[] & ({
+            chainName?: string | undefined;
+            chainID?: string | undefined;
+            enabledApiInterfaces?: string[] | undefined;
+        } & {
+            chainName?: string | undefined;
+            chainID?: string | undefined;
+            enabledApiInterfaces?: (string[] & string[] & { [K in Exclude<keyof I["chainInfoList"][number]["enabledApiInterfaces"], keyof string[]>]: never; }) | undefined;
+        } & { [K_1 in Exclude<keyof I["chainInfoList"][number], keyof showAllChainsInfoStruct>]: never; })[] & { [K_2 in Exclude<keyof I["chainInfoList"], keyof {
+            chainName?: string | undefined;
+            chainID?: string | undefined;
+            enabledApiInterfaces?: string[] | undefined;
+        }[]>]: never; }) | undefined;
+    } & { [K_3 in Exclude<keyof I, "chainInfoList">]: never; }>(object: I): QueryShowAllChainsResponse;
+};
+export declare const showAllChainsInfoStruct: {
+    encode(message: showAllChainsInfoStruct, writer?: _m0.Writer): _m0.Writer;
+    decode(input: _m0.Reader | Uint8Array, length?: number): showAllChainsInfoStruct;
+    fromJSON(object: any): showAllChainsInfoStruct;
+    toJSON(message: showAllChainsInfoStruct): unknown;
+    fromPartial<I extends {
+        chainName?: string | undefined;
+        chainID?: string | undefined;
+        enabledApiInterfaces?: string[] | undefined;
+    } & {
+        chainName?: string | undefined;
+        chainID?: string | undefined;
+        enabledApiInterfaces?: (string[] & string[] & { [K in Exclude<keyof I["enabledApiInterfaces"], keyof string[]>]: never; }) | undefined;
+    } & { [K_1 in Exclude<keyof I, keyof showAllChainsInfoStruct>]: never; }>(object: I): showAllChainsInfoStruct;
 };
 export declare const QueryShowChainInfoRequest: {
     encode(message: QueryShowChainInfoRequest, writer?: _m0.Writer): _m0.Writer;
@@ -1821,6 +1861,10 @@ export interface Query {
     Spec(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse>;
     /** Queries a list of Spec items. */
     SpecAll(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse>;
+    /** Queries a Spec by id (raw form). */
+    SpecRaw(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse>;
+    /** Queries a list of Spec items (raw form). */
+    SpecAllRaw(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse>;
     /** Queries a list of ShowAllChains items. */
     ShowAllChains(request: QueryShowAllChainsRequest): Promise<QueryShowAllChainsResponse>;
     /** Queries a list of ShowChainInfo items. */
@@ -1835,6 +1879,8 @@ export declare class QueryClientImpl implements Query {
     Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
     Spec(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse>;
     SpecAll(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse>;
+    SpecRaw(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse>;
+    SpecAllRaw(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse>;
     ShowAllChains(request: QueryShowAllChainsRequest): Promise<QueryShowAllChainsResponse>;
     ShowChainInfo(request: QueryShowChainInfoRequest): Promise<QueryShowChainInfoResponse>;
 }

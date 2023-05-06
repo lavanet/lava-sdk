@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QueryClientImpl = exports.QueryShowChainInfoResponse = exports.apiList = exports.QueryShowChainInfoRequest = exports.QueryShowAllChainsResponse = exports.QueryShowAllChainsRequest = exports.QueryAllSpecResponse = exports.QueryAllSpecRequest = exports.QueryGetSpecResponse = exports.QueryGetSpecRequest = exports.QueryParamsResponse = exports.QueryParamsRequest = exports.protobufPackage = void 0;
+exports.QueryClientImpl = exports.QueryShowChainInfoResponse = exports.apiList = exports.QueryShowChainInfoRequest = exports.showAllChainsInfoStruct = exports.QueryShowAllChainsResponse = exports.QueryShowAllChainsRequest = exports.QueryAllSpecResponse = exports.QueryAllSpecRequest = exports.QueryGetSpecResponse = exports.QueryGetSpecRequest = exports.QueryParamsResponse = exports.QueryParamsRequest = exports.protobufPackage = void 0;
 /* eslint-disable */
 const long_1 = __importDefault(require("long"));
 const minimal_1 = __importDefault(require("protobufjs/minimal"));
@@ -309,12 +309,12 @@ exports.QueryShowAllChainsRequest = {
     },
 };
 function createBaseQueryShowAllChainsResponse() {
-    return { chainNames: [] };
+    return { chainInfoList: [] };
 }
 exports.QueryShowAllChainsResponse = {
     encode(message, writer = minimal_1.default.Writer.create()) {
-        for (const v of message.chainNames) {
-            writer.uint32(10).string(v);
+        for (const v of message.chainInfoList) {
+            exports.showAllChainsInfoStruct.encode(v, writer.uint32(18).fork()).ldelim();
         }
         return writer;
     },
@@ -325,8 +325,8 @@ exports.QueryShowAllChainsResponse = {
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                case 1:
-                    message.chainNames.push(reader.string());
+                case 2:
+                    message.chainInfoList.push(exports.showAllChainsInfoStruct.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -336,22 +336,95 @@ exports.QueryShowAllChainsResponse = {
         return message;
     },
     fromJSON(object) {
-        return { chainNames: Array.isArray(object === null || object === void 0 ? void 0 : object.chainNames) ? object.chainNames.map((e) => String(e)) : [] };
+        return {
+            chainInfoList: Array.isArray(object === null || object === void 0 ? void 0 : object.chainInfoList)
+                ? object.chainInfoList.map((e) => exports.showAllChainsInfoStruct.fromJSON(e))
+                : [],
+        };
     },
     toJSON(message) {
         const obj = {};
-        if (message.chainNames) {
-            obj.chainNames = message.chainNames.map((e) => e);
+        if (message.chainInfoList) {
+            obj.chainInfoList = message.chainInfoList.map((e) => e ? exports.showAllChainsInfoStruct.toJSON(e) : undefined);
         }
         else {
-            obj.chainNames = [];
+            obj.chainInfoList = [];
         }
         return obj;
     },
     fromPartial(object) {
         var _a;
         const message = createBaseQueryShowAllChainsResponse();
-        message.chainNames = ((_a = object.chainNames) === null || _a === void 0 ? void 0 : _a.map((e) => e)) || [];
+        message.chainInfoList = ((_a = object.chainInfoList) === null || _a === void 0 ? void 0 : _a.map((e) => exports.showAllChainsInfoStruct.fromPartial(e))) || [];
+        return message;
+    },
+};
+function createBaseshowAllChainsInfoStruct() {
+    return { chainName: "", chainID: "", enabledApiInterfaces: [] };
+}
+exports.showAllChainsInfoStruct = {
+    encode(message, writer = minimal_1.default.Writer.create()) {
+        if (message.chainName !== "") {
+            writer.uint32(10).string(message.chainName);
+        }
+        if (message.chainID !== "") {
+            writer.uint32(18).string(message.chainID);
+        }
+        for (const v of message.enabledApiInterfaces) {
+            writer.uint32(26).string(v);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof minimal_1.default.Reader ? input : new minimal_1.default.Reader(input);
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = createBaseshowAllChainsInfoStruct();
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.chainName = reader.string();
+                    break;
+                case 2:
+                    message.chainID = reader.string();
+                    break;
+                case 3:
+                    message.enabledApiInterfaces.push(reader.string());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        return {
+            chainName: isSet(object.chainName) ? String(object.chainName) : "",
+            chainID: isSet(object.chainID) ? String(object.chainID) : "",
+            enabledApiInterfaces: Array.isArray(object === null || object === void 0 ? void 0 : object.enabledApiInterfaces)
+                ? object.enabledApiInterfaces.map((e) => String(e))
+                : [],
+        };
+    },
+    toJSON(message) {
+        const obj = {};
+        message.chainName !== undefined && (obj.chainName = message.chainName);
+        message.chainID !== undefined && (obj.chainID = message.chainID);
+        if (message.enabledApiInterfaces) {
+            obj.enabledApiInterfaces = message.enabledApiInterfaces.map((e) => e);
+        }
+        else {
+            obj.enabledApiInterfaces = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        var _a, _b, _c;
+        const message = createBaseshowAllChainsInfoStruct();
+        message.chainName = (_a = object.chainName) !== null && _a !== void 0 ? _a : "";
+        message.chainID = (_b = object.chainID) !== null && _b !== void 0 ? _b : "";
+        message.enabledApiInterfaces = ((_c = object.enabledApiInterfaces) === null || _c === void 0 ? void 0 : _c.map((e) => e)) || [];
         return message;
     },
 };
@@ -536,6 +609,8 @@ class QueryClientImpl {
         this.Params = this.Params.bind(this);
         this.Spec = this.Spec.bind(this);
         this.SpecAll = this.SpecAll.bind(this);
+        this.SpecRaw = this.SpecRaw.bind(this);
+        this.SpecAllRaw = this.SpecAllRaw.bind(this);
         this.ShowAllChains = this.ShowAllChains.bind(this);
         this.ShowChainInfo = this.ShowChainInfo.bind(this);
     }
@@ -552,6 +627,16 @@ class QueryClientImpl {
     SpecAll(request) {
         const data = exports.QueryAllSpecRequest.encode(request).finish();
         const promise = this.rpc.request(this.service, "SpecAll", data);
+        return promise.then((data) => exports.QueryAllSpecResponse.decode(new minimal_1.default.Reader(data)));
+    }
+    SpecRaw(request) {
+        const data = exports.QueryGetSpecRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, "SpecRaw", data);
+        return promise.then((data) => exports.QueryGetSpecResponse.decode(new minimal_1.default.Reader(data)));
+    }
+    SpecAllRaw(request) {
+        const data = exports.QueryAllSpecRequest.encode(request).finish();
+        const promise = this.rpc.request(this.service, "SpecAllRaw", data);
         return promise.then((data) => exports.QueryAllSpecResponse.decode(new minimal_1.default.Reader(data)));
     }
     ShowAllChains(request) {

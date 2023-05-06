@@ -81,9 +81,9 @@ class LavaProviders {
             return data[this.network][this.geolocation];
         });
     }
-    // getNextLavaProvider return lava providers used for fetching epoch
+    // GetNextLavaProvider return lava providers used for fetching epoch
     // in round-robin fashion
-    getNextLavaProvider() {
+    GetNextLavaProvider() {
         if (this.providers.length == 0) {
             throw errors_1.default.errNoProviders;
         }
@@ -99,7 +99,7 @@ class LavaProviders {
                     throw errors_1.default.errLavaProvidersNotInitialized;
                 }
                 // Fetch lava provider which will be used for fetching pairing list
-                const lavaRPCEndpoint = this.getNextLavaProvider();
+                const lavaRPCEndpoint = this.GetNextLavaProvider();
                 // Create request for getServiceApis method
                 const apis = yield this.getServiceApis(lavaRPCEndpoint, chainID, rpcInterface);
                 // Create pairing request for getPairing method
@@ -185,7 +185,7 @@ class LavaProviders {
                     request.client,
                 data: "",
             };
-            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            const jsonResponse = yield this.SendRelayWithRetry(options, lavaRPCEndpoint, "rest");
             if (jsonResponse.providers == undefined) {
                 throw errors_1.default.errProvidersNotFound;
             }
@@ -202,7 +202,7 @@ class LavaProviders {
                     request.chainID,
                 data: "?block=" + request.block,
             };
-            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            const jsonResponse = yield this.SendRelayWithRetry(options, lavaRPCEndpoint, "rest");
             if (jsonResponse.maxCU == undefined) {
                 throw errors_1.default.errMaxCuNotFound;
             }
@@ -217,7 +217,7 @@ class LavaProviders {
                 url: "/lavanet/lava/spec/spec/" + chainID,
                 data: "",
             };
-            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            const jsonResponse = yield this.SendRelayWithRetry(options, lavaRPCEndpoint, "rest");
             if (jsonResponse.Spec == undefined) {
                 throw errors_1.default.errSpecNotFound;
             }
@@ -246,7 +246,7 @@ class LavaProviders {
         const regex = /\{\s*[^}]+\s*\}/g;
         return name.replace(regex, "[^/s]+");
     }
-    sendRelayWithRetry(options, lavaRPCEndpoint) {
+    SendRelayWithRetry(options, lavaRPCEndpoint, rpcInterface) {
         return __awaiter(this, void 0, void 0, function* () {
             let response;
             try {
@@ -255,7 +255,7 @@ class LavaProviders {
                 }
                 // For now we have hardcode relay cu
                 const relayCu = 10;
-                response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, relayCu, "rest");
+                response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, relayCu, rpcInterface);
             }
             catch (error) {
                 // If error is instace of Error
@@ -275,7 +275,7 @@ class LavaProviders {
                     }
                     // Retry same relay with added block height
                     try {
-                        response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, 10, "rest");
+                        response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, 10, rpcInterface);
                     }
                     catch (error) {
                         throw error;
