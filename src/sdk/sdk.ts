@@ -45,9 +45,8 @@ export class LavaSDK {
    */
   constructor(options: LavaSDKOptions) {
     // Extract attributes from options
-    const { privateKey, chainID } = options;
-    let { rpcInterface, pairingListConfig, network, geolocation, lavaChainId } =
-      options;
+    const { privateKey, chainID, rpcInterface } = options;
+    let { pairingListConfig, network, geolocation, lavaChainId } = options;
 
     // If network is not defined use default network
     network = network || DEFAULT_LAVA_PAIRING_NETWORK;
