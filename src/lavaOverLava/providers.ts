@@ -125,11 +125,20 @@ export class LavaProviders {
       // Fetch lava provider which will be used for fetching pairing list
       const lavaRPCEndpoint = this.getNextLavaProvider();
 
-      // Create request for getServiceApis method
+      // Create request for fetching api methods for LAV1
+      const lavaApis = await this.getServiceApis(
+        lavaRPCEndpoint,
+        "LAV1",
+        "rest",
+        new Map([["/lavanet/lava/spec/spec/[^/s]+", 10]])
+      );
+
+      // Create request for getServiceApis method for chainID
       const apis = await this.getServiceApis(
         lavaRPCEndpoint,
         chainID,
-        rpcInterface
+        rpcInterface,
+        lavaApis
       );
 
       // Create pairing request for getPairing method
@@ -141,7 +150,8 @@ export class LavaProviders {
       // Get pairing from the chain
       const pairingResponse = await this.getPairingFromChain(
         lavaRPCEndpoint,
-        pairingRequest
+        pairingRequest,
+        lavaApis
       );
 
       // Set when will next epoch start
@@ -167,7 +177,8 @@ export class LavaProviders {
       // Fetch max compute units
       const maxcu = await this.getMaxCuForUser(
         lavaRPCEndpoint,
-        userEntityRequest
+        userEntityRequest,
+        lavaApis
       );
 
       // Iterate over providers to populate pairing list
@@ -246,7 +257,8 @@ export class LavaProviders {
 
   private async getPairingFromChain(
     lavaRPCEndpoint: ConsumerSessionWithProvider,
-    request: QueryGetPairingRequest
+    request: QueryGetPairingRequest,
+    lavaApis: Map<string, number>
   ): Promise<any> {
     const options = {
       connectionType: "GET",
@@ -258,9 +270,18 @@ export class LavaProviders {
       data: "",
     };
 
+    const relayCu = lavaApis.get(
+      "/lavanet/lava/pairing/user_entry/[^/s]+/[^/s]+"
+    );
+
+    if (relayCu == undefined) {
+      throw ProvidersErrors.errApiNotFound;
+    }
+
     const jsonResponse = await this.sendRelayWithRetry(
       options,
-      lavaRPCEndpoint
+      lavaRPCEndpoint,
+      relayCu
     );
 
     if (jsonResponse.providers == undefined) {
@@ -272,7 +293,8 @@ export class LavaProviders {
 
   private async getMaxCuForUser(
     lavaRPCEndpoint: ConsumerSessionWithProvider,
-    request: QueryUserEntryRequest
+    request: QueryUserEntryRequest,
+    lavaApis: Map<string, number>
   ): Promise<number> {
     const options = {
       connectionType: "GET",
@@ -285,9 +307,18 @@ export class LavaProviders {
       data: "?block=" + request.block,
     };
 
+    const relayCu = lavaApis.get(
+      "/lavanet/lava/pairing/user_entry/[^/s]+/[^/s]+"
+    );
+
+    if (relayCu == undefined) {
+      throw ProvidersErrors.errApiNotFound;
+    }
+
     const jsonResponse = await this.sendRelayWithRetry(
       options,
-      lavaRPCEndpoint
+      lavaRPCEndpoint,
+      relayCu
     );
 
     if (jsonResponse.maxCU == undefined) {
@@ -301,17 +332,23 @@ export class LavaProviders {
   private async getServiceApis(
     lavaRPCEndpoint: ConsumerSessionWithProvider,
     chainID: string,
-    rpcInterface: string
+    rpcInterface: string,
+    lavaApis: Map<string, number>
   ): Promise<Map<string, number>> {
     const options = {
       connectionType: "GET",
       url: "/lavanet/lava/spec/spec/" + chainID,
       data: "",
     };
+    const relayCu = lavaApis.get("/lavanet/lava/spec/spec/[^/s]+");
+    if (relayCu == undefined) {
+      throw ProvidersErrors.errApiNotFound;
+    }
 
     const jsonResponse = await this.sendRelayWithRetry(
       options,
-      lavaRPCEndpoint
+      lavaRPCEndpoint,
+      relayCu
     );
 
     if (jsonResponse.Spec == undefined) {
@@ -346,18 +383,17 @@ export class LavaProviders {
 
   async sendRelayWithRetry(
     options: any,
-    lavaRPCEndpoint: ConsumerSessionWithProvider
+    lavaRPCEndpoint: ConsumerSessionWithProvider,
+    relayCu: number
   ): Promise<any> {
     let response;
-
+    console.log("Relay", relayCu);
     try {
       if (this.relayer == null) {
         throw ProvidersErrors.errNoRelayer;
       }
 
       // For now we have hardcode relay cu
-      const relayCu = 10;
-
       response = await this.relayer.sendRelay(
         options,
         lavaRPCEndpoint,
@@ -388,7 +424,7 @@ export class LavaProviders {
           response = await this.relayer.sendRelay(
             options,
             lavaRPCEndpoint,
-            10,
+            relayCu,
             "rest"
           );
         } catch (error) {

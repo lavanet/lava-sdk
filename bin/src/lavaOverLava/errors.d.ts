@@ -3,6 +3,7 @@ declare class ProvidersErrors {
     static errRelayerServiceNotInitialized: Error;
     static errNoValidProvidersForCurrentEpoch: Error;
     static errSpecNotFound: Error;
+    static errApiNotFound: Error;
     static errMaxCuNotFound: Error;
     static errProvidersNotFound: Error;
     static errNoProviders: Error;

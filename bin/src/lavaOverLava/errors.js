@@ -6,6 +6,7 @@ ProvidersErrors.errLavaProvidersNotInitialized = new Error("Lava providers not i
 ProvidersErrors.errRelayerServiceNotInitialized = new Error("Relayer service was not initialized");
 ProvidersErrors.errNoValidProvidersForCurrentEpoch = new Error("No valid providers for current epoch");
 ProvidersErrors.errSpecNotFound = new Error("Spec not found");
+ProvidersErrors.errApiNotFound = new Error("API not found");
 ProvidersErrors.errMaxCuNotFound = new Error("MaxCU not found");
 ProvidersErrors.errProvidersNotFound = new Error("Providers not found");
 ProvidersErrors.errNoProviders = new Error("No providers found");

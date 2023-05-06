@@ -115,7 +115,7 @@ class LavaSDK {
                 const sendRelayOptions = {
                     data: data,
                     url: "",
-                    connectionType: "GET", // temporary solution to spec changes - remove this when PRT-216 is fixed
+                    connectionType: this.rpcInterface === "jsonrpc" ? "POST" : "",
                 };
                 // Send relay
                 const relayResponse = yield this.relayer.sendRelay(sendRelayOptions, consumerProviderSession, cuSum, this.rpcInterface);

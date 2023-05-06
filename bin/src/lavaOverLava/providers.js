@@ -100,15 +100,17 @@ class LavaProviders {
                 }
                 // Fetch lava provider which will be used for fetching pairing list
                 const lavaRPCEndpoint = this.getNextLavaProvider();
-                // Create request for getServiceApis method
-                const apis = yield this.getServiceApis(lavaRPCEndpoint, chainID, rpcInterface);
+                // Create request for fetching api methods for LAV1
+                const lavaApis = yield this.getServiceApis(lavaRPCEndpoint, "LAV1", "rest", new Map([["/lavanet/lava/spec/spec/[^/s]+", 10]]));
+                // Create request for getServiceApis method for chainID
+                const apis = yield this.getServiceApis(lavaRPCEndpoint, chainID, rpcInterface, lavaApis);
                 // Create pairing request for getPairing method
                 const pairingRequest = {
                     chainID: chainID,
                     client: this.accountAddress,
                 };
                 // Get pairing from the chain
-                const pairingResponse = yield this.getPairingFromChain(lavaRPCEndpoint, pairingRequest);
+                const pairingResponse = yield this.getPairingFromChain(lavaRPCEndpoint, pairingRequest, lavaApis);
                 // Set when will next epoch start
                 const nextEpochStart = new Date();
                 nextEpochStart.setSeconds(nextEpochStart.getSeconds() +
@@ -124,7 +126,7 @@ class LavaProviders {
                     block: pairingResponse.current_epoch,
                 };
                 // Fetch max compute units
-                const maxcu = yield this.getMaxCuForUser(lavaRPCEndpoint, userEntityRequest);
+                const maxcu = yield this.getMaxCuForUser(lavaRPCEndpoint, userEntityRequest, lavaApis);
                 // Iterate over providers to populate pairing list
                 for (const provider of providers) {
                     // Skip providers with no endpoints
@@ -174,7 +176,7 @@ class LavaProviders {
         const random = Math.floor(Math.random() * validProviders.length);
         return validProviders[random];
     }
-    getPairingFromChain(lavaRPCEndpoint, request) {
+    getPairingFromChain(lavaRPCEndpoint, request, lavaApis) {
         return __awaiter(this, void 0, void 0, function* () {
             const options = {
                 connectionType: "GET",
@@ -184,14 +186,18 @@ class LavaProviders {
                     request.client,
                 data: "",
             };
-            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            const relayCu = lavaApis.get("/lavanet/lava/pairing/user_entry/[^/s]+/[^/s]+");
+            if (relayCu == undefined) {
+                throw errors_1.default.errApiNotFound;
+            }
+            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint, relayCu);
             if (jsonResponse.providers == undefined) {
                 throw errors_1.default.errProvidersNotFound;
             }
             return jsonResponse;
         });
     }
-    getMaxCuForUser(lavaRPCEndpoint, request) {
+    getMaxCuForUser(lavaRPCEndpoint, request, lavaApis) {
         return __awaiter(this, void 0, void 0, function* () {
             const options = {
                 connectionType: "GET",
@@ -201,7 +207,11 @@ class LavaProviders {
                     request.chainID,
                 data: "?block=" + request.block,
             };
-            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            const relayCu = lavaApis.get("/lavanet/lava/pairing/user_entry/[^/s]+/[^/s]+");
+            if (relayCu == undefined) {
+                throw errors_1.default.errApiNotFound;
+            }
+            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint, relayCu);
             if (jsonResponse.maxCU == undefined) {
                 throw errors_1.default.errMaxCuNotFound;
             }
@@ -209,14 +219,18 @@ class LavaProviders {
             return parseInt(jsonResponse.maxCU);
         });
     }
-    getServiceApis(lavaRPCEndpoint, chainID, rpcInterface) {
+    getServiceApis(lavaRPCEndpoint, chainID, rpcInterface, lavaApis) {
         return __awaiter(this, void 0, void 0, function* () {
             const options = {
                 connectionType: "GET",
                 url: "/lavanet/lava/spec/spec/" + chainID,
                 data: "",
             };
-            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint);
+            const relayCu = lavaApis.get("/lavanet/lava/spec/spec/[^/s]+");
+            if (relayCu == undefined) {
+                throw errors_1.default.errApiNotFound;
+            }
+            const jsonResponse = yield this.sendRelayWithRetry(options, lavaRPCEndpoint, relayCu);
             if (jsonResponse.Spec == undefined) {
                 throw errors_1.default.errSpecNotFound;
             }
@@ -245,15 +259,15 @@ class LavaProviders {
         const regex = /\{\s*[^}]+\s*\}/g;
         return name.replace(regex, "[^/s]+");
     }
-    sendRelayWithRetry(options, lavaRPCEndpoint) {
+    sendRelayWithRetry(options, lavaRPCEndpoint, relayCu) {
         return __awaiter(this, void 0, void 0, function* () {
             let response;
+            console.log("Relay", relayCu);
             try {
                 if (this.relayer == null) {
                     throw errors_1.default.errNoRelayer;
                 }
                 // For now we have hardcode relay cu
-                const relayCu = 10;
                 response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, relayCu, "rest");
             }
             catch (error) {
@@ -274,7 +288,7 @@ class LavaProviders {
                     }
                     // Retry same relay with added block height
                     try {
-                        response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, 10, "rest");
+                        response = yield this.relayer.sendRelay(options, lavaRPCEndpoint, relayCu, "rest");
                     }
                     catch (error) {
                         throw error;
