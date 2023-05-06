@@ -138,7 +138,8 @@ class LavaProviders {
                     // Only take into account endpoints that use the same api interface
                     // And geolocation
                     for (const endpoint of provider.endpoints) {
-                        if (endpoint.useType == rpcInterface) {
+                        if (endpoint.useType == rpcInterface &&
+                            endpoint.geolocation == this.geolocation) {
                             const convertedEndpoint = new types_1.Endpoint(endpoint.iPPORT, true, 0);
                             relevantEndpoints.push(convertedEndpoint);
                         }
