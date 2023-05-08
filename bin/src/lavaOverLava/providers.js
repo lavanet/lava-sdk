@@ -263,7 +263,6 @@ class LavaProviders {
     sendRelayWithRetry(options, lavaRPCEndpoint, relayCu) {
         return __awaiter(this, void 0, void 0, function* () {
             let response;
-            console.log("Relay", relayCu);
             try {
                 if (this.relayer == null) {
                     throw errors_1.default.errNoRelayer;

@@ -390,7 +390,6 @@ export class LavaProviders {
     relayCu: number
   ): Promise<any> {
     let response;
-    console.log("Relay", relayCu);
     try {
       if (this.relayer == null) {
         throw ProvidersErrors.errNoRelayer;
