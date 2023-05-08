@@ -19,12 +19,9 @@ export function isValidChainID(
   chainID: string,
   supportedChains: ChainInfoList
 ): boolean {
-  for (const chainInfo of supportedChains.chainInfoList) {
-    if (chainInfo.chainID === chainID) {
-      return true;
-    }
-  }
-  return false;
+  return !!supportedChains.chainInfoList.find(
+    (chainInfo) => chainInfo.chainID === chainID
+  );
 }
 
 // fetchRpcInterface fetches default rpcInterface for chainID

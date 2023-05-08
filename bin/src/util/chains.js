@@ -9,12 +9,7 @@ function isNetworkValid(network) {
 exports.isNetworkValid = isNetworkValid;
 // isValidChainID validates chainID param
 function isValidChainID(chainID, supportedChains) {
-    for (const chainInfo of supportedChains.chainInfoList) {
-        if (chainInfo.chainID === chainID) {
-            return true;
-        }
-    }
-    return false;
+    return !!supportedChains.chainInfoList.find((chainInfo) => chainInfo.chainID === chainID);
 }
 exports.isValidChainID = isValidChainID;
 // fetchRpcInterface fetches default rpcInterface for chainID
