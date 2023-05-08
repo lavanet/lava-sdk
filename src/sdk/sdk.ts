@@ -129,7 +129,6 @@ export class LavaSDK {
       "tendermintrpc"
     );
 
-    // TODO handle error
     const byteArrayResponse = this.base64ToUint8Array(
       info.result.response.value
     );

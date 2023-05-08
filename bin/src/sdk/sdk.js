@@ -92,7 +92,6 @@ class LavaSDK {
                 connectionType: "",
             };
             const info = yield lavaProviders.SendRelayWithRetry(sendRelayOptions, lavaProviders.GetNextLavaProvider(), 10, "tendermintrpc");
-            // TODO handle error
             const byteArrayResponse = this.base64ToUint8Array(info.result.response.value);
             const parsedChainList = query_1.QueryShowAllChainsResponse.decode(byteArrayResponse);
             // Validate chainID
