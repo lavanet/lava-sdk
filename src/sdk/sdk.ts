@@ -125,6 +125,7 @@ export class LavaSDK {
     const info = await lavaProviders.SendRelayWithRetry(
       sendRelayOptions,
       lavaProviders.GetNextLavaProvider(),
+      10,
       "tendermintrpc"
     );
 

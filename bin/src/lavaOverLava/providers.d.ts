@@ -18,10 +18,6 @@ export declare class LavaProviders {
     private getMaxCuForUser;
     private getServiceApis;
     convertRestApiName(name: string): string;
-<<<<<<< HEAD
-    sendRelayWithRetry(options: any, lavaRPCEndpoint: ConsumerSessionWithProvider, relayCu: number): Promise<any>;
-=======
-    SendRelayWithRetry(options: any, lavaRPCEndpoint: ConsumerSessionWithProvider, rpcInterface: string): Promise<any>;
->>>>>>> origin/main
+    SendRelayWithRetry(options: any, lavaRPCEndpoint: ConsumerSessionWithProvider, relayCu: number, rpcInterface: string): Promise<any>;
     private extractBlockNumberFromError;
 }
