@@ -1,29 +1,51 @@
-import supportedChains from "../../supportedChains.json";
 import { DEFAULT_NETWORKS } from "../config/default";
 
+type ChainInfo = {
+  chainName: string;
+  chainID: string;
+  enabledApiInterfaces: string[];
+};
+
+type ChainInfoList = {
+  chainInfoList: ChainInfo[];
+};
 // isNetworkValid validates network param
 export function isNetworkValid(network: string): boolean {
   return DEFAULT_NETWORKS.includes(network);
 }
 
 // isValidChainID validates chainID param
-export function isValidChainID(chainID: string): boolean {
-  const wantedData = supportedChains.filter((item) => item.chainID === chainID);
-
-  if (wantedData.length !== 0) {
-    return true;
-  }
-
-  return false;
+export function isValidChainID(
+  chainID: string,
+  supportedChains: ChainInfoList
+): boolean {
+  return !!supportedChains.chainInfoList.find(
+    (chainInfo) => chainInfo.chainID === chainID
+  );
 }
 
 // fetchRpcInterface fetches default rpcInterface for chainID
-export function fetchRpcInterface(chainID: string): string {
-  const wantedData = supportedChains.filter((item) => item.chainID === chainID);
+export function fetchRpcInterface(
+  chainID: string,
+  supportedChains: ChainInfoList
+): string {
+  const targetChainInfo = supportedChains.chainInfoList.find(
+    (chainInfo) => chainInfo.chainID === chainID
+  );
 
-  if (wantedData.length !== 1) {
-    return "";
+  if (!targetChainInfo) {
+    throw new Error(`ChainID ${chainID} not found.`);
   }
 
-  return wantedData[0].defaultRPC;
+  const preferredOrder: string[] = ["tendermintrpc", "jsonrpc", "rest"];
+
+  for (const apiInterface of preferredOrder) {
+    if (targetChainInfo.enabledApiInterfaces.includes(apiInterface)) {
+      return apiInterface;
+    }
+  }
+
+  throw new Error(
+    `None of the preferred API interfaces were found for ChainID ${chainID}.`
+  );
 }

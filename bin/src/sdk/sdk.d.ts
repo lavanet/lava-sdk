@@ -40,6 +40,7 @@ export declare class LavaSDK {
     private getConsumerProviderSession;
     private newEpochStarted;
     private isRest;
+    private base64ToUint8Array;
 }
 /**
  * Options for sending RPC relay.

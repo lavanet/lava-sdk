@@ -16,6 +16,7 @@ import {
   DEFAULT_GEOLOCATION,
   DEFAULT_LAVA_CHAINID,
 } from "../config/default";
+import { QueryShowAllChainsResponse } from "../codec/spec/query";
 
 export class LavaSDK {
   private privKey: string;
@@ -44,22 +45,8 @@ export class LavaSDK {
    */
   constructor(options: LavaSDKOptions) {
     // Extract attributes from options
-    const { privateKey, chainID } = options;
-    let { rpcInterface, pairingListConfig, network, geolocation, lavaChainId } =
-      options;
-
-    // Validate chainID
-    if (!isValidChainID(chainID)) {
-      throw SDKErrors.errChainIDUnsupported;
-    }
-
-    // If rpc is not defined use default for specified chainID
-    rpcInterface = rpcInterface || fetchRpcInterface(chainID);
-
-    // Validate rpcInterface
-    if (rpcInterface === "") {
-      throw SDKErrors.errChainIDUnsupported;
-    }
+    const { privateKey, chainID, rpcInterface } = options;
+    let { pairingListConfig, network, geolocation, lavaChainId } = options;
 
     // If network is not defined use default network
     network = network || DEFAULT_LAVA_PAIRING_NETWORK;
@@ -80,7 +67,7 @@ export class LavaSDK {
 
     // Initialize local attributes
     this.chainID = chainID;
-    this.rpcInterface = rpcInterface;
+    this.rpcInterface = rpcInterface ? rpcInterface : "";
     this.privKey = privateKey;
     this.network = network;
     this.geolocation = geolocation;
@@ -123,6 +110,40 @@ export class LavaSDK {
 
     // Init lava providers
     await lavaProviders.init(this.pairingListConfig);
+
+    const sendRelayOptions = {
+      data: this.generateRPCData("abci_query", [
+        "/lavanet.lava.spec.Query/ShowAllChains",
+        "",
+        "0",
+        false,
+      ]),
+      url: "",
+      connectionType: "",
+    };
+
+    const info = await lavaProviders.SendRelayWithRetry(
+      sendRelayOptions,
+      lavaProviders.GetNextLavaProvider(),
+      "tendermintrpc"
+    );
+
+    // TODO handle error
+    const byteArrayResponse = this.base64ToUint8Array(
+      info.result.response.value
+    );
+
+    const parsedChainList =
+      QueryShowAllChainsResponse.decode(byteArrayResponse);
+
+    // Validate chainID
+    if (!isValidChainID(this.chainID, parsedChainList)) {
+      throw SDKErrors.errChainIDUnsupported;
+    }
+
+    // If rpc is not defined use default for specified chainID
+    this.rpcInterface =
+      this.rpcInterface || fetchRpcInterface(this.chainID, parsedChainList);
 
     // Save lava providers as local attribute
     this.lavaProviders = lavaProviders;
@@ -338,6 +359,12 @@ export class LavaSDK {
   ): options is SendRestRelayOptions {
     return (options as SendRestRelayOptions).url !== undefined;
   }
+
+  private base64ToUint8Array = (str: string): Uint8Array => {
+    const buffer = Buffer.from(str, "base64");
+
+    return new Uint8Array(buffer);
+  };
 }
 
 /**

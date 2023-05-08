@@ -1,10 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchRpcInterface = exports.isValidChainID = exports.isNetworkValid = void 0;
-const supportedChains_json_1 = __importDefault(require("../../supportedChains.json"));
 const default_1 = require("../config/default");
 // isNetworkValid validates network param
 function isNetworkValid(network) {
@@ -12,20 +8,22 @@ function isNetworkValid(network) {
 }
 exports.isNetworkValid = isNetworkValid;
 // isValidChainID validates chainID param
-function isValidChainID(chainID) {
-    const wantedData = supportedChains_json_1.default.filter((item) => item.chainID === chainID);
-    if (wantedData.length !== 0) {
-        return true;
-    }
-    return false;
+function isValidChainID(chainID, supportedChains) {
+    return !!supportedChains.chainInfoList.find((chainInfo) => chainInfo.chainID === chainID);
 }
 exports.isValidChainID = isValidChainID;
 // fetchRpcInterface fetches default rpcInterface for chainID
-function fetchRpcInterface(chainID) {
-    const wantedData = supportedChains_json_1.default.filter((item) => item.chainID === chainID);
-    if (wantedData.length !== 1) {
-        return "";
+function fetchRpcInterface(chainID, supportedChains) {
+    const targetChainInfo = supportedChains.chainInfoList.find((chainInfo) => chainInfo.chainID === chainID);
+    if (!targetChainInfo) {
+        throw new Error(`ChainID ${chainID} not found.`);
     }
-    return wantedData[0].defaultRPC;
+    const preferredOrder = ["tendermintrpc", "jsonrpc", "rest"];
+    for (const apiInterface of preferredOrder) {
+        if (targetChainInfo.enabledApiInterfaces.includes(apiInterface)) {
+            return apiInterface;
+        }
+    }
+    throw new Error(`None of the preferred API interfaces were found for ChainID ${chainID}.`);
 }
 exports.fetchRpcInterface = fetchRpcInterface;

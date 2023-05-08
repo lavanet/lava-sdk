@@ -19,6 +19,7 @@ const relayer_1 = __importDefault(require("../relayer/relayer"));
 const chains_1 = require("../util/chains");
 const providers_1 = require("../lavaOverLava/providers");
 const default_1 = require("../config/default");
+const query_1 = require("../codec/spec/query");
 class LavaSDK {
     /**
      * Create Lava-SDK instance
@@ -31,19 +32,13 @@ class LavaSDK {
      * @returns A promise that resolves when the LavaSDK has been successfully initialized, returns LavaSDK object.
      */
     constructor(options) {
+        this.base64ToUint8Array = (str) => {
+            const buffer = Buffer.from(str, "base64");
+            return new Uint8Array(buffer);
+        };
         // Extract attributes from options
-        const { privateKey, chainID } = options;
-        let { rpcInterface, pairingListConfig, network, geolocation, lavaChainId } = options;
-        // Validate chainID
-        if (!(0, chains_1.isValidChainID)(chainID)) {
-            throw errors_1.default.errChainIDUnsupported;
-        }
-        // If rpc is not defined use default for specified chainID
-        rpcInterface = rpcInterface || (0, chains_1.fetchRpcInterface)(chainID);
-        // Validate rpcInterface
-        if (rpcInterface === "") {
-            throw errors_1.default.errChainIDUnsupported;
-        }
+        const { privateKey, chainID, rpcInterface } = options;
+        let { pairingListConfig, network, geolocation, lavaChainId } = options;
         // If network is not defined use default network
         network = network || default_1.DEFAULT_LAVA_PAIRING_NETWORK;
         // Validate network
@@ -58,7 +53,7 @@ class LavaSDK {
         pairingListConfig = pairingListConfig || "";
         // Initialize local attributes
         this.chainID = chainID;
-        this.rpcInterface = rpcInterface;
+        this.rpcInterface = rpcInterface ? rpcInterface : "";
         this.privKey = privateKey;
         this.network = network;
         this.geolocation = geolocation;
@@ -86,6 +81,27 @@ class LavaSDK {
             const lavaProviders = yield new providers_1.LavaProviders(this.account.address, this.network, lavaRelayer, this.geolocation);
             // Init lava providers
             yield lavaProviders.init(this.pairingListConfig);
+            const sendRelayOptions = {
+                data: this.generateRPCData("abci_query", [
+                    "/lavanet.lava.spec.Query/ShowAllChains",
+                    "",
+                    "0",
+                    false,
+                ]),
+                url: "",
+                connectionType: "",
+            };
+            const info = yield lavaProviders.SendRelayWithRetry(sendRelayOptions, lavaProviders.GetNextLavaProvider(), "tendermintrpc");
+            // TODO handle error
+            const byteArrayResponse = this.base64ToUint8Array(info.result.response.value);
+            const parsedChainList = query_1.QueryShowAllChainsResponse.decode(byteArrayResponse);
+            // Validate chainID
+            if (!(0, chains_1.isValidChainID)(this.chainID, parsedChainList)) {
+                throw errors_1.default.errChainIDUnsupported;
+            }
+            // If rpc is not defined use default for specified chainID
+            this.rpcInterface =
+                this.rpcInterface || (0, chains_1.fetchRpcInterface)(this.chainID, parsedChainList);
             // Save lava providers as local attribute
             this.lavaProviders = lavaProviders;
             // Get pairing list for current epoch

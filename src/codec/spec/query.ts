@@ -38,7 +38,13 @@ export interface QueryShowAllChainsRequest {
 }
 
 export interface QueryShowAllChainsResponse {
-  chainNames: string[];
+  chainInfoList: showAllChainsInfoStruct[];
+}
+
+export interface showAllChainsInfoStruct {
+  chainName: string;
+  chainID: string;
+  enabledApiInterfaces: string[];
 }
 
 export interface QueryShowChainInfoRequest {
@@ -393,13 +399,13 @@ export const QueryShowAllChainsRequest = {
 };
 
 function createBaseQueryShowAllChainsResponse(): QueryShowAllChainsResponse {
-  return { chainNames: [] };
+  return { chainInfoList: [] };
 }
 
 export const QueryShowAllChainsResponse = {
   encode(message: QueryShowAllChainsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.chainNames) {
-      writer.uint32(10).string(v!);
+    for (const v of message.chainInfoList) {
+      showAllChainsInfoStruct.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -411,8 +417,8 @@ export const QueryShowAllChainsResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.chainNames.push(reader.string());
+        case 2:
+          message.chainInfoList.push(showAllChainsInfoStruct.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -423,22 +429,99 @@ export const QueryShowAllChainsResponse = {
   },
 
   fromJSON(object: any): QueryShowAllChainsResponse {
-    return { chainNames: Array.isArray(object?.chainNames) ? object.chainNames.map((e: any) => String(e)) : [] };
+    return {
+      chainInfoList: Array.isArray(object?.chainInfoList)
+        ? object.chainInfoList.map((e: any) => showAllChainsInfoStruct.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: QueryShowAllChainsResponse): unknown {
     const obj: any = {};
-    if (message.chainNames) {
-      obj.chainNames = message.chainNames.map((e) => e);
+    if (message.chainInfoList) {
+      obj.chainInfoList = message.chainInfoList.map((e) => e ? showAllChainsInfoStruct.toJSON(e) : undefined);
     } else {
-      obj.chainNames = [];
+      obj.chainInfoList = [];
     }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryShowAllChainsResponse>, I>>(object: I): QueryShowAllChainsResponse {
     const message = createBaseQueryShowAllChainsResponse();
-    message.chainNames = object.chainNames?.map((e) => e) || [];
+    message.chainInfoList = object.chainInfoList?.map((e) => showAllChainsInfoStruct.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseshowAllChainsInfoStruct(): showAllChainsInfoStruct {
+  return { chainName: "", chainID: "", enabledApiInterfaces: [] };
+}
+
+export const showAllChainsInfoStruct = {
+  encode(message: showAllChainsInfoStruct, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.chainName !== "") {
+      writer.uint32(10).string(message.chainName);
+    }
+    if (message.chainID !== "") {
+      writer.uint32(18).string(message.chainID);
+    }
+    for (const v of message.enabledApiInterfaces) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): showAllChainsInfoStruct {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseshowAllChainsInfoStruct();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.chainName = reader.string();
+          break;
+        case 2:
+          message.chainID = reader.string();
+          break;
+        case 3:
+          message.enabledApiInterfaces.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): showAllChainsInfoStruct {
+    return {
+      chainName: isSet(object.chainName) ? String(object.chainName) : "",
+      chainID: isSet(object.chainID) ? String(object.chainID) : "",
+      enabledApiInterfaces: Array.isArray(object?.enabledApiInterfaces)
+        ? object.enabledApiInterfaces.map((e: any) => String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: showAllChainsInfoStruct): unknown {
+    const obj: any = {};
+    message.chainName !== undefined && (obj.chainName = message.chainName);
+    message.chainID !== undefined && (obj.chainID = message.chainID);
+    if (message.enabledApiInterfaces) {
+      obj.enabledApiInterfaces = message.enabledApiInterfaces.map((e) => e);
+    } else {
+      obj.enabledApiInterfaces = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<showAllChainsInfoStruct>, I>>(object: I): showAllChainsInfoStruct {
+    const message = createBaseshowAllChainsInfoStruct();
+    message.chainName = object.chainName ?? "";
+    message.chainID = object.chainID ?? "";
+    message.enabledApiInterfaces = object.enabledApiInterfaces?.map((e) => e) || [];
     return message;
   },
 };
@@ -637,6 +720,10 @@ export interface Query {
   Spec(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse>;
   /** Queries a list of Spec items. */
   SpecAll(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse>;
+  /** Queries a Spec by id (raw form). */
+  SpecRaw(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse>;
+  /** Queries a list of Spec items (raw form). */
+  SpecAllRaw(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse>;
   /** Queries a list of ShowAllChains items. */
   ShowAllChains(request: QueryShowAllChainsRequest): Promise<QueryShowAllChainsResponse>;
   /** Queries a list of ShowChainInfo items. */
@@ -652,6 +739,8 @@ export class QueryClientImpl implements Query {
     this.Params = this.Params.bind(this);
     this.Spec = this.Spec.bind(this);
     this.SpecAll = this.SpecAll.bind(this);
+    this.SpecRaw = this.SpecRaw.bind(this);
+    this.SpecAllRaw = this.SpecAllRaw.bind(this);
     this.ShowAllChains = this.ShowAllChains.bind(this);
     this.ShowChainInfo = this.ShowChainInfo.bind(this);
   }
@@ -670,6 +759,18 @@ export class QueryClientImpl implements Query {
   SpecAll(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse> {
     const data = QueryAllSpecRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "SpecAll", data);
+    return promise.then((data) => QueryAllSpecResponse.decode(new _m0.Reader(data)));
+  }
+
+  SpecRaw(request: QueryGetSpecRequest): Promise<QueryGetSpecResponse> {
+    const data = QueryGetSpecRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SpecRaw", data);
+    return promise.then((data) => QueryGetSpecResponse.decode(new _m0.Reader(data)));
+  }
+
+  SpecAllRaw(request: QueryAllSpecRequest): Promise<QueryAllSpecResponse> {
+    const data = QueryAllSpecRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SpecAllRaw", data);
     return promise.then((data) => QueryAllSpecResponse.decode(new _m0.Reader(data)));
   }
 

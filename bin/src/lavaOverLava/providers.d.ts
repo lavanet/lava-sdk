@@ -11,13 +11,17 @@ export declare class LavaProviders {
     init(pairingListConfig: string): Promise<void>;
     initDefaultConfig(): Promise<any>;
     initLocalConfig(path: string): Promise<any>;
-    getNextLavaProvider(): ConsumerSessionWithProvider;
+    GetNextLavaProvider(): ConsumerSessionWithProvider;
     getSession(chainID: string, rpcInterface: string): Promise<SessionManager>;
     pickRandomProvider(providers: Array<ConsumerSessionWithProvider>): ConsumerSessionWithProvider;
     private getPairingFromChain;
     private getMaxCuForUser;
     private getServiceApis;
     convertRestApiName(name: string): string;
+<<<<<<< HEAD
     sendRelayWithRetry(options: any, lavaRPCEndpoint: ConsumerSessionWithProvider, relayCu: number): Promise<any>;
+=======
+    SendRelayWithRetry(options: any, lavaRPCEndpoint: ConsumerSessionWithProvider, rpcInterface: string): Promise<any>;
+>>>>>>> origin/main
     private extractBlockNumberFromError;
 }
