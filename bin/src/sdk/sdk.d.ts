@@ -61,12 +61,20 @@ export interface SendRestRelayOptions {
 /**
  * Options for initializing the LavaSDK.
  */
-export interface LavaSDKOptions {
-    privateKey: string;
+declare type LavaSDKOptions = {
+    privateKey?: string;
+    mnemonic?: string;
     chainID: string;
     rpcInterface?: string;
     pairingListConfig?: string;
     network?: string;
     geolocation?: string;
     lavaChainId?: string;
-}
+} & ({
+    privateKey: string;
+    mnemonic?: never;
+} | {
+    privateKey?: never;
+    mnemonic: string;
+});
+export {};

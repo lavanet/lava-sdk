@@ -24,6 +24,9 @@ class SDKErrors {
   static errRestRelayMethodNotSupported: Error = new Error(
     "SendRestRelay not supported if the SDK is initialized with RPC rpcInterface (tendermintRPC/jsonRPC), use sendRelay method"
   );
+  static errValidateEthierPrivateKeyOrMnemonic: Error = new Error(
+    'Either "privateKey" or "mnemonic" must be provided'
+  );
 }
 
 export default SDKErrors;

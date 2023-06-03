@@ -8,5 +8,6 @@ declare class SDKErrors {
     static errNetworkUnsupported: Error;
     static errRPCRelayMethodNotSupported: Error;
     static errRestRelayMethodNotSupported: Error;
+    static errValidateEthierPrivateKeyOrMnemonic: Error;
 }
 export default SDKErrors;

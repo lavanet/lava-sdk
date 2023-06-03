@@ -17,6 +17,8 @@ import {
   DEFAULT_LAVA_CHAINID,
 } from "../config/default";
 import { QueryShowAllChainsResponse } from "../codec/spec/query";
+import { createPrivKeyFromMnemonic, isEnglishMnemonic } from "../util/wallet";
+import { EnglishMnemonic } from "@cosmjs/crypto";
 
 export class LavaSDK {
   private privKey: string;
@@ -45,7 +47,7 @@ export class LavaSDK {
    */
   constructor(options: LavaSDKOptions) {
     // Extract attributes from options
-    const { privateKey, chainID, rpcInterface } = options;
+    const { chainID, rpcInterface } = options;
     let { pairingListConfig, network, geolocation, lavaChainId } = options;
 
     // If network is not defined use default network
@@ -64,11 +66,21 @@ export class LavaSDK {
 
     // If lava pairing config not defined set as empty
     pairingListConfig = pairingListConfig || "";
-
+    // validate and intialize menmonic or private key
+    if ("privateKey" in options && "mnemonic" in options) {
+      throw SDKErrors.errValidateEthierPrivateKeyOrMnemonic;
+    }
+    if ("privateKey" in options && options.privateKey) {
+      this.privKey = options.privateKey;
+    } else if (options.mnemonic) {
+      const checkedMnemonic = new EnglishMnemonic(options.mnemonic);
+      this.privKey = checkedMnemonic.toString();
+    } else {
+      throw SDKErrors.errValidateEthierPrivateKeyOrMnemonic;
+    }
     // Initialize local attributes
     this.chainID = chainID;
     this.rpcInterface = rpcInterface ? rpcInterface : "";
-    this.privKey = privateKey;
     this.network = network;
     this.geolocation = geolocation;
     this.lavaChainId = lavaChainId;
@@ -87,6 +99,9 @@ export class LavaSDK {
   }
 
   private async init() {
+    this.privKey = isEnglishMnemonic(this.privKey)
+      ? await createPrivKeyFromMnemonic(this.privKey)
+      : this.privKey;
     // Create wallet
     const wallet = await createWallet(this.privKey);
 
@@ -421,12 +436,16 @@ export interface SendRestRelayOptions {
 /**
  * Options for initializing the LavaSDK.
  */
-export interface LavaSDKOptions {
-  privateKey: string; // Required: The private key of the staked Lava client for the specified chainID
+type LavaSDKOptions = {
+  privateKey?: string; //Required: Either "privateKey" or "mnemonic"
+  mnemonic?: string;
   chainID: string; // Required: The ID of the chain you want to query
   rpcInterface?: string; // Optional: The interface that will be used for sending relays
   pairingListConfig?: string; // Optional: The Lava pairing list config used for communicating with the Lava network
   network?: string; // Optional: The network from pairingListConfig to be used ["mainnet", "testnet"]
   geolocation?: string; // Optional: The geolocation to be used ["1" for North America, "2" for Europe ]
   lavaChainId?: string; // Optional: The Lava chain ID (default value for Lava Testnet)
-}
+} & (
+  | { privateKey: string; mnemonic?: never }
+  | { privateKey?: never; mnemonic: string }
+);
