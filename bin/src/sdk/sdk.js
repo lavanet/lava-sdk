@@ -20,6 +20,8 @@ const chains_1 = require("../util/chains");
 const providers_1 = require("../lavaOverLava/providers");
 const default_1 = require("../config/default");
 const query_1 = require("../codec/spec/query");
+const wallet_2 = require("../util/wallet");
+const crypto_1 = require("@cosmjs/crypto");
 class LavaSDK {
     /**
      * Create Lava-SDK instance
@@ -37,7 +39,7 @@ class LavaSDK {
             return new Uint8Array(buffer);
         };
         // Extract attributes from options
-        const { privateKey, chainID, rpcInterface } = options;
+        const { chainID, rpcInterface } = options;
         let { pairingListConfig, network, geolocation, lavaChainId } = options;
         // If network is not defined use default network
         network = network || default_1.DEFAULT_LAVA_PAIRING_NETWORK;
@@ -51,10 +53,23 @@ class LavaSDK {
         geolocation = geolocation || default_1.DEFAULT_GEOLOCATION;
         // If lava pairing config not defined set as empty
         pairingListConfig = pairingListConfig || "";
+        // validate and intialize menmonic or private key
+        if ("privateKey" in options && "mnemonic" in options) {
+            throw errors_1.default.errValidateEthierPrivateKeyOrMnemonic;
+        }
+        if ("privateKey" in options && options.privateKey) {
+            this.privKey = options.privateKey;
+        }
+        else if (options.mnemonic) {
+            const checkedMnemonic = new crypto_1.EnglishMnemonic(options.mnemonic);
+            this.privKey = checkedMnemonic.toString();
+        }
+        else {
+            throw errors_1.default.errValidateEthierPrivateKeyOrMnemonic;
+        }
         // Initialize local attributes
         this.chainID = chainID;
         this.rpcInterface = rpcInterface ? rpcInterface : "";
-        this.privKey = privateKey;
         this.network = network;
         this.geolocation = geolocation;
         this.lavaChainId = lavaChainId;
@@ -71,6 +86,10 @@ class LavaSDK {
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("init");
+            this.privKey = (0, wallet_2.isEnglishMnemonic)(this.privKey)
+                ? yield (0, wallet_2.createPrivKeyFromMnemonic)(this.privKey)
+                : this.privKey;
             // Create wallet
             const wallet = yield (0, wallet_1.createWallet)(this.privKey);
             // Get account from wallet
