@@ -86,7 +86,6 @@ class LavaSDK {
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("init");
             this.privKey = (0, wallet_2.isEnglishMnemonic)(this.privKey)
                 ? yield (0, wallet_2.createPrivKeyFromMnemonic)(this.privKey)
                 : this.privKey;
