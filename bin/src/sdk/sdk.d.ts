@@ -38,13 +38,11 @@ export declare class LavaSDK {
      *
      */
     sendRelay(options: SendRelayOptions | SendRestRelayOptions): Promise<string>;
-    private generateRPCData;
     private decodeRelayResponse;
     private getCuSumForMethod;
     private getConsumerProviderSession;
     private newEpochStarted;
     private isRest;
-    private base64ToUint8Array;
 }
 /**
  * Options for sending RPC relay.

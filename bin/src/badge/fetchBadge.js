@@ -40,7 +40,7 @@ function fetchBadge(serverAddress, badgeUser, projectKey) {
                 },
             });
         });
-        return relayWithTimeout(2000, requestPromise);
+        return relayWithTimeout(5000, requestPromise);
     });
 }
 exports.fetchBadge = fetchBadge;

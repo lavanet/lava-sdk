@@ -18,6 +18,7 @@ const errors_1 = __importDefault(require("./errors"));
 const relayer_1 = __importDefault(require("../relayer/relayer"));
 const fetchBadge_1 = require("../badge/fetchBadge");
 const chains_1 = require("../util/chains");
+const common_1 = require("../util/common");
 const providers_1 = require("../lavaOverLava/providers");
 const default_1 = require("../config/default");
 const query_1 = require("../codec/spec/query");
@@ -33,10 +34,6 @@ class LavaSDK {
      * @returns A promise that resolves when the LavaSDK has been successfully initialized, returns LavaSDK object.
      */
     constructor(options) {
-        this.base64ToUint8Array = (str) => {
-            const buffer = Buffer.from(str, "base64");
-            return new Uint8Array(buffer);
-        };
         // Extract attributes from options
         const { privateKey, badge, chainID, rpcInterface } = options;
         let { pairingListConfig, network, geolocation, lavaChainId } = options;
@@ -103,7 +100,7 @@ class LavaSDK {
             // Init lava providers
             yield lavaProviders.init(this.pairingListConfig);
             const sendRelayOptions = {
-                data: this.generateRPCData("abci_query", [
+                data: (0, common_1.generateRPCData)("abci_query", [
                     "/lavanet.lava.spec.Query/ShowAllChains",
                     "",
                     "0",
@@ -113,7 +110,7 @@ class LavaSDK {
                 connectionType: "",
             };
             const info = yield lavaProviders.SendRelayWithRetry(sendRelayOptions, lavaProviders.GetNextLavaProvider(), 10, "tendermintrpc");
-            const byteArrayResponse = this.base64ToUint8Array(info.result.response.value);
+            const byteArrayResponse = (0, common_1.base64ToUint8Array)(info.result.response.value);
             const parsedChainList = query_1.QueryShowAllChainsResponse.decode(byteArrayResponse);
             // Validate chainID
             if (!(0, chains_1.isValidChainID)(this.chainID, parsedChainList)) {
@@ -144,7 +141,7 @@ class LavaSDK {
                 const pairingList = yield this.getConsumerProviderSession();
                 // Get cuSum for specified method
                 const cuSum = this.getCuSumForMethod(method);
-                const data = this.generateRPCData(method, params);
+                const data = (0, common_1.generateRPCData)(method, params);
                 // Check if relay was initialized
                 if (this.relayer instanceof Error) {
                     throw errors_1.default.errRelayerServiceNotInitialized;
@@ -241,21 +238,6 @@ class LavaSDK {
                 return yield this.handleRestRelay(options);
             return yield this.handleRpcRelay(options);
         });
-    }
-    generateRPCData(method, params) {
-        const stringifyMethod = JSON.stringify(method);
-        const stringifyParam = JSON.stringify(params, (key, value) => {
-            if (typeof value === "bigint") {
-                return value.toString();
-            }
-            return value;
-        });
-        // TODO make id changable
-        return ('{"jsonrpc": "2.0", "id": 1, "method": ' +
-            stringifyMethod +
-            ', "params": ' +
-            stringifyParam +
-            "}");
     }
     decodeRelayResponse(relayResponse) {
         // Decode relay response

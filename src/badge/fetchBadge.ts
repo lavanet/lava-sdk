@@ -34,7 +34,7 @@ export async function fetchBadge(
       });
     }
   );
-  return relayWithTimeout(2000, requestPromise);
+  return relayWithTimeout(5000, requestPromise);
 }
 
 async function relayWithTimeout(timeLimit: number, task: any) {

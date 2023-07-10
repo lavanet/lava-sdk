@@ -15,6 +15,7 @@ import {
   fetchRpcInterface,
   validateRpcInterfaceWithChainID,
 } from "../util/chains";
+import { base64ToUint8Array, generateRPCData } from "../util/common";
 import { LavaProviders } from "../lavaOverLava/providers";
 import {
   LAVA_CHAIN_ID,
@@ -145,7 +146,7 @@ export class LavaSDK {
     await lavaProviders.init(this.pairingListConfig);
 
     const sendRelayOptions = {
-      data: this.generateRPCData("abci_query", [
+      data: generateRPCData("abci_query", [
         "/lavanet.lava.spec.Query/ShowAllChains",
         "",
         "0",
@@ -162,9 +163,7 @@ export class LavaSDK {
       "tendermintrpc"
     );
 
-    const byteArrayResponse = this.base64ToUint8Array(
-      info.result.response.value
-    );
+    const byteArrayResponse = base64ToUint8Array(info.result.response.value);
 
     const parsedChainList =
       QueryShowAllChainsResponse.decode(byteArrayResponse);
@@ -218,7 +217,7 @@ export class LavaSDK {
       // Get cuSum for specified method
       const cuSum = this.getCuSumForMethod(method);
 
-      const data = this.generateRPCData(method, params);
+      const data = generateRPCData(method, params);
 
       // Check if relay was initialized
       if (this.relayer instanceof Error) {
@@ -343,24 +342,6 @@ export class LavaSDK {
     return await this.handleRpcRelay(options);
   }
 
-  private generateRPCData(method: string, params: Array<any>): string {
-    const stringifyMethod = JSON.stringify(method);
-    const stringifyParam = JSON.stringify(params, (key, value) => {
-      if (typeof value === "bigint") {
-        return value.toString();
-      }
-      return value;
-    });
-    // TODO make id changable
-    return (
-      '{"jsonrpc": "2.0", "id": 1, "method": ' +
-      stringifyMethod +
-      ', "params": ' +
-      stringifyParam +
-      "}"
-    );
-  }
-
   private decodeRelayResponse(relayResponse: RelayReply): string {
     // Decode relay response
     const dec = new TextDecoder();
@@ -438,12 +419,6 @@ export class LavaSDK {
   ): options is SendRestRelayOptions {
     return (options as SendRestRelayOptions).url !== undefined;
   }
-
-  private base64ToUint8Array = (str: string): Uint8Array => {
-    const buffer = Buffer.from(str, "base64");
-
-    return new Uint8Array(buffer);
-  };
 }
 
 /**
