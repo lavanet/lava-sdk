@@ -135,112 +135,112 @@ export const Spec = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
+          if (tag != 10) {
             break;
           }
 
           message.index = reader.string();
           continue;
         case 2:
-          if (tag !== 18) {
+          if (tag != 18) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 15:
-          if (tag !== 122) {
+          if (tag != 122) {
             break;
           }
 
           message.imports.push(reader.string());
           continue;
         case 3:
-          if (tag !== 26) {
+          if (tag != 26) {
             break;
           }
 
           message.apis.push(ServiceApi.decode(reader, reader.uint32()));
           continue;
         case 4:
-          if (tag !== 32) {
+          if (tag != 32) {
             break;
           }
 
           message.enabled = reader.bool();
           continue;
         case 5:
-          if (tag !== 40) {
+          if (tag != 40) {
             break;
           }
 
           message.reliabilityThreshold = reader.uint32();
           continue;
         case 6:
-          if (tag !== 48) {
+          if (tag != 48) {
             break;
           }
 
           message.dataReliabilityEnabled = reader.bool();
           continue;
         case 7:
-          if (tag !== 56) {
+          if (tag != 56) {
             break;
           }
 
           message.blockDistanceForFinalizedData = reader.uint32();
           continue;
         case 8:
-          if (tag !== 64) {
+          if (tag != 64) {
             break;
           }
 
           message.blocksInFinalizationProof = reader.uint32();
           continue;
         case 9:
-          if (tag !== 72) {
+          if (tag != 72) {
             break;
           }
 
           message.averageBlockTime = reader.int64() as Long;
           continue;
         case 10:
-          if (tag !== 80) {
+          if (tag != 80) {
             break;
           }
 
           message.allowedBlockLagForQosSync = reader.int64() as Long;
           continue;
         case 11:
-          if (tag !== 88) {
+          if (tag != 88) {
             break;
           }
 
           message.blockLastUpdated = reader.uint64() as Long;
           continue;
         case 12:
-          if (tag !== 98) {
+          if (tag != 98) {
             break;
           }
 
           message.minStakeProvider = Coin.decode(reader, reader.uint32());
           continue;
         case 13:
-          if (tag !== 106) {
+          if (tag != 106) {
             break;
           }
 
           message.minStakeClient = Coin.decode(reader, reader.uint32());
           continue;
         case 14:
-          if (tag !== 112) {
+          if (tag != 112) {
             break;
           }
 
           message.providersTypes = reader.int32() as any;
           continue;
       }
-      if ((tag & 7) === 4 || tag === 0) {
+      if ((tag & 7) == 4 || tag == 0) {
         break;
       }
       reader.skipType(tag & 7);

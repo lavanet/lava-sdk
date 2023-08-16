@@ -79,70 +79,70 @@ export const Plan = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
+          if (tag != 10) {
             break;
           }
 
           message.index = reader.string();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag != 24) {
             break;
           }
 
           message.block = reader.uint64() as Long;
           continue;
         case 4:
-          if (tag !== 34) {
+          if (tag != 34) {
             break;
           }
 
           message.price = Coin.decode(reader, reader.uint32());
           continue;
         case 8:
-          if (tag !== 64) {
+          if (tag != 64) {
             break;
           }
 
           message.allowOveruse = reader.bool();
           continue;
         case 9:
-          if (tag !== 72) {
+          if (tag != 72) {
             break;
           }
 
           message.overuseRate = reader.uint64() as Long;
           continue;
         case 11:
-          if (tag !== 90) {
+          if (tag != 90) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 12:
-          if (tag !== 98) {
+          if (tag != 98) {
             break;
           }
 
           message.type = reader.string();
           continue;
         case 13:
-          if (tag !== 104) {
+          if (tag != 104) {
             break;
           }
 
           message.annualDiscountPercentage = reader.uint64() as Long;
           continue;
         case 14:
-          if (tag !== 114) {
+          if (tag != 114) {
             break;
           }
 
           message.planPolicy = Policy.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) === 4 || tag === 0) {
+      if ((tag & 7) == 4 || tag == 0) {
         break;
       }
       reader.skipType(tag & 7);

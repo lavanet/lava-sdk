@@ -97,91 +97,91 @@ export const Subscription = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
+          if (tag != 10) {
             break;
           }
 
           message.creator = reader.string();
           continue;
         case 2:
-          if (tag !== 18) {
+          if (tag != 18) {
             break;
           }
 
           message.consumer = reader.string();
           continue;
         case 3:
-          if (tag !== 24) {
+          if (tag != 24) {
             break;
           }
 
           message.block = reader.uint64() as Long;
           continue;
         case 4:
-          if (tag !== 34) {
+          if (tag != 34) {
             break;
           }
 
           message.planIndex = reader.string();
           continue;
         case 5:
-          if (tag !== 40) {
+          if (tag != 40) {
             break;
           }
 
           message.planBlock = reader.uint64() as Long;
           continue;
         case 6:
-          if (tag !== 48) {
+          if (tag != 48) {
             break;
           }
 
           message.durationTotal = reader.uint64() as Long;
           continue;
         case 7:
-          if (tag !== 56) {
+          if (tag != 56) {
             break;
           }
 
           message.durationLeft = reader.uint64() as Long;
           continue;
         case 8:
-          if (tag !== 64) {
+          if (tag != 64) {
             break;
           }
 
           message.monthExpiryTime = reader.uint64() as Long;
           continue;
         case 9:
-          if (tag !== 72) {
+          if (tag != 72) {
             break;
           }
 
           message.prevExpiryBlock = reader.uint64() as Long;
           continue;
         case 10:
-          if (tag !== 80) {
+          if (tag != 80) {
             break;
           }
 
           message.monthCuTotal = reader.uint64() as Long;
           continue;
         case 11:
-          if (tag !== 88) {
+          if (tag != 88) {
             break;
           }
 
           message.monthCuLeft = reader.uint64() as Long;
           continue;
         case 12:
-          if (tag !== 96) {
+          if (tag != 96) {
             break;
           }
 
           message.prevCuLeft = reader.uint64() as Long;
           continue;
       }
-      if ((tag & 7) === 4 || tag === 0) {
+      if ((tag & 7) == 4 || tag == 0) {
         break;
       }
       reader.skipType(tag & 7);

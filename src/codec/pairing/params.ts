@@ -86,91 +86,91 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 3:
-          if (tag !== 26) {
+          if (tag != 26) {
             break;
           }
 
           message.mintCoinsPerCU = reader.string();
           continue;
         case 4:
-          if (tag !== 34) {
+          if (tag != 34) {
             break;
           }
 
           message.burnCoinsPerCU = reader.string();
           continue;
         case 5:
-          if (tag !== 42) {
+          if (tag != 42) {
             break;
           }
 
           message.fraudStakeSlashingFactor = reader.string();
           continue;
         case 6:
-          if (tag !== 48) {
+          if (tag != 48) {
             break;
           }
 
           message.fraudSlashingAmount = reader.uint64() as Long;
           continue;
         case 7:
-          if (tag !== 56) {
+          if (tag != 56) {
             break;
           }
 
           message.servicersToPairCount = reader.uint64() as Long;
           continue;
         case 8:
-          if (tag !== 64) {
+          if (tag != 64) {
             break;
           }
 
           message.epochBlocksOverlap = reader.uint64() as Long;
           continue;
         case 9:
-          if (tag !== 74) {
+          if (tag != 74) {
             break;
           }
 
           message.stakeToMaxCUList = reader.string();
           continue;
         case 10:
-          if (tag !== 82) {
+          if (tag != 82) {
             break;
           }
 
           message.unpayLimit = reader.string();
           continue;
         case 11:
-          if (tag !== 90) {
+          if (tag != 90) {
             break;
           }
 
           message.slashLimit = reader.string();
           continue;
         case 12:
-          if (tag !== 98) {
+          if (tag != 98) {
             break;
           }
 
           message.dataReliabilityReward = reader.string();
           continue;
         case 13:
-          if (tag !== 106) {
+          if (tag != 106) {
             break;
           }
 
           message.QoSWeight = reader.string();
           continue;
         case 14:
-          if (tag !== 112) {
+          if (tag != 112) {
             break;
           }
 
           message.recommendedEpochNumToCollectPayment = reader.uint64() as Long;
           continue;
       }
-      if ((tag & 7) === 4 || tag === 0) {
+      if ((tag & 7) == 4 || tag == 0) {
         break;
       }
       reader.skipType(tag & 7);
